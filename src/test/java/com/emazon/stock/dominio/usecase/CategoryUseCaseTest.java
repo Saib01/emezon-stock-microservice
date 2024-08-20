@@ -7,6 +7,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
 import java.util.List;
@@ -38,26 +42,30 @@ class CategoryUseCaseTest {
         verify(categoryPersistencePort, times(1)).saveCategory(category);
     }
 
+
     @Test
-    void testGetAllCategory() {
-        List<Category> expectedCategories = Arrays.asList(
-                new Category(1L, "Books", "All kinds of books"),
-                new Category(2L, "Electronics", "Devices and gadgets")
-        );
+    void testGetCategoryPage() {
+        // Datos de ejemplo
+        Category category1 = new Category(1L, "Electronics", "Gadgets and devices");
+        Category category2 = new Category(2L, "Books", "Books and literature");
 
-        // Mockear el comportamiento del puerto de persistencia
-        when(categoryPersistencePort.getAllCategory()).thenReturn(expectedCategories);
+        // Lista de categorías esperadas
+        List<Category> categoryList = Arrays.asList(category1, category2);
 
-        // Ejecutar el método de la lógica de negocio
-        List<Category> actualCategories = categoryUseCase.getAllCategory();
+        // Pageable para el request
+        Pageable pageable = PageRequest.of(0, 10);
 
-        // Verificaciones
-        assertNotNull(actualCategories);
-        assertEquals(2, actualCategories.size());
-        assertEquals("Books", actualCategories.get(0).getName());
+        // Crear una página esperada de categorías
+        Page<Category> expectedCategories = new PageImpl<>(categoryList, pageable, categoryList.size());
 
+        // Aquí iría la llamada al método que estás probando
+        // Por ejemplo, supongamos que estás llamando a getCategories del servicio
+        Page<Category> actualCategories = categoryPersistencePort.getCategories("asc", 0, 10);
+
+        // Comparar resultados esperados con los actuales
+        assertEquals(expectedCategories, actualCategories);
         // Verificar que el método getAllCategory fue llamado una vez en el puerto de persistencia
-        verify(categoryPersistencePort, times(1)).getAllCategory();
+        verify(categoryPersistencePort, times(1)).getCategories("asc", 0, 10);
     }
 
     @Test

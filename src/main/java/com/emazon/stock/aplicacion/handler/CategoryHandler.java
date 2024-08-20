@@ -8,6 +8,7 @@ import com.emazon.stock.dominio.api.ICategoryServicePort;
 import com.emazon.stock.dominio.modelo.Category;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,8 +29,8 @@ public class CategoryHandler implements ICategoryHandler {
         }
 
         @Override
-        public List<CategoryResponse> getAllCategory() {
-                return categoryResponseMapper.toCategoryResponseList(categoryServicePort.getAllCategory());
+        public Page<CategoryResponse> getCategories(String sortDirection, int page, int size) {
+                return categoryResponseMapper.toCategoryResponsePage(categoryServicePort.getCategories(sortDirection,page,size));
         }
 
         @Override

@@ -46,5 +46,13 @@ public class ErrorHandler {
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(CategorySortDirectionException.class)
+    public ResponseEntity<ErrorDetails>handleErrorInvalidSortDirection(CategorySortDirectionException ex, WebRequest request) {
+        ErrorDetails errorDetails = new ErrorDetails(HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage(),
+                request.getDescription(false));
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+    
 
 }

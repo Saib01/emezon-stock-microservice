@@ -3,6 +3,7 @@ package com.emazon.stock.dominio.usecase;
 import com.emazon.stock.dominio.api.ICategoryServicePort;
 import com.emazon.stock.dominio.modelo.Category;
 import com.emazon.stock.dominio.spi.ICategoryPersistencePort;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -20,14 +21,12 @@ public class CategoryUseCase implements ICategoryServicePort {
     }
 
     @Override
-    public List<Category> getAllCategory() {
-        return this.categoryPersistencePort.getAllCategory();
+    public Page<Category> getCategories(String sortDirection,int page,int size) {
+        return this.categoryPersistencePort.getCategories(sortDirection, page, size);
     }
-
     @Override
     public Category getCategory(Long id) {
         return this.categoryPersistencePort.getCategory(id);
     }
-
 
 }

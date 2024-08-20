@@ -7,6 +7,10 @@ import com.emazon.stock.infraestructura.output.jpa.mapper.CategoryEntityMapper;
 import com.emazon.stock.infraestructura.output.jpa.repository.ICategoryRepository;
 import com.emazon.stock.infraestructura.exceptions.CategoryNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
@@ -41,10 +45,15 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
     }
 
     @Override
-    public List<Category> getAllCategory() {
-        return this.categoryRepository.findAll().stream()
-                .map(categoryEntityMapper::toCategory)
-                .toList();
+    public Page<Category> getCategories(String sortDirection, int page, int size) {
+        if(sortDirection.equals("ASC")||sortDirection.equals("DESC")){
+            throw new CategorySortDirectionException("La direccion de ordenamiento solo puede ser ASC o DESC");
+        }
+        // Determinar la dirección del ordenamiento
+        Sort.Direction direction = Sort.Direction.fromString(sortDirection);
+        // Crear un objeto Pageable con la dirección de ordenamiento, página y tamaño
+        Pageable pageable = PageRequest.of(page, size, direction, "name"); // Cambia "name" por el campo por el que quieras ordenar
+        return categoryEntityMapper.toCategoryPage(this.categoryRepository.findAll(pageable));
     }
 
     @Override
