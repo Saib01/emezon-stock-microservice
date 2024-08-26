@@ -1,20 +1,17 @@
 package com.emazon.stock.dominio.usecase;
 
+import com.emazon.stock.dominio.exeption.*;
 import com.emazon.stock.dominio.modelo.Category;
+import com.emazon.stock.dominio.modelo.PageStock;
 import com.emazon.stock.dominio.spi.ICategoryPersistencePort;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-
 import java.util.Arrays;
-import java.util.List;
-
+import static com.emazon.stock.dominio.constants.GlobalConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -26,66 +23,112 @@ class CategoryUseCaseTest {
     @InjectMocks
     private CategoryUseCase categoryUseCase;
 
+    private Category category;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        category = new Category(VALID_ID, VALID_NAME, VALID_DESCRIPTION);
     }
 
     @Test
+    @DisplayName("Should save the category and verify that the persistence port method is called once")
     void testSaveCategory() {
-        Category category = new Category(1L, "Electronics", "Devices and gadgets");
-
-        // Ejecutar el método de la lógica de negocio
         categoryUseCase.saveCategory(category);
-
-        // Verificar que el método saveCategory fue llamado en el puerto de persistencia
         verify(categoryPersistencePort, times(1)).saveCategory(category);
     }
 
-
     @Test
-    void testGetCategoryPage() {
-        // Datos de ejemplo
-        Category category1 = new Category(1L, "Electronics", "Gadgets and devices");
-        Category category2 = new Category(2L, "Books", "Books and literature");
-
-        // Lista de categorías esperadas
-        List<Category> categoryList = Arrays.asList(category1, category2);
-
-        // Pageable para el request
-        Pageable pageable = PageRequest.of(0, 10);
-
-        // Crear una página esperada de categorías
-        Page<Category> expectedCategories = new PageImpl<>(categoryList, pageable, categoryList.size());
-
-        // Aquí iría la llamada al método que estás probando
-        // Por ejemplo, supongamos que estás llamando a getCategories del servicio
-        Page<Category> actualCategories = categoryPersistencePort.getCategories("asc", 0, 10);
-
-        // Comparar resultados esperados con los actuales
-        assertEquals(expectedCategories, actualCategories);
-        // Verificar que el método getAllCategory fue llamado una vez en el puerto de persistencia
-        verify(categoryPersistencePort, times(1)).getCategories("asc", 0, 10);
+    @DisplayName("Should not save category when name is empty")
+    void shouldNotSaveCategoryWhenNameIsEmpty() {
+        category.setName(EMPTY_PROPERTY);
+        assertThrows(CategoryNameRequiredException.class, () -> {
+            categoryUseCase.saveCategory(category);
+        });
     }
 
     @Test
-    void testGetCategory() {
-        Long categoryId = 1L;
-        Category expectedCategory = new Category(1L, "Hogar", "Productos y accesorios para organizar, decorar y equipar cada rincón de tu hogar.");
+    @DisplayName("Should not save category when name is null")
+    void shouldNotSaveCategoryWhenNameIsNull() {
+        category.setName(NULL_PROPERTY);
+        assertThrows(CategoryNameRequiredException.class, () -> {
+            categoryUseCase.saveCategory(category);
+        });
+    }
 
-        // Mockear el comportamiento del puerto de persistencia
-        when(categoryPersistencePort.getCategory(categoryId)).thenReturn(expectedCategory);
+    @Test
+    @DisplayName("Should not save category when description is null")
+    void shouldNotSaveCategoryWhenDescriptionIsNull() {
+        category.setDescription(NULL_PROPERTY);
+        assertThrows(CategoryDescriptionRequiredException.class, () -> {
+            categoryUseCase.saveCategory(category);
+        });
+    }
 
-        // Ejecutar el método de la lógica de negocio
-        Category actualCategory = categoryUseCase.getCategory(categoryId);
+    @DisplayName("Should not save category when description is empty")
+    @Test
+    void shouldNotSaveCategoryWhenDescriptionIsEmpty() {
+        category.setDescription(EMPTY_PROPERTY);
+        assertThrows(CategoryDescriptionRequiredException.class, () -> {
+            categoryUseCase.saveCategory(category);
+        });
+    }
 
-        // Verificaciones
+    @Test
+    @DisplayName("Should not save category when description is too long")
+    void shouldNotSaveCategoryWhenDescriptionIsTooLong() {
+        category.setDescription(INVALID_DESCRIPTION);
+        assertThrows(CategoryDescriptionTooLongException.class, () -> {
+            categoryUseCase.saveCategory(category);
+        });
+    }
+
+    @Test
+    @DisplayName("Should not save category when name is too long")
+    void shouldNotSaveCategoryWhenNameIsTooLong() {
+        category.setName(INVALID_NAME);
+        assertThrows(CategoryNameTooLongException.class, () -> {
+            categoryUseCase.saveCategory(category);
+        });
+    }
+
+    @Test
+    @DisplayName("Should return the correct Category when fetching a category by ID")
+    void shouldGetCategory() {
+        when(categoryPersistencePort.getCategory(VALID_ID)).thenReturn(category);
+        Category actualCategory = categoryUseCase.getCategory(VALID_ID);
         assertNotNull(actualCategory);
-        assertEquals(expectedCategory.getName(), actualCategory.getName());
-        assertEquals(expectedCategory.getDescription(), actualCategory.getDescription());
-        assertEquals(expectedCategory.getId(), actualCategory.getId());
+        assertEquals(category.getName(), actualCategory.getName());
+        assertEquals(category.getDescription(), actualCategory.getDescription());
+        assertEquals(category.getId(), actualCategory.getId());
+        verify(categoryPersistencePort, times(1)).getCategory(VALID_ID);
+    }
 
-        // Verificar que el método getCategory fue llamado una vez en el puerto de persistencia
-        verify(categoryPersistencePort, times(1)).getCategory(categoryId);
+    @Test
+    @DisplayName("Should return a paginated page of categories")
+    void shouldGetCategoryPageStock() {
+        int page = 0;
+        int size = 2;
+        String sortDirection = "ASC";
+        PageStock<Category> expectedCategoryPageStock = new PageStock<Category>(
+                Arrays.asList(category, new Category(2L, "Books", "Books and literature")),
+                2, 1, page, size, "name", sortDirection);
+        when(this.categoryPersistencePort.getCategories(sortDirection, page, size))
+                .thenReturn(expectedCategoryPageStock);
+        PageStock<Category> actualCategoryPageStock = this.categoryPersistencePort.getCategories(sortDirection, page,
+                size);
+        assertEquals(expectedCategoryPageStock, actualCategoryPageStock);
+        verify(categoryPersistencePort, times(1)).getCategories("ASC", 0, 2);
+    }
+
+    @Test
+    @DisplayName("Should not return a paginated page of categories")
+    void shouldNotGetCategoryPageStock() {
+        int page = 0;
+        int size = 2;
+        String sortDirection = "AaSC";
+        assertThrows(SortDirectionIsInvalidException.class, () -> {
+            categoryUseCase.getCategories(sortDirection, page, size);
+        });
     }
 }

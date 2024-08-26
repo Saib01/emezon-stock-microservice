@@ -17,11 +17,14 @@ public class BeanConfiguration {
     private final ICategoryRepository categoryRepository;
     private final CategoryEntityMapper categoryEntityMapper;
 
-    @Bean ICategoryPersistencePort categoryPersistencePort(){
-        return  new CategoryJpaAdapter(categoryRepository,categoryEntityMapper);
-    }
     @Bean
-    public ICategoryServicePort categoryServicePort(){
+    ICategoryPersistencePort categoryPersistencePort() {
+        return new CategoryJpaAdapter(categoryRepository, categoryEntityMapper);
+    }
+
+    @Bean
+    public ICategoryServicePort categoryServicePort() {
         return new CategoryUseCase(categoryPersistencePort());
     }
+
 }

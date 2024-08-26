@@ -1,34 +1,28 @@
 package com.emazon.stock.dominio.modelo;
 
+import static com.emazon.stock.dominio.constants.GlobalConstants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class CategoryTest {
-
+class CategoryTest {
+    @DisplayName("Verify constructor and getters")
     @Test
-    public void testCategoryConstructorAndGetters() {
-        Long id = 1L;
-        String name = "Hogar";
-        String description = "Productos y accesorios para organizar, decorar y equipar cada rincón de tu hogar.";
-
-        Category category = new Category(id, name, description);
-
-        // Verificar que el constructor y los getters funcionan correctamente
-        assertEquals(id, category.getId());
-        assertEquals(name, category.getName());
-        assertEquals(description, category.getDescription());
+    void testCategoryConstructorAndGetters() {
+        Category category = new Category(VALID_ID, VALID_NAME, VALID_DESCRIPTION);
+        assertEquals(VALID_ID, category.getId());
+        assertEquals(VALID_NAME, category.getName());
+        assertEquals(VALID_DESCRIPTION, category.getDescription());
     }
 
+    @DisplayName("Verify setters")
     @Test
-    public void testSetters() {
-        Category category = new Category(1L, "Hogar", "Descripción original");
-
-        // Modificar los valores
+    void testSetters() {
+        Category category = new Category(VALID_ID, VALID_NAME, VALID_DESCRIPTION);
         category.setId(2L);
         category.setName("Electrónica");
         category.setDescription("Descripción actualizada");
-
-        // Verificar que los setters actualizan los valores correctamente
         assertEquals(2L, category.getId());
         assertEquals("Electrónica", category.getName());
         assertEquals("Descripción actualizada", category.getDescription());
