@@ -12,23 +12,6 @@ public interface CategoryEntityMapper {
 
     CategoryEntity toCategoryEntity(Category category);
 
-    default PageStock<Category> toCategoryPageModel(Page<CategoryEntity> categoryEntityPage) {
-        return new PageStock<>(
-                categoryEntityPage.getContent().stream()
-                        .map(categoryEnt -> new Category(categoryEnt.getId(), categoryEnt.getName(),
-                                categoryEnt.getDescription()))
-                        .toList(),
-                categoryEntityPage.getTotalElements(),
-                categoryEntityPage.getTotalPages(),
-                categoryEntityPage.getNumber(),
-                categoryEntityPage.getSize(),
-                categoryEntityPage.getSort().stream()
-                        .findFirst()
-                        .map(Sort.Order::getProperty)
-                        .orElse(""),
-                categoryEntityPage.getSort().stream()
-                        .findFirst()
-                        .map(order -> order.getDirection().name())
-                        .orElse(""));
-    }
+    PageStock<Category> toPageStock(Page<CategoryEntity> categoryEntityPage);
+
 }

@@ -1,4 +1,4 @@
-package com.emazon.stock.infraestructura.adapter;
+package com.emazon.stock.infraestructura.output.jpa.adapter;
 
 import com.emazon.stock.dominio.exeption.*;
 import com.emazon.stock.dominio.modelo.Category;
@@ -8,12 +8,11 @@ import com.emazon.stock.infraestructura.output.jpa.mapper.CategoryEntityMapper;
 import com.emazon.stock.infraestructura.output.jpa.repository.ICategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 @RequiredArgsConstructor
 public class CategoryJpaAdapter implements ICategoryPersistencePort {
-
-    private static final String CATEGORY_PROPERTY_ORDER = "name";
 
     private final ICategoryRepository categoryRepository;
     private final CategoryEntityMapper categoryEntityMapper;
@@ -28,13 +27,10 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
     }
 
     @Override
-    public PageStock<Category> getCategories(String sortDirection, int page, int size) {
-        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), CATEGORY_PROPERTY_ORDER);
-        return categoryEntityMapper.toCategoryPageModel(
-                this.categoryRepository.findAll(
-                        PageRequest.of(page,
-                                size,
-                                sort)));
+    public PageStock<Category> getCategories(int page, int size, String sortBy, String sortDirection) {
+        Pageable pageable = PageRequest.of(page, size,
+                Sort.by(Sort.Direction.fromString(sortDirection), sortBy));
+        return categoryEntityMapper.toPageStock(this.categoryRepository.findAll(pageable));
     }
 
     @Override

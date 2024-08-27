@@ -7,7 +7,7 @@ public interface ICategoryServicePort {
 
     void saveCategory(Category category);
 
-    PageStock<Category> getCategories(String sortDirection, int page, int size);
+    PageStock<Category> getCategories(int page,int size,String sortBy,String sortDirection);
 
     Category getCategory(Long id);
 }

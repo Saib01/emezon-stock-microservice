@@ -1,6 +1,7 @@
 package com.emazon.stock.dominio.usecase;
 
 import com.emazon.stock.dominio.api.ICategoryServicePort;
+import com.emazon.stock.dominio.exeption.SortDirectionIsInvalidException;
 import com.emazon.stock.dominio.modelo.Category;
 import com.emazon.stock.dominio.modelo.PageStock;
 import com.emazon.stock.dominio.spi.ICategoryPersistencePort;
@@ -8,6 +9,8 @@ import com.emazon.stock.dominio.utils.Validator;
 
 public class CategoryUseCase implements ICategoryServicePort {
     private final ICategoryPersistencePort categoryPersistencePort;
+    private static final String DIRECTION_ASC = "ASC";
+    private static final String DIRECTION_DESC = "DESC";
 
     public CategoryUseCase(ICategoryPersistencePort categoryPersistencePort) {
         this.categoryPersistencePort = categoryPersistencePort;
@@ -20,9 +23,11 @@ public class CategoryUseCase implements ICategoryServicePort {
     }
 
     @Override
-    public PageStock<Category> getCategories(String sortDirection, int page, int size) {
-        Validator.sortDirection(sortDirection);
-        return this.categoryPersistencePort.getCategories(sortDirection, page, size);
+    public PageStock<Category> getCategories(int page, int size, String sortBy, String sortDirection) {
+        if (!(sortDirection.equalsIgnoreCase(DIRECTION_ASC) || sortDirection.equalsIgnoreCase(DIRECTION_DESC))) {
+            throw new SortDirectionIsInvalidException();
+        }
+        return this.categoryPersistencePort.getCategories(page, size, sortBy, sortDirection);
     }
 
     @Override

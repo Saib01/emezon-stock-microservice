@@ -40,8 +40,9 @@ public class CategoryRestController {
         ResponseEntity<Page<CategoryResponse>> getCategories(
                         @RequestParam(name = "sortDirection", defaultValue = "ASC") String sortDirection,
                         @RequestParam(name = "page", defaultValue = "0") int page,
-                        @RequestParam(name = "size", defaultValue = "10") int size) {
-                return ResponseEntity.ok(categoryHandler.getCategories(sortDirection, page, size));
+                        @RequestParam(name = "size", defaultValue = "10") int size,
+                        @RequestParam(name = "sortBy", defaultValue = "name") String sortBy) {
+                return ResponseEntity.ok(categoryHandler.getCategories(page, size, sortBy, sortDirection));
         }
 
         @Operation(summary = "Get a category by number")

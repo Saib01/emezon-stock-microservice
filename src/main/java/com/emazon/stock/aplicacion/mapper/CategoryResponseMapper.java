@@ -5,34 +5,24 @@ import com.emazon.stock.aplicacion.dtos.CategoryResponse;
 import com.emazon.stock.dominio.modelo.Category;
 import com.emazon.stock.dominio.modelo.PageStock;
 import org.mapstruct.Mapper;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 @Mapper(componentModel = "Spring")
 public interface CategoryResponseMapper {
     CategoryResponse toCategoryResponse( Category category);
-    default  Page<CategoryResponse> toCategoryResponsePage(PageStock<Category> categoryPageStock) {
 
-        Pageable pageable = PageRequest.of(
-                categoryPageStock.getPageNumber(),
-                categoryPageStock.getPageSize(),
-                Sort.by(Sort.Direction.fromString(categoryPageStock.getSortDirection()), categoryPageStock.getSortBy())
-        );
+    List<CategoryResponse> toCategoryResponsesList(List<Category> categories) ;
+    default  Page<CategoryResponse> toCategoryResponsePage(PageStock<Category> categories, Pageable pageable) {
+        List<CategoryResponse> categoryResponseList=toCategoryResponsesList(categories.getContent());
         return new PageImpl<>(
-                categoryPageStock.getContent().stream()
-                        .map(category -> {
-                            CategoryResponse response = new CategoryResponse();
-                            response.setId(category.getId());
-                            response.setName(category.getName());
-                            response.setDescription(category.getDescription());
-                            return response;
-                        })
-                        .toList(),
+                Objects.requireNonNullElse(categoryResponseList, Collections.emptyList()),
                 pageable,
-                categoryPageStock.getTotalElements()
+                categories.getTotalElements()
         );
     }
+
 }

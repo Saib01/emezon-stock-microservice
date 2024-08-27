@@ -8,6 +8,6 @@ import org.springframework.data.domain.Page;
 public interface ICategoryHandler {
 
     void saveCategory(CategoryRequest categoryRequest);
-    Page<CategoryResponse> getCategories(String sortDirection, int page, int size);
+    Page<CategoryResponse> getCategories(int page,int size,String sortBy,String sortDirection);
     CategoryResponse getCategory(Long categoryNumber);
 }

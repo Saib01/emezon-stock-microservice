@@ -15,18 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
 import java.util.List;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class CategoryRestControllerTest {
+class CategoryRestControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -37,7 +33,6 @@ public class CategoryRestControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
     private CategoryResponse categoryResponse;
-    private Page<CategoryResponse> categoryResponsePage;
 
     @BeforeEach
     void setup() {
@@ -59,8 +54,8 @@ public class CategoryRestControllerTest {
     @DisplayName("Should Return List of Categories")
     void testGetCategories() throws Exception {
         Pageable pageable = PageRequest.of(0, 10);
-        categoryResponsePage = new PageImpl<>(List.of(categoryResponse), pageable, 1);
-        when(categoryHandler.getCategories("ASC", 0, 10)).thenReturn(categoryResponsePage);
+        Page categoryResponsePage = new PageImpl<>(List.of(categoryResponse), pageable, 1);
+        when(categoryHandler.getCategories(0, 10, "name", "ASC")).thenReturn(categoryResponsePage);
         mockMvc.perform(get("/category")
                 .param("sortDirection", "ASC")
                 .param("page", "0")

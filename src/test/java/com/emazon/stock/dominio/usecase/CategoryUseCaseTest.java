@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import java.util.Arrays;
+
 import static com.emazon.stock.dominio.constants.GlobalConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -107,18 +108,21 @@ class CategoryUseCaseTest {
     @Test
     @DisplayName("Should return a paginated page of categories")
     void shouldGetCategoryPageStock() {
+
         int page = 0;
         int size = 2;
+        String sortBy = "name";
         String sortDirection = "ASC";
-        PageStock<Category> expectedCategoryPageStock = new PageStock<Category>(
+        PageStock<Category> expectedCategoryPageStock = new PageStock<>(
                 Arrays.asList(category, new Category(2L, "Books", "Books and literature")),
-                2, 1, page, size, "name", sortDirection);
-        when(this.categoryPersistencePort.getCategories(sortDirection, page, size))
+                2, 1);
+        when(categoryPersistencePort.getCategories(page, size, sortBy, sortDirection))
                 .thenReturn(expectedCategoryPageStock);
-        PageStock<Category> actualCategoryPageStock = this.categoryPersistencePort.getCategories(sortDirection, page,
-                size);
+
+        PageStock<Category> actualCategoryPageStock = categoryPersistencePort.getCategories(page, size, sortBy,
+                sortDirection);
         assertEquals(expectedCategoryPageStock, actualCategoryPageStock);
-        verify(categoryPersistencePort, times(1)).getCategories("ASC", 0, 2);
+        verify(categoryPersistencePort, times(1)).getCategories(page, size, sortBy, sortDirection);
     }
 
     @Test
@@ -127,8 +131,9 @@ class CategoryUseCaseTest {
         int page = 0;
         int size = 2;
         String sortDirection = "AaSC";
+        String sortBy = "name";
         assertThrows(SortDirectionIsInvalidException.class, () -> {
-            categoryUseCase.getCategories(sortDirection, page, size);
+            categoryUseCase.getCategories(page, size, sortBy, sortDirection);
         });
     }
 }
