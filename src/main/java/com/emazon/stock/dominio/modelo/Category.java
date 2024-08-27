@@ -1,6 +1,6 @@
 package com.emazon.stock.dominio.modelo;
 
-public class Category {
+public class Category implements INamedDescriptiveModel {
     private Long id;
     private String name;
     private String description;

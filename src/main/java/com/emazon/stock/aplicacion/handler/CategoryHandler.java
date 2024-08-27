@@ -9,9 +9,10 @@ import com.emazon.stock.dominio.modelo.Category;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -29,8 +30,11 @@ public class CategoryHandler implements ICategoryHandler {
         }
 
         @Override
-        public Page<CategoryResponse> getCategories(String sortDirection, int page, int size) {
-                return categoryResponseMapper.toCategoryResponsePage(categoryServicePort.getCategories(sortDirection,page,size));
+        public Page<CategoryResponse> getCategories(int page,int size,String sortBy,String sortDirection) {
+                Pageable pageable=PageRequest.of(page,size,
+                                                 Sort.by(Sort.Direction.fromString(sortDirection),sortBy)
+                );
+                return categoryResponseMapper.toCategoryResponsePage(categoryServicePort.getCategories(page,size,sortBy,sortDirection),pageable);
         }
 
         @Override
