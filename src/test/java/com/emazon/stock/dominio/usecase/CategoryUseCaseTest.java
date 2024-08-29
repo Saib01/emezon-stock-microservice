@@ -12,7 +12,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import java.util.Arrays;
 
-import static com.emazon.stock.dominio.constants.GlobalConstants.*;
+import static com.emazon.stock.constants.TestConstants.*;
+import static com.emazon.stock.dominio.utils.PageValidator.DIRECTION_ASC;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -29,16 +30,29 @@ class CategoryUseCaseTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        category = new Category(VALID_ID, VALID_NAME, VALID_DESCRIPTION);
+        category = new Category(VALID_ID, VALID_CATEGORY_NAME, VALID_CATEGORY_DESCRIPTION);
     }
 
     @Test
     @DisplayName("Should save the category and verify that the persistence port method is called once")
     void testSaveCategory() {
         categoryUseCase.saveCategory(category);
+
+        when(categoryPersistencePort.findByName(category.getName())).thenReturn(false);
+
         verify(categoryPersistencePort, times(1)).saveCategory(category);
     }
+    @Test
+    @DisplayName("Should not save the category when the category already exists")
+    void shouldNotSaveCategoryWhenCategoryAlreadyExists() {
+        when(categoryPersistencePort.findByName(category.getName())).thenReturn(true);
 
+        assertThrows(CategoryAlreadyExistException.class, () -> {
+            categoryUseCase.saveCategory(category);
+        });
+
+        verify(categoryPersistencePort, never()).saveCategory(category);
+    }
     @Test
     @DisplayName("Should not save category when name is empty")
     void shouldNotSaveCategoryWhenNameIsEmpty() {
@@ -78,7 +92,7 @@ class CategoryUseCaseTest {
     @Test
     @DisplayName("Should not save category when description is too long")
     void shouldNotSaveCategoryWhenDescriptionIsTooLong() {
-        category.setDescription(INVALID_DESCRIPTION);
+        category.setDescription(INVALID_CATEGORY_DESCRIPTION);
         assertThrows(CategoryDescriptionTooLongException.class, () -> {
             categoryUseCase.saveCategory(category);
         });
@@ -87,7 +101,7 @@ class CategoryUseCaseTest {
     @Test
     @DisplayName("Should not save category when name is too long")
     void shouldNotSaveCategoryWhenNameIsTooLong() {
-        category.setName(INVALID_NAME);
+        category.setName(INVALID_CATEGORY_NAME);
         assertThrows(CategoryNameTooLongException.class, () -> {
             categoryUseCase.saveCategory(category);
         });
@@ -97,43 +111,52 @@ class CategoryUseCaseTest {
     @DisplayName("Should return the correct Category when fetching a category by ID")
     void shouldGetCategory() {
         when(categoryPersistencePort.getCategory(VALID_ID)).thenReturn(category);
+
         Category actualCategory = categoryUseCase.getCategory(VALID_ID);
+
         assertNotNull(actualCategory);
         assertEquals(category.getName(), actualCategory.getName());
         assertEquals(category.getDescription(), actualCategory.getDescription());
         assertEquals(category.getId(), actualCategory.getId());
+
         verify(categoryPersistencePort, times(1)).getCategory(VALID_ID);
     }
-
     @Test
     @DisplayName("Should return a paginated page of categories")
     void shouldGetCategoryPageStock() {
-
-        int page = 0;
-        int size = 2;
-        String sortBy = "name";
-        String sortDirection = "ASC";
         PageStock<Category> expectedCategoryPageStock = new PageStock<>(
-                Arrays.asList(category, new Category(2L, "Books", "Books and literature")),
-                2, 1);
-        when(categoryPersistencePort.getCategories(page, size, sortBy, sortDirection))
+                Arrays.asList(category),
+                VALID_TOTAL_ELEMENTS,VALID_TOTAL_PAGES);
+
+        when(categoryPersistencePort.getCategoriesByName(VALID_PAGE, VALID_SIZE,DIRECTION_ASC))
                 .thenReturn(expectedCategoryPageStock);
 
-        PageStock<Category> actualCategoryPageStock = categoryPersistencePort.getCategories(page, size, sortBy,
-                sortDirection);
-        assertEquals(expectedCategoryPageStock, actualCategoryPageStock);
-        verify(categoryPersistencePort, times(1)).getCategories(page, size, sortBy, sortDirection);
-    }
+        PageStock<Category> actualCategoryPageStock=categoryUseCase.getCategoriesByName(VALID_PAGE, VALID_SIZE,DIRECTION_ASC);
 
+        assertEquals(expectedCategoryPageStock, actualCategoryPageStock);
+
+        verify(categoryPersistencePort, times(1)).getCategoriesByName(VALID_PAGE, VALID_SIZE,
+                DIRECTION_ASC);
+    }
     @Test
-    @DisplayName("Should not return a paginated page of categories")
-    void shouldNotGetCategoryPageStock() {
-        int page = 0;
-        int size = 2;
-        String sortDirection = "AaSC";
-        String sortBy = "name";
-        assertThrows(SortDirectionIsInvalidException.class, () -> {
-            categoryUseCase.getCategories(page, size, sortBy, sortDirection);
+    @DisplayName("Should not return categories when the page number is invalid")
+    void shouldNotGetCategoryPageStockWhenPageNumberIsInvalid() {
+        assertThrows(CategoryPageNumberIsInvalidException.class, () -> {
+            categoryUseCase.getCategoriesByName(INVALID_PAGE, VALID_SIZE,DIRECTION_ASC);
+        });
+    }
+    @Test
+    @DisplayName("Should not return categories when the page size is invalid")
+    void shouldNotGetCategoryPageStockWhenPageSizeIsInvalid() {
+        assertThrows(CategoryPageSizeIsInvalidException.class, () -> {
+            categoryUseCase.getCategoriesByName(VALID_PAGE, INVALID_SIZE,DIRECTION_ASC);
+        });
+    }
+    @Test
+    @DisplayName("Should not return categories when the page sorting direction is invalid")
+    void shouldNotGetCategoryPageStockWhenPageSortDirectionIsInvalid() {
+        assertThrows(CategoryPageSortDirectionIsInvalidException.class, () -> {
+            categoryUseCase.getCategoriesByName(VALID_PAGE, VALID_SIZE,INVALID_SORT_DIRECTION);
         });
     }
 }

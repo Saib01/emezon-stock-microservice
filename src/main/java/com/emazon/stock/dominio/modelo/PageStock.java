@@ -4,10 +4,10 @@ import java.util.List;
 
 public class PageStock<T> {
     private List<T> content;
-    private int totalElements;
-    private int totalPages;
+    private Integer totalElements;
+    private Integer totalPages;
 
-    public PageStock(List<T> content, int totalElements, int totalPages) {
+    public PageStock(List<T> content, Integer totalElements, Integer totalPages) {
         this.content = content;
         this.totalElements = totalElements;
         this.totalPages = totalPages;
@@ -21,15 +21,15 @@ public class PageStock<T> {
         this.content = content;
     }
 
-    public int getTotalElements() {
+    public Integer getTotalElements() {
         return totalElements;
     }
 
-    public void setTotalElements(int totalElements) {
+    public void setTotalElements(Integer totalElements) {
         this.totalElements = totalElements;
     }
 
-    public int getTotalPages() {
+    public Integer getTotalPages() {
         return totalPages;
     }
 

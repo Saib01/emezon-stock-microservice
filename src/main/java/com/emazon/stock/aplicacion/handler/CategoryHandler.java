@@ -14,6 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import static com.emazon.stock.dominio.utils.ConstantsDominio.PROPERTY_NAME;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -22,7 +24,6 @@ public class CategoryHandler implements ICategoryHandler {
         private final ICategoryServicePort categoryServicePort;
         private final CategoryResponseMapper categoryResponseMapper;
         private final CategoryRequestMapper categoryRequestMapper;
-
         @Override
         public void saveCategory(CategoryRequest categoryRequest) {
                 Category category = categoryRequestMapper.toCategory(categoryRequest);
@@ -30,11 +31,11 @@ public class CategoryHandler implements ICategoryHandler {
         }
 
         @Override
-        public Page<CategoryResponse> getCategories(int page,int size,String sortBy,String sortDirection) {
+        public Page<CategoryResponse> getCategoriesByName(int page,int size,String sortDirection) {
                 Pageable pageable=PageRequest.of(page,size,
-                                                 Sort.by(Sort.Direction.fromString(sortDirection),sortBy)
+                                                 Sort.by(Sort.Direction.fromString(sortDirection),PROPERTY_NAME.toLowerCase())
                 );
-                return categoryResponseMapper.toCategoryResponsePage(categoryServicePort.getCategories(page,size,sortBy,sortDirection),pageable);
+                return categoryResponseMapper.toCategoryResponsePage(categoryServicePort.getCategoriesByName(page,size,sortDirection),pageable);
         }
 
         @Override

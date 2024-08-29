@@ -11,6 +11,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import static com.emazon.stock.dominio.utils.ConstantsDominio.PROPERTY_NAME;
+
 @RequiredArgsConstructor
 public class CategoryJpaAdapter implements ICategoryPersistencePort {
 
@@ -19,17 +21,14 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
 
     @Override
     public void saveCategory(Category category) {
-        if (categoryRepository.existsByName(category.getName())) {
-            throw new CategoryAlreadyExistException();
-        }
         this.categoryRepository.save(
                 categoryEntityMapper.toCategoryEntity(category));
     }
 
     @Override
-    public PageStock<Category> getCategories(int page, int size, String sortBy, String sortDirection) {
+    public PageStock<Category> getCategoriesByName(int page, int size, String sortDirection) {
         Pageable pageable = PageRequest.of(page, size,
-                Sort.by(Sort.Direction.fromString(sortDirection), sortBy));
+                Sort.by(Sort.Direction.fromString(sortDirection),PROPERTY_NAME.toLowerCase()));
         return categoryEntityMapper.toPageStock(this.categoryRepository.findAll(pageable));
     }
 
@@ -37,5 +36,10 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
     public Category getCategory(Long id) {
         return categoryEntityMapper.toCategory(
                 categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new));
+    }
+
+    @Override
+    public boolean findByName(String name) {
+        return categoryRepository.existsByName(name);
     }
 }

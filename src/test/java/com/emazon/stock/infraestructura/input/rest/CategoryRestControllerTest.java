@@ -1,6 +1,6 @@
-package com.emazon.stock.infraestructura;
+package com.emazon.stock.infraestructura.input.rest;
 
-import static com.emazon.stock.dominio.constants.GlobalConstants.*;
+import static com.emazon.stock.constants.TestConstants.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.mockito.Mockito.*;
@@ -36,14 +36,14 @@ class CategoryRestControllerTest {
 
     @BeforeEach
     void setup() {
-        categoryResponse = new CategoryResponse(VALID_ID, VALID_NAME, VALID_DESCRIPTION);
+        categoryResponse = new CategoryResponse(VALID_ID, VALID_CATEGORY_NAME, VALID_CATEGORY_DESCRIPTION);
     }
 
     @Test
     @DisplayName("Should Save Category Successfully")
     void testSaveCategory() throws Exception {
         doNothing().when(categoryHandler).saveCategory(any(CategoryRequest.class));
-        CategoryRequest categoryRequest = new CategoryRequest(VALID_ID, VALID_NAME, VALID_DESCRIPTION);
+        CategoryRequest categoryRequest = new CategoryRequest(VALID_ID, VALID_CATEGORY_NAME, VALID_CATEGORY_DESCRIPTION);
         mockMvc.perform(post("/category/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(categoryRequest)))
@@ -55,15 +55,15 @@ class CategoryRestControllerTest {
     void testGetCategories() throws Exception {
         Pageable pageable = PageRequest.of(0, 10);
         Page categoryResponsePage = new PageImpl<>(List.of(categoryResponse), pageable, 1);
-        when(categoryHandler.getCategories(0, 10, "name", "ASC")).thenReturn(categoryResponsePage);
+        when(categoryHandler.getCategoriesByName(0, 10, "ASC")).thenReturn(categoryResponsePage);
         mockMvc.perform(get("/category")
                 .param("sortDirection", "ASC")
                 .param("page", "0")
                 .param("size", "10"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].id").value(VALID_ID))
-                .andExpect(jsonPath("$.content[0].name").value(VALID_NAME))
-                .andExpect(jsonPath("$.content[0].description").value(VALID_DESCRIPTION));
+                .andExpect(jsonPath("$.content[0].name").value(VALID_CATEGORY_NAME))
+                .andExpect(jsonPath("$.content[0].description").value(VALID_CATEGORY_DESCRIPTION));
     }
 
     @Test
@@ -73,7 +73,7 @@ class CategoryRestControllerTest {
         mockMvc.perform(get("/category/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(VALID_ID))
-                .andExpect(jsonPath("$.name").value(VALID_NAME))
-                .andExpect(jsonPath("$.description").value(VALID_DESCRIPTION));
+                .andExpect(jsonPath("$.name").value(VALID_CATEGORY_NAME))
+                .andExpect(jsonPath("$.description").value(VALID_CATEGORY_DESCRIPTION));
     }
 }

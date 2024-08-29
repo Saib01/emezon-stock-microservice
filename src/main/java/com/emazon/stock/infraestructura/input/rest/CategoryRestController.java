@@ -37,12 +37,11 @@ public class CategoryRestController {
                         @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content)
         })
         @GetMapping
-        ResponseEntity<Page<CategoryResponse>> getCategories(
+        ResponseEntity<Page<CategoryResponse>> getCategoriesByName(
                         @RequestParam(name = "sortDirection", defaultValue = "ASC") String sortDirection,
                         @RequestParam(name = "page", defaultValue = "0") int page,
-                        @RequestParam(name = "size", defaultValue = "10") int size,
-                        @RequestParam(name = "sortBy", defaultValue = "name") String sortBy) {
-                return ResponseEntity.ok(categoryHandler.getCategories(page, size, sortBy, sortDirection));
+                        @RequestParam(name = "size", defaultValue = "10") int size) {
+                return ResponseEntity.ok(categoryHandler.getCategoriesByName(page, size, sortDirection));
         }
 
         @Operation(summary = "Get a category by number")

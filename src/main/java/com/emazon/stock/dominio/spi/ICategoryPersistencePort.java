@@ -6,7 +6,9 @@ import com.emazon.stock.dominio.modelo.PageStock;
 public interface ICategoryPersistencePort {
     void saveCategory(Category category);
 
-    PageStock<Category> getCategories(int page, int size, String sortBy, String sortDirection);
+    PageStock<Category> getCategoriesByName(int page, int size, String sortDirection);
 
     Category getCategory(Long id);
+
+    boolean findByName(String name);
 }

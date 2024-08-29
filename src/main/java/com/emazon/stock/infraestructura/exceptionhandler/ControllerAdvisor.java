@@ -14,59 +14,74 @@ public class ControllerAdvisor {
         private static final String MESSAGE = "Message";
 
         @ExceptionHandler(CategoryDescriptionTooLongException.class)
-        public ResponseEntity<Map<String, String>> handleMaxCharDescriptionException(
-                        CategoryDescriptionTooLongException categoryDescriptionTooLongException) {
+        public ResponseEntity<Map<String, String>> handleCategoryDescriptionTooLongException(
+                CategoryDescriptionTooLongException categoryDescriptionTooLongException) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                                .body(Collections.singletonMap(MESSAGE,
-                                                ExceptionResponse.CATEGORY_DESCRIPTION_TOO_LONG.getMessage()));
+                        .body(Collections.singletonMap(MESSAGE,
+                                ExceptionResponse.CATEGORY_DESCRIPTION_TOO_LONG.getMessage()));
         }
 
         @ExceptionHandler(CategoryNameTooLongException.class)
-        public ResponseEntity<Map<String, String>> handleMaxCharNameException(
-                        CategoryNameTooLongException categoryNameTooLongException) {
+        public ResponseEntity<Map<String, String>> handleCategoryNameTooLongException(
+                CategoryNameTooLongException categoryNameTooLongException) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                                .body(Collections.singletonMap(MESSAGE,
-                                                ExceptionResponse.CATEGORY_NAME_TOO_LONG.getMessage()));
+                        .body(Collections.singletonMap(MESSAGE,
+                                ExceptionResponse.CATEGORY_NAME_TOO_LONG.getMessage()));
         }
 
         @ExceptionHandler(CategoryAlreadyExistException.class)
-        public ResponseEntity<Map<String, String>> handleErrorNameRepeated(
-                        CategoryAlreadyExistException categoryAlreadyExistException) {
+        public ResponseEntity<Map<String, String>> handleCategoryAlreadyExistsException(
+                CategoryAlreadyExistException categoryAlreadyExistException) {
                 return ResponseEntity.status(HttpStatus.CONFLICT)
-                                .body(Collections.singletonMap(MESSAGE,
-                                                ExceptionResponse.CATEGORY_ALREADY_EXISTS.getMessage()));
+                        .body(Collections.singletonMap(MESSAGE,
+                                ExceptionResponse.CATEGORY_ALREADY_EXISTS.getMessage()));
         }
 
         @ExceptionHandler(CategoryDescriptionRequiredException.class)
-        public ResponseEntity<Map<String, String>> handleErrorNoDescription(
-                        CategoryDescriptionRequiredException categoryDescriptionRequiredException) {
+        public ResponseEntity<Map<String, String>> handleCategoryDescriptionRequiredException(
+                CategoryDescriptionRequiredException categoryDescriptionRequiredException) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                                .body(Collections.singletonMap(MESSAGE,
-                                                ExceptionResponse.CATEGORY_DESCRIPTION_REQUIRED.getMessage()));
+                        .body(Collections.singletonMap(MESSAGE,
+                                ExceptionResponse.CATEGORY_DESCRIPTION_REQUIRED.getMessage()));
         }
 
         @ExceptionHandler(CategoryNameRequiredException.class)
-        public ResponseEntity<Map<String, String>> handleErrorNoDescription(
-                        CategoryNameRequiredException categoryNameRequiredException) {
+        public ResponseEntity<Map<String, String>> handleCategoryNameRequiredException(
+                CategoryNameRequiredException categoryNameRequiredException) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                                .body(Collections.singletonMap(MESSAGE,
-                                                ExceptionResponse.CATEGORY_NAME_REQUIRED.getMessage()));
+                        .body(Collections.singletonMap(MESSAGE,
+                                ExceptionResponse.CATEGORY_NAME_REQUIRED.getMessage()));
         }
 
         @ExceptionHandler(CategoryNotFoundException.class)
-        public ResponseEntity<Map<String, String>> handleErrorNoFound(
-                        CategoryNotFoundException categoryNotFoundException) {
+        public ResponseEntity<Map<String, String>> handleCategoryNotFoundException(
+                CategoryNotFoundException categoryNotFoundException) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                                .body(Collections.singletonMap(MESSAGE,
-                                                ExceptionResponse.CATEGORY_NOT_FOUND.getMessage()));
+                        .body(Collections.singletonMap(MESSAGE,
+                                ExceptionResponse.CATEGORY_NOT_FOUND.getMessage()));
         }
 
-        @ExceptionHandler(SortDirectionIsInvalidException.class)
-        public ResponseEntity<Map<String, String>> handleErrorInvalidSortDirection(
-                        SortDirectionIsInvalidException categorySortDirectionException) {
+        @ExceptionHandler(CategoryPageSortDirectionIsInvalidException.class)
+        public ResponseEntity<Map<String, String>> handleCategoryPageSortDirectionInvalid(
+                        CategoryPageSortDirectionIsInvalidException categoryPageSortDirectionIsInvalidException) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                                 .body(Collections.singletonMap(MESSAGE,
-                                                ExceptionResponse.SORT_DIRECTION_IS_INVALID.getMessage()));
+                                                ExceptionResponse.CATEGORY_PAGE_SORT_DIRECTION_IS_INVALID.getMessage()));
         }
 
+        @ExceptionHandler(CategoryPageSizeIsInvalidException.class)
+        public ResponseEntity<Map<String, String>> handleCategoryPageSizeInvalid(
+                CategoryPageSizeIsInvalidException categoryPageSizeIsInvalidException) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Collections.singletonMap(MESSAGE,
+                                ExceptionResponse.CATEGORY_PAGE_SIZE_NUMBER_IS_INVALID.getMessage()));
+        }
+
+        @ExceptionHandler(CategoryPageNumberIsInvalidException.class)
+        public ResponseEntity<Map<String, String>> handleCategoryPageNumberInvalid(
+                CategoryPageNumberIsInvalidException categoryNumberIsInvalidException) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Collections.singletonMap(MESSAGE,
+                                ExceptionResponse.CATEGORY_PAGE_NUMBER_IS_INVALID.getMessage()));
+        }
 }

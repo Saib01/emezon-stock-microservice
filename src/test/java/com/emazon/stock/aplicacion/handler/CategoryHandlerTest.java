@@ -1,6 +1,7 @@
 package com.emazon.stock.aplicacion.handler;
 
-import static com.emazon.stock.dominio.constants.GlobalConstants.*;
+import static com.emazon.stock.constants.TestConstants.*;
+import static com.emazon.stock.dominio.utils.ConstantsDominio.PROPERTY_NAME;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -11,6 +12,7 @@ import com.emazon.stock.aplicacion.mapper.CategoryResponseMapper;
 import com.emazon.stock.dominio.api.ICategoryServicePort;
 import com.emazon.stock.dominio.modelo.Category;
 import com.emazon.stock.dominio.modelo.PageStock;
+import static com.emazon.stock.dominio.utils.PageValidator.DIRECTION_ASC;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +21,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.*;
 
-import java.util.Collections;
+import java.util.List;
 
 class CategoryHandlerTest {
 
@@ -40,7 +42,7 @@ class CategoryHandlerTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        category = new Category(1L, "Electronics", "Devices and gadgets.");
+        category = new Category(VALID_ID, VALID_CATEGORY_NAME, VALID_CATEGORY_DESCRIPTION);
     }
 
     @Test
@@ -55,35 +57,34 @@ class CategoryHandlerTest {
     @Test
     @DisplayName("Should get Category")
     void testGetCategory() {
-        Long categoryNumber = 1L;
         CategoryResponse categoryResponse = new CategoryResponse();
-        when(categoryServicePort.getCategory(categoryNumber)).thenReturn(category);
+        when(categoryServicePort.getCategory(VALID_ID)).thenReturn(category);
         when(categoryResponseMapper.toCategoryResponse(category)).thenReturn(categoryResponse);
-        CategoryResponse result = categoryHandler.getCategory(categoryNumber);
+        CategoryResponse result = categoryHandler.getCategory(VALID_ID);
         assertEquals(categoryResponse, result);
-        verify(categoryServicePort).getCategory(categoryNumber);
+        verify(categoryServicePort).getCategory(VALID_ID);
         verify(categoryResponseMapper).toCategoryResponse(category);
     }
 
     @Test
     @DisplayName("Should get Categories")
     void testGetCategories() {
-        int page = 0;
-        int size = 10;
-        String sortBy = "name";
-        String sortDirection = "ASC";
-        CategoryResponse categoryResponse = new CategoryResponse(VALID_ID, VALID_NAME, VALID_DESCRIPTION);
-        Page<CategoryResponse> categoryResponsePage = new PageImpl<>(Collections.singletonList(categoryResponse));
-        PageStock<Category> categoryPageStock = new PageStock<>(Collections.singletonList(category), 1, 1);
+        CategoryResponse categoryResponse = new CategoryResponse(VALID_ID, VALID_CATEGORY_NAME, VALID_CATEGORY_DESCRIPTION);
+        Pageable pageable = PageRequest.of(VALID_PAGE, VALID_SIZE,
+                Sort.by(Sort.Direction.fromString(DIRECTION_ASC),PROPERTY_NAME.toLowerCase()));
+        Page<CategoryResponse> categoryResponsePage = new PageImpl<>(List.of(categoryResponse),pageable,VALID_TOTAL_ELEMENTS);
+        PageStock<Category> categoryPageStock = new PageStock<>(List.of(category), VALID_TOTAL_ELEMENTS, VALID_TOTAL_PAGES);
 
-        when(categoryServicePort.getCategories(page, size, sortBy, sortDirection)).thenReturn(categoryPageStock);
+        when(categoryServicePort.getCategoriesByName(VALID_PAGE,VALID_SIZE, DIRECTION_ASC)).thenReturn(categoryPageStock);
         when(categoryResponseMapper.toCategoryResponsePage(any(PageStock.class), any(Pageable.class)))
                 .thenReturn(categoryResponsePage);
 
-        Page<CategoryResponse> result = categoryHandler.getCategories(page, size, sortBy, sortDirection);
+        Page<CategoryResponse> result = categoryHandler.getCategoriesByName(VALID_PAGE, VALID_SIZE, DIRECTION_ASC);
 
-        assertEquals(VALID_ID, result.getTotalElements());
-        assertEquals(VALID_NAME, result.getContent().get(0).getName());
-        assertEquals(VALID_DESCRIPTION, result.getContent().get(0).getDescription());
+        assertEquals(VALID_TOTAL_ELEMENTS, result.getTotalElements());
+        assertEquals(VALID_TOTAL_PAGES, result.getTotalPages());
+        assertEquals(VALID_SIZE, result.getSize());
+        assertEquals(VALID_CATEGORY_NAME, result.getContent().get(0).getName());
+        assertEquals(VALID_CATEGORY_DESCRIPTION, result.getContent().get(0).getDescription());
     }
 }
