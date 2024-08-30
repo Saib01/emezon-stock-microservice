@@ -22,7 +22,7 @@ public class BrandEntity {
     private Long id;
     @Column(nullable = false,columnDefinition = "CHAR(50)",unique = true)
     private String name;
-    @Column(nullable = false,columnDefinition = "CHAR(90)")
+    @Column(nullable = false,columnDefinition = "CHAR(120)")
     private String description;
 
 }
