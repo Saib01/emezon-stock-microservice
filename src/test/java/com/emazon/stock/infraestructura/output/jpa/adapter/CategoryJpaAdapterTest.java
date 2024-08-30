@@ -29,7 +29,7 @@ import static com.emazon.stock.constants.TestConstants.VALID_TOTAL_PAGES;
 import static com.emazon.stock.constants.TestConstants.VALID_PAGE;
 import static com.emazon.stock.constants.TestConstants.VALID_SIZE;
 import static com.emazon.stock.dominio.utils.ConstantsDominio.PROPERTY_NAME;
-import static com.emazon.stock.dominio.utils.PageValidator.DIRECTION_ASC;
+import static com.emazon.stock.dominio.utils.ConstantsDominio.DIRECTION_ASC;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -110,6 +110,7 @@ class CategoryJpaAdapterTest {
 
         verify((categoryRepository), times(1)).existsByName(VALID_CATEGORY_NAME);
     }
+
 
 
 }

@@ -26,7 +26,7 @@ import static com.emazon.stock.constants.TestConstants.NULL_PROPERTY;
 import static com.emazon.stock.constants.TestConstants.EMPTY_PROPERTY;
 import static com.emazon.stock.constants.TestConstants.INVALID_CATEGORY_DESCRIPTION;
 import static com.emazon.stock.constants.TestConstants.VALID_CATEGORY_DESCRIPTION;
-import static com.emazon.stock.dominio.utils.PageValidator.DIRECTION_ASC;
+import static com.emazon.stock.dominio.utils.ConstantsDominio.DIRECTION_ASC;
 import static com.emazon.stock.constants.TestConstants.INVALID_SORT_DIRECTION;
 import static com.emazon.stock.constants.TestConstants.VALID_PAGE;
 import static com.emazon.stock.constants.TestConstants.INVALID_PAGE;

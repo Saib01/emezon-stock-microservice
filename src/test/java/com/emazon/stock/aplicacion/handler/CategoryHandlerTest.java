@@ -19,7 +19,7 @@ import com.emazon.stock.aplicacion.mapper.CategoryResponseMapper;
 import com.emazon.stock.dominio.api.ICategoryServicePort;
 import com.emazon.stock.dominio.modelo.Category;
 import com.emazon.stock.dominio.modelo.PageStock;
-import static com.emazon.stock.dominio.utils.PageValidator.DIRECTION_ASC;
+import static com.emazon.stock.dominio.utils.ConstantsDominio.DIRECTION_ASC;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

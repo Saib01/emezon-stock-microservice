@@ -15,6 +15,9 @@ import com.emazon.stock.dominio.exeption.category.CategoryDescriptionRequiredExc
 import com.emazon.stock.dominio.exeption.category.CategoryPageSortDirectionIsInvalidException;
 import com.emazon.stock.dominio.exeption.category.CategoryPageSizeIsInvalidException;
 import com.emazon.stock.dominio.exeption.category.CategoryPageNumberIsInvalidException;
+import com.emazon.stock.dominio.exeption.brand.BrandPageSortDirectionIsInvalidException;
+import com.emazon.stock.dominio.exeption.brand.BrandPageSizeIsInvalidException;
+import com.emazon.stock.dominio.exeption.brand.BrandPageNumberIsInvalidException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -150,4 +153,27 @@ public class ControllerAdvisor {
                                 ExceptionResponse.BRAND_NOT_FOUND.getMessage()));
         }
 
+        @ExceptionHandler(BrandPageSortDirectionIsInvalidException.class)
+        public ResponseEntity<Map<String, String>> handleBrandPageSortDirectionInvalid(
+                BrandPageSortDirectionIsInvalidException brandPageSortDirectionIsInvalidException) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Collections.singletonMap(MESSAGE,
+                                ExceptionResponse.BRAND_PAGE_SORT_DIRECTION_IS_INVALID.getMessage()));
+        }
+
+        @ExceptionHandler(BrandPageSizeIsInvalidException.class)
+        public ResponseEntity<Map<String, String>> handleBrandPageSizeInvalid(
+                BrandPageSizeIsInvalidException brandPageSizeIsInvalidException) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Collections.singletonMap(MESSAGE,
+                                ExceptionResponse.BRAND_PAGE_SIZE_NUMBER_IS_INVALID.getMessage()));
+        }
+
+        @ExceptionHandler(BrandPageNumberIsInvalidException.class)
+        public ResponseEntity<Map<String, String>> handleBrandPageNumberInvalid(
+                BrandPageNumberIsInvalidException brandNumberIsInvalidException) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Collections.singletonMap(MESSAGE,
+                                ExceptionResponse.BRAND_PAGE_NUMBER_IS_INVALID.getMessage()));
+        }
 }

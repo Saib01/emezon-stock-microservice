@@ -32,10 +32,14 @@ public class CategoryHandler implements ICategoryHandler {
 
         @Override
         public Page<CategoryResponse> getCategoriesByName(int page,int size,String sortDirection) {
-                Pageable pageable=PageRequest.of(page,size,
-                                                 Sort.by(Sort.Direction.fromString(sortDirection),PROPERTY_NAME.toLowerCase())
+                return this.categoryResponseMapper.toCategoryResponsePage(
+                        categoryServicePort.getCategoriesByName(page,size,sortDirection),
+                        PageRequest.of(
+                                page,
+                                size,
+                                Sort.by(Sort.Direction.fromString(sortDirection),PROPERTY_NAME.toLowerCase())
+                        )
                 );
-                return categoryResponseMapper.toCategoryResponsePage(categoryServicePort.getCategoriesByName(page,size,sortDirection),pageable);
         }
 
         @Override

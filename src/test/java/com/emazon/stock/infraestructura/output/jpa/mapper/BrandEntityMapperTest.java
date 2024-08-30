@@ -39,7 +39,6 @@ class BrandEntityMapperTest {
 
         assertBrandEqual(brand,result);
     }
-
     private void assertBrandEqual(Brand brand, BrandEntity brandEntity){
         assertThat(brand.getId()).isEqualTo(brandEntity.getId());
         assertThat(brand.getName()).isEqualTo(brandEntity.getName());
