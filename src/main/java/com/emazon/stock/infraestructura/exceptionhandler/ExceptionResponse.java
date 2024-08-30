@@ -1,41 +1,36 @@
 package com.emazon.stock.infraestructura.exceptionhandler;
 
-import static com.emazon.stock.dominio.utils.ConstantsDominio.NOT_FOUND;
-import static com.emazon.stock.dominio.utils.ConstantsDominio.ALREADY_EXISTS;
-import static com.emazon.stock.dominio.utils.ConstantsDominio.DESCRIPTION_TOO_LONG;
-import static com.emazon.stock.dominio.utils.ConstantsDominio.NAME_TOO_LONG;
-import static com.emazon.stock.dominio.utils.ConstantsDominio.DESCRIPTION_REQUIRED;
-import static com.emazon.stock.dominio.utils.ConstantsDominio.NAME_REQUIRED;
-import static com.emazon.stock.dominio.utils.ConstantsDominio.PAGE_SORT_IS_INVALID;
-import static com.emazon.stock.dominio.utils.ConstantsDominio.PAGE_NUMBER_IS_INVALID;
-import static com.emazon.stock.dominio.utils.ConstantsDominio.PAGE_SIZE_IS_INVALID;
-import static com.emazon.stock.dominio.utils.ConstantsDominio.CATEGORY_MAX_DESCRIPTION_LENGTH;
-import static com.emazon.stock.dominio.utils.ConstantsDominio.CATEGORY_MAX_NAME_LENGTH;
-import static com.emazon.stock.dominio.utils.ConstantsDominio.BRAND_MAX_DESCRIPTION_LENGTH;
-import static com.emazon.stock.dominio.utils.ConstantsDominio.BRAND_MAX_NAME_LENGTH;
-import static com.emazon.stock.dominio.utils.ConstantsDominio.CATEGORY;
-import static com.emazon.stock.dominio.utils.ConstantsDominio.BRAND;
+import static com.emazon.stock.dominio.utils.DomainConstants.*;
+import static com.emazon.stock.dominio.utils.ErrorTemplates.*;
 import static java.lang.String.format;
 
 public enum ExceptionResponse {
     CATEGORY_NOT_FOUND(format(NOT_FOUND,CATEGORY)),
     CATEGORY_ALREADY_EXISTS(format(ALREADY_EXISTS,CATEGORY)),
-    CATEGORY_DESCRIPTION_TOO_LONG(format(DESCRIPTION_TOO_LONG,CATEGORY,CATEGORY_MAX_DESCRIPTION_LENGTH)),
-    CATEGORY_NAME_TOO_LONG(format(NAME_TOO_LONG,CATEGORY,CATEGORY_MAX_NAME_LENGTH)),
-    CATEGORY_DESCRIPTION_REQUIRED(format(DESCRIPTION_REQUIRED,CATEGORY)),
-    CATEGORY_NAME_REQUIRED(format(NAME_REQUIRED,CATEGORY)),
+    CATEGORY_DESCRIPTION_TOO_LONG(format(TOO_LONG,CATEGORY,PROPERTY_DESCRIPTION,CATEGORY_MAX_DESCRIPTION_LENGTH)),
+    CATEGORY_NAME_TOO_LONG(format(TOO_LONG,CATEGORY,PROPERTY_NAME,CATEGORY_MAX_NAME_LENGTH)),
+    CATEGORY_DESCRIPTION_REQUIRED(format(REQUIRED,CATEGORY,PROPERTY_DESCRIPTION)),
+    CATEGORY_NAME_REQUIRED(format(REQUIRED,CATEGORY,PROPERTY_NAME)),
     CATEGORY_PAGE_SORT_DIRECTION_IS_INVALID(format(PAGE_SORT_IS_INVALID,CATEGORY)),
     CATEGORY_PAGE_NUMBER_IS_INVALID(format(PAGE_NUMBER_IS_INVALID,CATEGORY)),
     CATEGORY_PAGE_SIZE_NUMBER_IS_INVALID(format(PAGE_SIZE_IS_INVALID,CATEGORY)),
+    CATEGORY_DUPLICATE("Duplicate Category Ids found."),
+    CATEGORY_LIST_SIZE("The category list size must be between 1 and 3."),
     BRAND_NOT_FOUND(format(NOT_FOUND,BRAND)),
     BRAND_ALREADY_EXISTS(format(ALREADY_EXISTS,BRAND)),
-    BRAND_DESCRIPTION_TOO_LONG(format(DESCRIPTION_TOO_LONG,BRAND,BRAND_MAX_DESCRIPTION_LENGTH)),
-    BRAND_NAME_TOO_LONG(format(NAME_TOO_LONG,BRAND,BRAND_MAX_NAME_LENGTH)),
-    BRAND_DESCRIPTION_REQUIRED(format(DESCRIPTION_REQUIRED,BRAND)),
-    BRAND_NAME_REQUIRED(format(NAME_REQUIRED,BRAND)),
+    BRAND_DESCRIPTION_TOO_LONG(format(TOO_LONG,BRAND,PROPERTY_DESCRIPTION,BRAND_MAX_DESCRIPTION_LENGTH)),
+    BRAND_NAME_TOO_LONG(format(TOO_LONG,BRAND,PROPERTY_NAME,BRAND_MAX_NAME_LENGTH)),
+    BRAND_DESCRIPTION_REQUIRED(format(REQUIRED,BRAND,PROPERTY_DESCRIPTION)),
+    BRAND_NAME_REQUIRED(format(REQUIRED,BRAND,PROPERTY_NAME)),
     BRAND_PAGE_SORT_DIRECTION_IS_INVALID(format(PAGE_SORT_IS_INVALID,BRAND)),
     BRAND_PAGE_NUMBER_IS_INVALID(format(PAGE_NUMBER_IS_INVALID,BRAND)),
-    BRAND_PAGE_SIZE_NUMBER_IS_INVALID(format(PAGE_SIZE_IS_INVALID,BRAND));
+    BRAND_PAGE_SIZE_NUMBER_IS_INVALID(format(PAGE_SIZE_IS_INVALID,BRAND)),
+    PRODUCT_NAME_REQUIRED(format(REQUIRED,PRODUCT, PROPERTY_NAME)),
+    PRODUCT_ALREADY_EXISTS(format(ALREADY_EXISTS,PRODUCT)),
+    PRODUCT_NOT_FOUND(format(NOT_FOUND,PRODUCT)),
+    PRODUCT_DESCRIPTION_REQUIRED(format(REQUIRED,PRODUCT, PROPERTY_DESCRIPTION)),
+    PRODUCT_AMOUNT_GREATER_THAN_ZERO(format(GREATER_THAN_ZERO,PRODUCT,PROPERTY_AMOUNT)),
+    PRODUCT_PRICE_GREATER_THAN_ZERO(format(GREATER_THAN_ZERO,PRODUCT,PROPERTY_PRICE));
     private final String message;
     ExceptionResponse(String message) {
         this.message = message;

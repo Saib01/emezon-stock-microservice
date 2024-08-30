@@ -21,13 +21,13 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
-import static com.emazon.stock.constants.TestConstants.VALID_PAGE;
-import static com.emazon.stock.constants.TestConstants.VALID_ID;
-import static com.emazon.stock.constants.TestConstants.VALID_SIZE;
-import static com.emazon.stock.constants.TestConstants.VALID_BRAND_NAME;
-import static com.emazon.stock.constants.TestConstants.VALID_BRAND_DESCRIPTION;
-import static com.emazon.stock.constants.TestConstants.VALID_TOTAL_ELEMENTS;
-import static com.emazon.stock.dominio.utils.ConstantsDominio.DIRECTION_ASC;
+import static com.emazon.stock.utils.TestConstants.VALID_PAGE;
+import static com.emazon.stock.utils.TestConstants.VALID_ID;
+import static com.emazon.stock.utils.TestConstants.VALID_SIZE;
+import static com.emazon.stock.utils.TestConstants.VALID_BRAND_NAME;
+import static com.emazon.stock.utils.TestConstants.VALID_BRAND_DESCRIPTION;
+import static com.emazon.stock.utils.TestConstants.VALID_TOTAL_ELEMENTS;
+import static com.emazon.stock.dominio.utils.Direction.ASC;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -82,9 +82,9 @@ class BrandRestControllerTest {
     void testGetBrands() throws Exception {
         Pageable pageable = PageRequest.of(VALID_PAGE,VALID_SIZE);
         Page<BrandResponse> brandResponsePage = new PageImpl<>(List.of(brandResponse), pageable, VALID_TOTAL_ELEMENTS);
-        when(brandHandler.getBrandsByName(VALID_PAGE, VALID_SIZE, DIRECTION_ASC)).thenReturn(brandResponsePage);
+        when(brandHandler.getBrandsByName(VALID_PAGE, VALID_SIZE, ASC)).thenReturn(brandResponsePage);
         mockMvc.perform(get("/brand")
-                        .param("sortDirection", DIRECTION_ASC)
+                        .param("sortDirection", ASC)
                         .param("page", Integer.toString(VALID_PAGE))
                         .param("size", Integer.toString(VALID_SIZE)))
                 .andExpect(status().isOk())

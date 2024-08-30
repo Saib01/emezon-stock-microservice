@@ -19,13 +19,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
-import static com.emazon.stock.constants.TestConstants.VALID_PAGE;
-import static com.emazon.stock.constants.TestConstants.VALID_ID;
-import static com.emazon.stock.constants.TestConstants.VALID_SIZE;
-import static com.emazon.stock.constants.TestConstants.VALID_CATEGORY_NAME;
-import static com.emazon.stock.constants.TestConstants.VALID_CATEGORY_DESCRIPTION;
-import static com.emazon.stock.constants.TestConstants.VALID_TOTAL_ELEMENTS;
-import static com.emazon.stock.dominio.utils.ConstantsDominio.DIRECTION_ASC;
+import static com.emazon.stock.utils.TestConstants.VALID_PAGE;
+import static com.emazon.stock.utils.TestConstants.VALID_ID;
+import static com.emazon.stock.utils.TestConstants.VALID_SIZE;
+import static com.emazon.stock.utils.TestConstants.VALID_CATEGORY_NAME;
+import static com.emazon.stock.utils.TestConstants.VALID_CATEGORY_DESCRIPTION;
+import static com.emazon.stock.utils.TestConstants.VALID_TOTAL_ELEMENTS;
+import static com.emazon.stock.dominio.utils.Direction.ASC;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -70,9 +70,9 @@ class CategoryRestControllerTest {
     void testGetCategories() throws Exception {
         Pageable pageable = PageRequest.of(VALID_PAGE,VALID_SIZE);
         Page<CategoryResponse> categoryResponsePage = new PageImpl<>(List.of(categoryResponse), pageable, VALID_TOTAL_ELEMENTS);
-        when(categoryHandler.getCategoriesByName(VALID_PAGE, VALID_SIZE, DIRECTION_ASC)).thenReturn(categoryResponsePage);
+        when(categoryHandler.getCategoriesByName(VALID_PAGE, VALID_SIZE, ASC)).thenReturn(categoryResponsePage);
         mockMvc.perform(get("/category")
-                .param("sortDirection", DIRECTION_ASC)
+                .param("sortDirection", ASC)
                 .param("page", Integer.toString(VALID_PAGE))
                 .param("size", Integer.toString(VALID_SIZE)))
                 .andExpect(status().isOk())

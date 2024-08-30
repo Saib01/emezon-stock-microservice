@@ -2,7 +2,6 @@ package com.emazon.stock.infraestructura.input.rest;
 
 import com.emazon.stock.aplicacion.dtos.BrandRequest;
 import com.emazon.stock.aplicacion.dtos.BrandResponse;
-import com.emazon.stock.aplicacion.dtos.CategoryResponse;
 import com.emazon.stock.aplicacion.handler.IBrandHandler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

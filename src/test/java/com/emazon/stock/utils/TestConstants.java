@@ -1,4 +1,4 @@
-package com.emazon.stock.constants;
+package com.emazon.stock.utils;
 
 public class TestConstants {
     public static final long VALID_ID = 1L;
@@ -21,4 +21,6 @@ public class TestConstants {
     public static final int VALID_TOTAL_ELEMENTS=10;
     public static final String INVALID_SORT_DIRECTION="Assac";
 
+    private TestConstants() {
+    }
 }

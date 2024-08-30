@@ -7,9 +7,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
-import static com.emazon.stock.constants.TestConstants.VALID_BRAND_DESCRIPTION;
-import static com.emazon.stock.constants.TestConstants.VALID_BRAND_NAME;
-import static com.emazon.stock.constants.TestConstants.VALID_ID;
+import static com.emazon.stock.utils.TestConstants.VALID_BRAND_DESCRIPTION;
+import static com.emazon.stock.utils.TestConstants.VALID_BRAND_NAME;
+import static com.emazon.stock.utils.TestConstants.VALID_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class BrandEntityMapperTest {

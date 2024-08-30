@@ -11,8 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import static com.emazon.stock.dominio.utils.ConstantsDominio.DIRECTION_ASC;
-import static com.emazon.stock.dominio.utils.ConstantsDominio.DIRECTION_DESC;
+import static com.emazon.stock.dominio.utils.Direction.ASC;
+import static com.emazon.stock.dominio.utils.Direction.DESC;
+import static com.emazon.stock.dominio.utils.DomainConstants.ZERO;
 
 public class PageValidator {
     private static final String PROPERTY_PAGE_SORT_DIRECTION = "PageSortDirection";
@@ -37,17 +38,17 @@ public class PageValidator {
     }
 
     private static void validateSortDirection(String sortDirection,String modelName){
-        if (!(sortDirection.equalsIgnoreCase(DIRECTION_ASC) || sortDirection.equalsIgnoreCase(DIRECTION_DESC))) {
+        if (!(sortDirection.equalsIgnoreCase(ASC) || sortDirection.equalsIgnoreCase(DESC))) {
             throw getExceptionForKey(modelName,PROPERTY_PAGE_SORT_DIRECTION, TYPE_EXCEPTIONS);
         }
     }
     private static void validatePage(int page,String modelName){
-        if (page<0) {
+        if (page<ZERO) {
             throw getExceptionForKey(modelName,PROPERTY_PAGE_NUMBER, TYPE_EXCEPTIONS);
         }
     }
     private static void validateSize(int size,String modelName){
-        if (size<=0) {
+        if (size<=ZERO) {
             throw getExceptionForKey(modelName,PROPERTY_PAGE_SIZE, TYPE_EXCEPTIONS);
         }
     }

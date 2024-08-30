@@ -17,7 +17,7 @@ public class CategoryUseCase implements ICategoryServicePort {
     @Override
     public void saveCategory(Category category) {
         Validator.nameAndDescription(category);
-        Validator.isNameAlreadyInUse(this.categoryPersistencePort.findByName(category.getName()),category);
+        Validator.validateNameIsAlreadyInUse(this.categoryPersistencePort,category);
         this.categoryPersistencePort.saveCategory(category);
     }
 

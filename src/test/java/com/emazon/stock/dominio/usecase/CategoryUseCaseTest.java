@@ -19,21 +19,21 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import java.util.Collections;
 
-import static com.emazon.stock.constants.TestConstants.VALID_ID;
-import static com.emazon.stock.constants.TestConstants.INVALID_CATEGORY_NAME;
-import static com.emazon.stock.constants.TestConstants.VALID_CATEGORY_NAME;
-import static com.emazon.stock.constants.TestConstants.NULL_PROPERTY;
-import static com.emazon.stock.constants.TestConstants.EMPTY_PROPERTY;
-import static com.emazon.stock.constants.TestConstants.INVALID_CATEGORY_DESCRIPTION;
-import static com.emazon.stock.constants.TestConstants.VALID_CATEGORY_DESCRIPTION;
-import static com.emazon.stock.dominio.utils.ConstantsDominio.DIRECTION_ASC;
-import static com.emazon.stock.constants.TestConstants.INVALID_SORT_DIRECTION;
-import static com.emazon.stock.constants.TestConstants.VALID_PAGE;
-import static com.emazon.stock.constants.TestConstants.INVALID_PAGE;
-import static com.emazon.stock.constants.TestConstants.VALID_SIZE;
-import static com.emazon.stock.constants.TestConstants.INVALID_SIZE;
-import static com.emazon.stock.constants.TestConstants.VALID_TOTAL_ELEMENTS;
-import static com.emazon.stock.constants.TestConstants.VALID_TOTAL_PAGES;
+import static com.emazon.stock.utils.TestConstants.VALID_ID;
+import static com.emazon.stock.utils.TestConstants.INVALID_CATEGORY_NAME;
+import static com.emazon.stock.utils.TestConstants.VALID_CATEGORY_NAME;
+import static com.emazon.stock.utils.TestConstants.NULL_PROPERTY;
+import static com.emazon.stock.utils.TestConstants.EMPTY_PROPERTY;
+import static com.emazon.stock.utils.TestConstants.INVALID_CATEGORY_DESCRIPTION;
+import static com.emazon.stock.utils.TestConstants.VALID_CATEGORY_DESCRIPTION;
+import static com.emazon.stock.dominio.utils.Direction.ASC;
+import static com.emazon.stock.utils.TestConstants.INVALID_SORT_DIRECTION;
+import static com.emazon.stock.utils.TestConstants.VALID_PAGE;
+import static com.emazon.stock.utils.TestConstants.INVALID_PAGE;
+import static com.emazon.stock.utils.TestConstants.VALID_SIZE;
+import static com.emazon.stock.utils.TestConstants.INVALID_SIZE;
+import static com.emazon.stock.utils.TestConstants.VALID_TOTAL_ELEMENTS;
+import static com.emazon.stock.utils.TestConstants.VALID_TOTAL_PAGES;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -61,7 +61,7 @@ class CategoryUseCaseTest {
     @Test
     @DisplayName("Should save the category and verify that the persistence port method is called once")
     void testSaveCategory() {
-        when(categoryPersistencePort.findByName(category.getName())).thenReturn(false);
+        when(categoryPersistencePort.existsByName(category.getName())).thenReturn(false);
 
         categoryUseCase.saveCategory(category);
 
@@ -70,7 +70,7 @@ class CategoryUseCaseTest {
     @Test
     @DisplayName("Should not save the category when the category already exists")
     void shouldNotSaveCategoryWhenCategoryAlreadyExists() {
-        when(categoryPersistencePort.findByName(category.getName())).thenReturn(true);
+        when(categoryPersistencePort.existsByName(category.getName())).thenReturn(true);
 
         assertThrows(CategoryAlreadyExistException.class, () -> categoryUseCase.saveCategory(category));
 
@@ -139,25 +139,25 @@ class CategoryUseCaseTest {
                 Collections.singletonList(category),
                 VALID_TOTAL_ELEMENTS,VALID_TOTAL_PAGES);
 
-        when(categoryPersistencePort.getCategoriesByName(VALID_PAGE, VALID_SIZE,DIRECTION_ASC))
+        when(categoryPersistencePort.getCategoriesByName(VALID_PAGE, VALID_SIZE,ASC))
                 .thenReturn(expectedCategoryPageStock);
 
-        PageStock<Category> actualCategoryPageStock=categoryUseCase.getCategoriesByName(VALID_PAGE, VALID_SIZE,DIRECTION_ASC);
+        PageStock<Category> actualCategoryPageStock=categoryUseCase.getCategoriesByName(VALID_PAGE, VALID_SIZE,ASC);
 
         assertEquals(expectedCategoryPageStock, actualCategoryPageStock);
 
         verify(categoryPersistencePort, times(1)).getCategoriesByName(VALID_PAGE, VALID_SIZE,
-                DIRECTION_ASC);
+                ASC);
     }
     @Test
     @DisplayName("Should not return categories when the page number is invalid")
     void shouldNotGetCategoryPageStockWhenPageNumberIsInvalid() {
-        assertThrows(CategoryPageNumberIsInvalidException.class, () -> categoryUseCase.getCategoriesByName(INVALID_PAGE, VALID_SIZE,DIRECTION_ASC));
+        assertThrows(CategoryPageNumberIsInvalidException.class, () -> categoryUseCase.getCategoriesByName(INVALID_PAGE, VALID_SIZE,ASC));
     }
     @Test
     @DisplayName("Should not return categories when the page size is invalid")
     void shouldNotGetCategoryPageStockWhenPageSizeIsInvalid() {
-        assertThrows(CategoryPageSizeIsInvalidException.class, () -> categoryUseCase.getCategoriesByName(VALID_PAGE, INVALID_SIZE,DIRECTION_ASC));
+        assertThrows(CategoryPageSizeIsInvalidException.class, () -> categoryUseCase.getCategoriesByName(VALID_PAGE, INVALID_SIZE,ASC));
     }
     @Test
     @DisplayName("Should not return categories when the page sorting direction is invalid")

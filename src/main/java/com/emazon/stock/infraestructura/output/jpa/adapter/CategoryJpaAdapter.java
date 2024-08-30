@@ -11,7 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import static com.emazon.stock.dominio.utils.ConstantsDominio.PROPERTY_NAME;
+import static com.emazon.stock.dominio.utils.DomainConstants.PROPERTY_NAME;
 
 @RequiredArgsConstructor
 public class CategoryJpaAdapter implements ICategoryPersistencePort {
@@ -39,7 +39,12 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
     }
 
     @Override
-    public boolean findByName(String name) {
+    public boolean existsByName(String name) {
         return this.categoryRepository.existsByName(name);
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return this.categoryRepository.existsById(id);
     }
 }

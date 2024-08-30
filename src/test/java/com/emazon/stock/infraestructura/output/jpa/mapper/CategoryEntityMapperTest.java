@@ -14,14 +14,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Page;
 import java.util.List;
 
-import static com.emazon.stock.constants.TestConstants.VALID_CATEGORY_DESCRIPTION;
-import static com.emazon.stock.constants.TestConstants.VALID_CATEGORY_NAME;
-import static com.emazon.stock.constants.TestConstants.VALID_ID;
-import static com.emazon.stock.constants.TestConstants.VALID_PAGE;
-import static com.emazon.stock.constants.TestConstants.VALID_SIZE;
-import static com.emazon.stock.constants.TestConstants.VALID_TOTAL_ELEMENTS;
-import static com.emazon.stock.dominio.utils.ConstantsDominio.PROPERTY_NAME;
-import static com.emazon.stock.dominio.utils.ConstantsDominio.DIRECTION_ASC;
+import static com.emazon.stock.utils.TestConstants.VALID_CATEGORY_DESCRIPTION;
+import static com.emazon.stock.utils.TestConstants.VALID_CATEGORY_NAME;
+import static com.emazon.stock.utils.TestConstants.VALID_ID;
+import static com.emazon.stock.utils.TestConstants.VALID_PAGE;
+import static com.emazon.stock.utils.TestConstants.VALID_SIZE;
+import static com.emazon.stock.utils.TestConstants.VALID_TOTAL_ELEMENTS;
+import static com.emazon.stock.dominio.utils.DomainConstants.PROPERTY_NAME;
+import static com.emazon.stock.dominio.utils.Direction.ASC;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class CategoryEntityMapperTest {
@@ -55,7 +55,7 @@ class CategoryEntityMapperTest {
     @DisplayName("Should map Page<CategoryEntity> to PageStock<Category>  Successfully")
     void toPageStock() {
         Pageable pageable = PageRequest.of(VALID_PAGE, VALID_SIZE,
-                Sort.by(Sort.Direction.fromString(DIRECTION_ASC),PROPERTY_NAME.toLowerCase()));
+                Sort.by(Sort.Direction.fromString(ASC),PROPERTY_NAME.toLowerCase()));
         Page<CategoryEntity> categoryEntityPage=new PageImpl<>(List.of(categoryEntity),pageable,VALID_TOTAL_ELEMENTS);
         PageStock<Category> result=categoryEntityMapper.toPageStock(categoryEntityPage);
 

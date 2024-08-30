@@ -6,174 +6,105 @@ import com.emazon.stock.dominio.exeption.brand.BrandNameTooLongException;
 import com.emazon.stock.dominio.exeption.brand.BrandNameRequiredException;
 import com.emazon.stock.dominio.exeption.brand.BrandDescriptionTooLongException;
 import com.emazon.stock.dominio.exeption.brand.BrandDescriptionRequiredException;
-import com.emazon.stock.dominio.exeption.category.CategoryNotFoundException;
-import com.emazon.stock.dominio.exeption.category.CategoryAlreadyExistException;
-import com.emazon.stock.dominio.exeption.category.CategoryNameTooLongException;
-import com.emazon.stock.dominio.exeption.category.CategoryNameRequiredException;
-import com.emazon.stock.dominio.exeption.category.CategoryDescriptionTooLongException;
-import com.emazon.stock.dominio.exeption.category.CategoryDescriptionRequiredException;
-import com.emazon.stock.dominio.exeption.category.CategoryPageSortDirectionIsInvalidException;
-import com.emazon.stock.dominio.exeption.category.CategoryPageSizeIsInvalidException;
-import com.emazon.stock.dominio.exeption.category.CategoryPageNumberIsInvalidException;
+import com.emazon.stock.dominio.exeption.category.*;
 import com.emazon.stock.dominio.exeption.brand.BrandPageSortDirectionIsInvalidException;
 import com.emazon.stock.dominio.exeption.brand.BrandPageSizeIsInvalidException;
 import com.emazon.stock.dominio.exeption.brand.BrandPageNumberIsInvalidException;
+import com.emazon.stock.dominio.exeption.product.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import static com.emazon.stock.infraestructura.exceptionhandler.ExceptionResponse.*;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 @ControllerAdvice
 public class ControllerAdvisor {
         private static final String MESSAGE = "Message";
+        private static final Map<Class<? extends Exception>, String> exceptionMap = new HashMap<>();
 
-        @ExceptionHandler(CategoryDescriptionTooLongException.class)
-        public ResponseEntity<Map<String, String>> handleCategoryDescriptionTooLongException(
-                CategoryDescriptionTooLongException categoryDescriptionTooLongException) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(Collections.singletonMap(MESSAGE,
-                                ExceptionResponse.CATEGORY_DESCRIPTION_TOO_LONG.getMessage()));
+        static {
+
+                exceptionMap.put(CategoryDescriptionTooLongException.class,CATEGORY_DESCRIPTION_TOO_LONG.getMessage());
+                exceptionMap.put(CategoryNameTooLongException.class,CATEGORY_NAME_TOO_LONG.getMessage());
+                exceptionMap.put(CategoryAlreadyExistException.class,CATEGORY_ALREADY_EXISTS.getMessage());
+                exceptionMap.put(CategoryDescriptionRequiredException.class,CATEGORY_DESCRIPTION_REQUIRED.getMessage());
+                exceptionMap.put(CategoryNameRequiredException.class,CATEGORY_NAME_REQUIRED.getMessage());
+                exceptionMap.put(CategoryNotFoundException.class,CATEGORY_NOT_FOUND.getMessage());
+                exceptionMap.put(CategoryPageSortDirectionIsInvalidException.class,CATEGORY_PAGE_SORT_DIRECTION_IS_INVALID.getMessage());
+                exceptionMap.put(CategoryPageSizeIsInvalidException.class,CATEGORY_PAGE_SIZE_NUMBER_IS_INVALID.getMessage());
+                exceptionMap.put(CategoryPageNumberIsInvalidException.class,CATEGORY_PAGE_NUMBER_IS_INVALID.getMessage());
+                exceptionMap.put(CategoryDuplicateException.class,CATEGORY_DUPLICATE.getMessage());
+                exceptionMap.put(CategoryListSizeException.class,CATEGORY_LIST_SIZE.getMessage());
+
+                exceptionMap.put(BrandDescriptionTooLongException.class,BRAND_DESCRIPTION_TOO_LONG.getMessage());
+                exceptionMap.put(BrandNameTooLongException.class,BRAND_NAME_TOO_LONG.getMessage());
+                exceptionMap.put(BrandAlreadyExistException.class,BRAND_ALREADY_EXISTS.getMessage());
+                exceptionMap.put(BrandDescriptionRequiredException.class,BRAND_DESCRIPTION_REQUIRED.getMessage());
+                exceptionMap.put(BrandNameRequiredException.class,BRAND_NAME_REQUIRED.getMessage());
+                exceptionMap.put(BrandNotFoundException.class,BRAND_NOT_FOUND.getMessage());
+                exceptionMap.put(BrandPageSortDirectionIsInvalidException.class,BRAND_PAGE_SORT_DIRECTION_IS_INVALID.getMessage());
+                exceptionMap.put(BrandPageSizeIsInvalidException.class,BRAND_PAGE_SIZE_NUMBER_IS_INVALID.getMessage());
+                exceptionMap.put(BrandPageNumberIsInvalidException.class,BRAND_PAGE_NUMBER_IS_INVALID.getMessage());
+
+                exceptionMap.put(ProductAlreadyExistException.class,PRODUCT_ALREADY_EXISTS.getMessage());
+                exceptionMap.put(ProductDescriptionRequiredException.class,PRODUCT_DESCRIPTION_REQUIRED.getMessage());
+                exceptionMap.put(ProductNameRequiredException.class,PRODUCT_NAME_REQUIRED.getMessage());
+                exceptionMap.put(ProductNotFoundException.class,PRODUCT_NOT_FOUND.getMessage());
+                exceptionMap.put(ProductAmountInvalidException.class,PRODUCT_AMOUNT_GREATER_THAN_ZERO.getMessage());
+                exceptionMap.put(ProductPriceInvalidException.class,PRODUCT_PRICE_GREATER_THAN_ZERO.getMessage());
+
         }
 
-        @ExceptionHandler(CategoryNameTooLongException.class)
-        public ResponseEntity<Map<String, String>> handleCategoryNameTooLongException(
-                CategoryNameTooLongException categoryNameTooLongException) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(Collections.singletonMap(MESSAGE,
-                                ExceptionResponse.CATEGORY_NAME_TOO_LONG.getMessage()));
+        private ResponseEntity<Map<String, String>> buildResponse(HttpStatus status, String message) {
+                return ResponseEntity.status(status)
+                        .body(Collections.singletonMap(MESSAGE, message));
         }
-
-        @ExceptionHandler(CategoryAlreadyExistException.class)
-        public ResponseEntity<Map<String, String>> handleCategoryAlreadyExistsException(
-                CategoryAlreadyExistException categoryAlreadyExistException) {
-                return ResponseEntity.status(HttpStatus.CONFLICT)
-                        .body(Collections.singletonMap(MESSAGE,
-                                ExceptionResponse.CATEGORY_ALREADY_EXISTS.getMessage()));
+        @ExceptionHandler({
+                CategoryDescriptionTooLongException.class,
+                CategoryNameTooLongException.class,
+                CategoryDescriptionRequiredException.class,
+                CategoryNameRequiredException.class,
+                CategoryPageSortDirectionIsInvalidException.class,
+                CategoryPageSizeIsInvalidException.class,
+                CategoryPageNumberIsInvalidException.class,
+                CategoryDuplicateException.class,
+                CategoryListSizeException.class,
+                BrandDescriptionTooLongException.class,
+                BrandNameTooLongException.class,
+                BrandDescriptionRequiredException.class,
+                BrandNameRequiredException.class,
+                BrandPageSortDirectionIsInvalidException.class,
+                BrandPageSizeIsInvalidException.class,
+                BrandPageNumberIsInvalidException.class,
+                ProductDescriptionRequiredException.class,
+                ProductNameRequiredException.class,
+                ProductAmountInvalidException.class,
+                ProductPriceInvalidException.class
+        })
+        public ResponseEntity<Map<String, String>> handleBadRequestExceptions(RuntimeException ex) {
+                String message = exceptionMap.get(ex.getClass());
+                return buildResponse(HttpStatus.BAD_REQUEST, message);
         }
-
-        @ExceptionHandler(CategoryDescriptionRequiredException.class)
-        public ResponseEntity<Map<String, String>> handleCategoryDescriptionRequiredException(
-                CategoryDescriptionRequiredException categoryDescriptionRequiredException) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(Collections.singletonMap(MESSAGE,
-                                ExceptionResponse.CATEGORY_DESCRIPTION_REQUIRED.getMessage()));
+        @ExceptionHandler({
+                CategoryAlreadyExistException.class,
+                BrandAlreadyExistException.class,
+                ProductAlreadyExistException.class
+        })
+        public ResponseEntity<Map<String, String>> handleConflictExceptions(RuntimeException ex) {
+                String message = exceptionMap.get(ex.getClass());
+                return buildResponse(HttpStatus.CONFLICT, message);
         }
-
-        @ExceptionHandler(CategoryNameRequiredException.class)
-        public ResponseEntity<Map<String, String>> handleCategoryNameRequiredException(
-                CategoryNameRequiredException categoryNameRequiredException) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(Collections.singletonMap(MESSAGE,
-                                ExceptionResponse.CATEGORY_NAME_REQUIRED.getMessage()));
-        }
-
-        @ExceptionHandler(CategoryNotFoundException.class)
-        public ResponseEntity<Map<String, String>> handleCategoryNotFoundException(
-                CategoryNotFoundException categoryNotFoundException) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(Collections.singletonMap(MESSAGE,
-                                ExceptionResponse.CATEGORY_NOT_FOUND.getMessage()));
-        }
-
-        @ExceptionHandler(CategoryPageSortDirectionIsInvalidException.class)
-        public ResponseEntity<Map<String, String>> handleCategoryPageSortDirectionInvalid(
-                        CategoryPageSortDirectionIsInvalidException categoryPageSortDirectionIsInvalidException) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                                .body(Collections.singletonMap(MESSAGE,
-                                                ExceptionResponse.CATEGORY_PAGE_SORT_DIRECTION_IS_INVALID.getMessage()));
-        }
-
-        @ExceptionHandler(CategoryPageSizeIsInvalidException.class)
-        public ResponseEntity<Map<String, String>> handleCategoryPageSizeInvalid(
-                CategoryPageSizeIsInvalidException categoryPageSizeIsInvalidException) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(Collections.singletonMap(MESSAGE,
-                                ExceptionResponse.CATEGORY_PAGE_SIZE_NUMBER_IS_INVALID.getMessage()));
-        }
-
-        @ExceptionHandler(CategoryPageNumberIsInvalidException.class)
-        public ResponseEntity<Map<String, String>> handleCategoryPageNumberInvalid(
-                CategoryPageNumberIsInvalidException categoryNumberIsInvalidException) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(Collections.singletonMap(MESSAGE,
-                                ExceptionResponse.CATEGORY_PAGE_NUMBER_IS_INVALID.getMessage()));
-        }
-
-
-
-
-        @ExceptionHandler(BrandDescriptionTooLongException.class)
-        public ResponseEntity<Map<String, String>> handleBrandDescriptionTooLongException(
-                BrandDescriptionTooLongException brandDescriptionTooLongException) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(Collections.singletonMap(MESSAGE,
-                                ExceptionResponse.BRAND_DESCRIPTION_TOO_LONG.getMessage()));
-        }
-
-        @ExceptionHandler(BrandNameTooLongException.class)
-        public ResponseEntity<Map<String, String>> handleBrandNameTooLongException(
-                BrandNameTooLongException brandNameTooLongException) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(Collections.singletonMap(MESSAGE,
-                                ExceptionResponse.BRAND_NAME_TOO_LONG.getMessage()));
-        }
-
-        @ExceptionHandler(BrandAlreadyExistException.class)
-        public ResponseEntity<Map<String, String>> handleBrandAlreadyExistsException(
-                BrandAlreadyExistException brandAlreadyExistException) {
-                return ResponseEntity.status(HttpStatus.CONFLICT)
-                        .body(Collections.singletonMap(MESSAGE,
-                                ExceptionResponse.BRAND_ALREADY_EXISTS.getMessage()));
-        }
-
-        @ExceptionHandler(BrandDescriptionRequiredException.class)
-        public ResponseEntity<Map<String, String>> handleBrandDescriptionRequiredException(
-                BrandDescriptionRequiredException brandDescriptionRequiredException) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(Collections.singletonMap(MESSAGE,
-                                ExceptionResponse.BRAND_DESCRIPTION_REQUIRED.getMessage()));
-        }
-
-        @ExceptionHandler(BrandNameRequiredException.class)
-        public ResponseEntity<Map<String, String>> handleBrandNameRequiredException(
-                BrandNameRequiredException brandNameRequiredException) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(Collections.singletonMap(MESSAGE,
-                                ExceptionResponse.BRAND_NAME_REQUIRED.getMessage()));
-        }
-
-        @ExceptionHandler(BrandNotFoundException.class)
-        public ResponseEntity<Map<String, String>> handleBrandNotFoundException(
-                BrandNotFoundException brandNotFoundException) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(Collections.singletonMap(MESSAGE,
-                                ExceptionResponse.BRAND_NOT_FOUND.getMessage()));
-        }
-
-        @ExceptionHandler(BrandPageSortDirectionIsInvalidException.class)
-        public ResponseEntity<Map<String, String>> handleBrandPageSortDirectionInvalid(
-                BrandPageSortDirectionIsInvalidException brandPageSortDirectionIsInvalidException) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(Collections.singletonMap(MESSAGE,
-                                ExceptionResponse.BRAND_PAGE_SORT_DIRECTION_IS_INVALID.getMessage()));
-        }
-
-        @ExceptionHandler(BrandPageSizeIsInvalidException.class)
-        public ResponseEntity<Map<String, String>> handleBrandPageSizeInvalid(
-                BrandPageSizeIsInvalidException brandPageSizeIsInvalidException) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(Collections.singletonMap(MESSAGE,
-                                ExceptionResponse.BRAND_PAGE_SIZE_NUMBER_IS_INVALID.getMessage()));
-        }
-
-        @ExceptionHandler(BrandPageNumberIsInvalidException.class)
-        public ResponseEntity<Map<String, String>> handleBrandPageNumberInvalid(
-                BrandPageNumberIsInvalidException brandNumberIsInvalidException) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(Collections.singletonMap(MESSAGE,
-                                ExceptionResponse.BRAND_PAGE_NUMBER_IS_INVALID.getMessage()));
+        @ExceptionHandler({
+                CategoryNotFoundException.class,
+                BrandNotFoundException.class,
+                ProductNotFoundException.class
+        })
+        public ResponseEntity<Map<String, String>> handleNotFoundExceptions(RuntimeException ex) {
+                String message = exceptionMap.get(ex.getClass());
+                return buildResponse(HttpStatus.NOT_FOUND, message);
         }
 }

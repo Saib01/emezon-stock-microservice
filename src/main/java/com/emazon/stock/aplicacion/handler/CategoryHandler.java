@@ -10,11 +10,10 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import static com.emazon.stock.dominio.utils.ConstantsDominio.PROPERTY_NAME;
+import static com.emazon.stock.dominio.utils.DomainConstants.PROPERTY_NAME;
 
 @Service
 @RequiredArgsConstructor
