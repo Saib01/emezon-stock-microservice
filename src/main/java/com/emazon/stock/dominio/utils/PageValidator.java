@@ -1,6 +1,8 @@
 package com.emazon.stock.dominio.utils;
 
-import com.emazon.stock.dominio.exeption.*;
+import com.emazon.stock.dominio.exeption.category.CategoryPageNumberIsInvalidException;
+import com.emazon.stock.dominio.exeption.category.CategoryPageSizeIsInvalidException;
+import com.emazon.stock.dominio.exeption.category.CategoryPageSortDirectionIsInvalidException;
 
 import java.util.HashMap;
 import java.util.Map;

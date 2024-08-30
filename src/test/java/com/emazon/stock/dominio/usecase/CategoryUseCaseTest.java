@@ -1,6 +1,6 @@
 package com.emazon.stock.dominio.usecase;
 
-import com.emazon.stock.dominio.exeption.*;
+import com.emazon.stock.dominio.exeption.category.*;
 import com.emazon.stock.dominio.modelo.Category;
 import com.emazon.stock.dominio.modelo.PageStock;
 import com.emazon.stock.dominio.spi.ICategoryPersistencePort;

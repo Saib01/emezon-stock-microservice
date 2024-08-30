@@ -1,6 +1,6 @@
 package com.emazon.stock.infraestructura.output.jpa.adapter;
 
-import com.emazon.stock.dominio.exeption.*;
+import com.emazon.stock.dominio.exeption.category.CategoryNotFoundException;
 import com.emazon.stock.dominio.modelo.Category;
 import com.emazon.stock.dominio.modelo.PageStock;
 import com.emazon.stock.dominio.spi.ICategoryPersistencePort;
@@ -40,6 +40,6 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
 
     @Override
     public boolean findByName(String name) {
-        return categoryRepository.existsByName(name);
+        return this.categoryRepository.existsByName(name);
     }
 }

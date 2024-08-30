@@ -1,6 +1,7 @@
 package com.emazon.stock.dominio.utils;
 
-import com.emazon.stock.dominio.exeption.*;
+import com.emazon.stock.dominio.exeption.brand.*;
+import com.emazon.stock.dominio.exeption.category.*;
 import com.emazon.stock.dominio.modelo.INamedDescriptiveModel;
 
 import java.util.HashMap;
@@ -11,9 +12,11 @@ import static com.emazon.stock.dominio.utils.ConstantsDominio.PROPERTY_NAME;
 
 public class Validator {
     private static final String CATEGORY = "Category";
+    private static final String BRAND="Brand";
     private static final String PROPERTY_DESCRIPTION = "Description";
     private static final Long MAX_NAME_LENGTH = 50L;
     private static final Long CATEGORY_MAX_DESCRIPTION_LENGTH = 90L;
+    private static final Long BRAND_MAX_DESCRIPTION_LENGTH = 120L;
     private static final String[] TYPE_EXCEPTIONS = { "Exist","Required", "TooLong" };
 
     private Validator() {
@@ -26,6 +29,12 @@ public class Validator {
         EXCEPTION_MAP.put("CategoryNameTooLong", CategoryNameTooLongException::new);
         EXCEPTION_MAP.put("CategoryDescriptionTooLong", CategoryDescriptionTooLongException::new);
         EXCEPTION_MAP.put("CategoryNameExist", CategoryAlreadyExistException::new);
+
+        EXCEPTION_MAP.put("BrandNameRequired", BrandNameRequiredException::new);
+        EXCEPTION_MAP.put("BrandDescriptionRequired", BrandDescriptionRequiredException::new);
+        EXCEPTION_MAP.put("BrandNameTooLong", BrandNameTooLongException::new);
+        EXCEPTION_MAP.put("BrandDescriptionTooLong", BrandDescriptionTooLongException::new);
+        EXCEPTION_MAP.put("BrandNameExist", BrandAlreadyExistException::new);
     }
 
     public static void nameAndDescription(INamedDescriptiveModel object) {
@@ -48,6 +57,7 @@ public class Validator {
     private static Long getMaxDescriptionLengthByClass(String className){
         return switch (className) {
             case CATEGORY -> CATEGORY_MAX_DESCRIPTION_LENGTH;
+            case BRAND -> BRAND_MAX_DESCRIPTION_LENGTH;
             default -> throw new IllegalArgumentException("Unknown class name: " + className);
         };
     }
