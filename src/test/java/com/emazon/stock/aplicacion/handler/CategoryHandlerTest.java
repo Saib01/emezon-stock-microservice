@@ -1,9 +1,16 @@
 package com.emazon.stock.aplicacion.handler;
 
-import static com.emazon.stock.constants.TestConstants.*;
+import static com.emazon.stock.constants.TestConstants.VALID_ID;
+import static com.emazon.stock.constants.TestConstants.VALID_CATEGORY_DESCRIPTION;
+import static com.emazon.stock.constants.TestConstants.VALID_CATEGORY_NAME;
+import static com.emazon.stock.constants.TestConstants.VALID_SIZE;
+import static com.emazon.stock.constants.TestConstants.VALID_PAGE;
+import static com.emazon.stock.constants.TestConstants.VALID_TOTAL_PAGES;
+import static com.emazon.stock.constants.TestConstants.VALID_TOTAL_ELEMENTS;
 import static com.emazon.stock.dominio.utils.ConstantsDominio.PROPERTY_NAME;
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.emazon.stock.aplicacion.dtos.CategoryRequest;
 import com.emazon.stock.aplicacion.dtos.CategoryResponse;
@@ -19,7 +26,12 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+
 
 import java.util.List;
 
@@ -76,7 +88,7 @@ class CategoryHandlerTest {
         PageStock<Category> categoryPageStock = new PageStock<>(List.of(category), VALID_TOTAL_ELEMENTS, VALID_TOTAL_PAGES);
 
         when(categoryServicePort.getCategoriesByName(VALID_PAGE,VALID_SIZE, DIRECTION_ASC)).thenReturn(categoryPageStock);
-        when(categoryResponseMapper.toCategoryResponsePage(any(PageStock.class), any(Pageable.class)))
+        when(categoryResponseMapper.toCategoryResponsePage(categoryPageStock,pageable))
                 .thenReturn(categoryResponsePage);
 
         Page<CategoryResponse> result = categoryHandler.getCategoriesByName(VALID_PAGE, VALID_SIZE, DIRECTION_ASC);

@@ -4,7 +4,7 @@ import com.emazon.stock.dominio.modelo.Category;
 import com.emazon.stock.dominio.modelo.PageStock;
 import com.emazon.stock.infraestructura.output.jpa.entity.CategoryEntity;
 import org.mapstruct.Mapper;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
 
 @Mapper(componentModel = "spring")
 public interface CategoryEntityMapper {

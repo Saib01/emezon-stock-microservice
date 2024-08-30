@@ -7,11 +7,19 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
-import org.springframework.data.domain.*;
-
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
 import java.util.List;
 
-import static com.emazon.stock.constants.TestConstants.*;
+import static com.emazon.stock.constants.TestConstants.VALID_CATEGORY_DESCRIPTION;
+import static com.emazon.stock.constants.TestConstants.VALID_CATEGORY_NAME;
+import static com.emazon.stock.constants.TestConstants.VALID_ID;
+import static com.emazon.stock.constants.TestConstants.VALID_PAGE;
+import static com.emazon.stock.constants.TestConstants.VALID_SIZE;
+import static com.emazon.stock.constants.TestConstants.VALID_TOTAL_ELEMENTS;
+import static com.emazon.stock.constants.TestConstants.VALID_TOTAL_PAGES;
 import static com.emazon.stock.dominio.utils.ConstantsDominio.PROPERTY_NAME;
 import static com.emazon.stock.dominio.utils.PageValidator.DIRECTION_ASC;
 import static org.assertj.core.api.Assertions.assertThat;
