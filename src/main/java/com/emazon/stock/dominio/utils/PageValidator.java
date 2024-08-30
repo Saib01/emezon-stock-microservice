@@ -3,15 +3,18 @@ package com.emazon.stock.dominio.utils;
 import com.emazon.stock.dominio.exeption.category.CategoryPageNumberIsInvalidException;
 import com.emazon.stock.dominio.exeption.category.CategoryPageSizeIsInvalidException;
 import com.emazon.stock.dominio.exeption.category.CategoryPageSortDirectionIsInvalidException;
+import com.emazon.stock.dominio.exeption.brand.BrandPageNumberIsInvalidException;
+import com.emazon.stock.dominio.exeption.brand.BrandPageSizeIsInvalidException;
+import com.emazon.stock.dominio.exeption.brand.BrandPageSortDirectionIsInvalidException;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public class PageValidator {
+import static com.emazon.stock.dominio.utils.ConstantsDominio.DIRECTION_ASC;
+import static com.emazon.stock.dominio.utils.ConstantsDominio.DIRECTION_DESC;
 
-    public static final String DIRECTION_ASC = "ASC";
-    public static final String DIRECTION_DESC = "DESC";
+public class PageValidator {
     private static final String PROPERTY_PAGE_SORT_DIRECTION = "PageSortDirection";
     private static final String PROPERTY_PAGE_NUMBER = "PageNumber";
     private static final String PROPERTY_PAGE_SIZE = "PageSize";
@@ -21,6 +24,9 @@ public class PageValidator {
         EXCEPTION_MAP.put("CategoryPageSortDirectionIsInvalid", CategoryPageSortDirectionIsInvalidException::new);
         EXCEPTION_MAP.put("CategoryPageNumberIsInvalid", CategoryPageNumberIsInvalidException::new);
         EXCEPTION_MAP.put("CategoryPageSizeIsInvalid", CategoryPageSizeIsInvalidException::new);
+        EXCEPTION_MAP.put("BrandPageSortDirectionIsInvalid", BrandPageSortDirectionIsInvalidException::new);
+        EXCEPTION_MAP.put("BrandPageNumberIsInvalid", BrandPageNumberIsInvalidException::new);
+        EXCEPTION_MAP.put("BrandPageSizeIsInvalid", BrandPageSizeIsInvalidException::new);
     }
     private PageValidator() {
     }

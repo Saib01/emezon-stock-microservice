@@ -45,7 +45,8 @@ class BrandUseCaseTest {
     @Test
     @DisplayName("Should save the brand and verify that the persistence port method is called once")
     void saveBrand() {
-        when(this.brandPersistencePort.findByName(brand.getName())).thenReturn(false);
+        when(this.brandPersistencePort.findByName(brand.getName()))
+                .thenReturn(false);
 
         brandUseCase.saveBrand(brand);
 
@@ -55,9 +56,12 @@ class BrandUseCaseTest {
     @Test
     @DisplayName("Should not save the brand when the brand already exists")
     void shouldNotSaveBrandWhenBrandAlreadyExists() {
-        when(brandPersistencePort.findByName(brand.getName())).thenReturn(true);
+        when(brandPersistencePort.findByName(brand.getName()))
+                .thenReturn(true);
 
-        assertThrows(BrandAlreadyExistException.class, () ->brandUseCase.saveBrand(brand));
+        assertThrows(BrandAlreadyExistException.class,
+                () ->brandUseCase.saveBrand(brand)
+        );
 
         verify(brandPersistencePort, never()).saveBrand(brand);
     }
@@ -65,48 +69,61 @@ class BrandUseCaseTest {
     @DisplayName("Should not save brand when name is empty")
     void shouldNotSaveBrandWhenNameIsEmpty() {
         brand.setName(EMPTY_PROPERTY);
-        assertThrows(BrandNameRequiredException.class, () -> brandUseCase.saveBrand(brand));
+        assertThrows(BrandNameRequiredException.class,
+                () -> brandUseCase.saveBrand(brand)
+        );
     }
 
     @Test
     @DisplayName("Should not save brand when name is null")
     void shouldNotSaveBrandWhenNameIsNull() {
         brand.setName(NULL_PROPERTY);
-        assertThrows(BrandNameRequiredException.class, () -> brandUseCase.saveBrand(brand));
+        assertThrows(BrandNameRequiredException.class,
+                () -> brandUseCase.saveBrand(brand)
+        );
     }
 
     @Test
     @DisplayName("Should not save brand when description is null")
     void shouldNotSaveBrandWhenDescriptionIsNull() {
         brand.setDescription(NULL_PROPERTY);
-        assertThrows(BrandDescriptionRequiredException.class, () -> brandUseCase.saveBrand(brand));
+        assertThrows(BrandDescriptionRequiredException.class,
+                () -> brandUseCase.saveBrand(brand)
+        );
     }
 
     @DisplayName("Should not save brand when description is empty")
     @Test
     void shouldNotSaveBrandWhenDescriptionIsEmpty() {
         brand.setDescription(EMPTY_PROPERTY);
-        assertThrows(BrandDescriptionRequiredException.class, () -> brandUseCase.saveBrand(brand));
+        assertThrows(BrandDescriptionRequiredException.class,
+                () -> brandUseCase.saveBrand(brand)
+        );
     }
 
     @Test
     @DisplayName("Should not save brand when description is too long")
     void shouldNotSaveBrandWhenDescriptionIsTooLong() {
         brand.setDescription(INVALID_BRAND_DESCRIPTION);
-        assertThrows(BrandDescriptionTooLongException.class, () -> brandUseCase.saveBrand(brand));
+        assertThrows(BrandDescriptionTooLongException.class,
+                () -> brandUseCase.saveBrand(brand)
+        );
     }
 
     @Test
     @DisplayName("Should not save brand when name is too long")
     void shouldNotSaveBrandWhenNameIsTooLong() {
         brand.setName(INVALID_BRAND_NAME);
-        assertThrows(BrandNameTooLongException.class, () -> brandUseCase.saveBrand(brand));
+        assertThrows(BrandNameTooLongException.class,
+                () -> brandUseCase.saveBrand(brand)
+        );
     }
 
     @Test
     @DisplayName("Should return the correct brand when fetching a brand by ID")
     void shouldGetBrand() {
-        when(brandPersistencePort.getBrand(VALID_ID)).thenReturn(brand);
+        when(brandPersistencePort.getBrand(VALID_ID))
+                .thenReturn(brand);
 
         Brand actualBrand = brandUseCase.getBrand(VALID_ID);
 
@@ -115,7 +132,8 @@ class BrandUseCaseTest {
         assertEquals(brand.getDescription(), actualBrand.getDescription());
         assertEquals(brand.getId(), actualBrand.getId());
 
-        verify(brandPersistencePort, times(1)).getBrand(VALID_ID);
+        verify(brandPersistencePort, times(1))
+                .getBrand(VALID_ID);
     }
 
 

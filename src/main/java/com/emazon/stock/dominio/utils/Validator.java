@@ -16,15 +16,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import static com.emazon.stock.dominio.utils.ConstantsDominio.PROPERTY_NAME;
+import static com.emazon.stock.dominio.utils.ConstantsDominio.*;
 
 public class Validator {
-    private static final String CATEGORY = "Category";
-    private static final String BRAND="Brand";
-    private static final String PROPERTY_DESCRIPTION = "Description";
-    private static final Long MAX_NAME_LENGTH = 50L;
-    private static final Long CATEGORY_MAX_DESCRIPTION_LENGTH = 90L;
-    private static final Long BRAND_MAX_DESCRIPTION_LENGTH = 120L;
     private static final String[] TYPE_EXCEPTIONS = { "Exist","Required", "TooLong" };
 
     private Validator() {
@@ -56,7 +50,7 @@ public class Validator {
         }
     }
     private static void validateName(String name,String className) {
-        validateString(name, className, PROPERTY_NAME, MAX_NAME_LENGTH);
+        validateString(name, className, PROPERTY_NAME, getMaxNameLengthByClass(className));
     }
 
     private static void validateDescription(String description,String className) {
@@ -66,6 +60,13 @@ public class Validator {
         return switch (className) {
             case CATEGORY -> CATEGORY_MAX_DESCRIPTION_LENGTH;
             case BRAND -> BRAND_MAX_DESCRIPTION_LENGTH;
+            default -> throw new IllegalArgumentException("Unknown class name: " + className);
+        };
+    }
+    private static Long getMaxNameLengthByClass(String className){
+        return switch (className) {
+            case CATEGORY -> CATEGORY_MAX_NAME_LENGTH;
+            case BRAND -> BRAND_MAX_NAME_LENGTH;
             default -> throw new IllegalArgumentException("Unknown class name: " + className);
         };
     }

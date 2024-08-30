@@ -1,30 +1,45 @@
 package com.emazon.stock.infraestructura.exceptionhandler;
 
+import static com.emazon.stock.dominio.utils.ConstantsDominio.NOT_FOUND;
+import static com.emazon.stock.dominio.utils.ConstantsDominio.ALREADY_EXISTS;
+import static com.emazon.stock.dominio.utils.ConstantsDominio.DESCRIPTION_TOO_LONG;
+import static com.emazon.stock.dominio.utils.ConstantsDominio.NAME_TOO_LONG;
+import static com.emazon.stock.dominio.utils.ConstantsDominio.DESCRIPTION_REQUIRED;
+import static com.emazon.stock.dominio.utils.ConstantsDominio.NAME_REQUIRED;
+import static com.emazon.stock.dominio.utils.ConstantsDominio.PAGE_SORT_IS_INVALID;
+import static com.emazon.stock.dominio.utils.ConstantsDominio.PAGE_NUMBER_IS_INVALID;
+import static com.emazon.stock.dominio.utils.ConstantsDominio.PAGE_SIZE_IS_INVALID;
+import static com.emazon.stock.dominio.utils.ConstantsDominio.CATEGORY_MAX_DESCRIPTION_LENGTH;
+import static com.emazon.stock.dominio.utils.ConstantsDominio.CATEGORY_MAX_NAME_LENGTH;
+import static com.emazon.stock.dominio.utils.ConstantsDominio.BRAND_MAX_DESCRIPTION_LENGTH;
+import static com.emazon.stock.dominio.utils.ConstantsDominio.BRAND_MAX_NAME_LENGTH;
+import static com.emazon.stock.dominio.utils.ConstantsDominio.CATEGORY;
+import static com.emazon.stock.dominio.utils.ConstantsDominio.BRAND;
+import static java.lang.String.format;
+
 public enum ExceptionResponse {
-    CATEGORY_NOT_FOUND("No Category was found with that number"),
-    CATEGORY_ALREADY_EXISTS("There is already a Category with that name"),
-    CATEGORY_DESCRIPTION_TOO_LONG("The Category description has a maximum allowed characters of 90"),
-    CATEGORY_NAME_TOO_LONG("The Category name has a maximum allowed characters of 50"),
-    CATEGORY_DESCRIPTION_REQUIRED("Category description cannot be null or empty."),
-    CATEGORY_NAME_REQUIRED("Category name cannot be null or empty."),
-    CATEGORY_PAGE_SORT_DIRECTION_IS_INVALID("The sort direction for retrieving categories is invalid. Please use 'ASC' for ascending or 'DESC' for descending."),
-    CATEGORY_PAGE_NUMBER_IS_INVALID("The page number for categories must be greater than or equal to zero."),
-    CATEGORY_PAGE_SIZE_NUMBER_IS_INVALID("The page number for retrieving categories must be greater than or equal to zero."),
-
-    BRAND_NOT_FOUND("No Brand was found with that number"),
-    BRAND_ALREADY_EXISTS("There is already a Brand with that name"),
-    BRAND_DESCRIPTION_TOO_LONG("The Brand description has a maximum allowed characters of 90"),
-    BRAND_NAME_TOO_LONG("The Brand name has a maximum allowed characters of 50"),
-    BRAND_DESCRIPTION_REQUIRED("Brand description cannot be null or empty."),
-    BRAND_NAME_REQUIRED("Brand name cannot be null or empty.");
-
-
+    CATEGORY_NOT_FOUND(format(NOT_FOUND,CATEGORY)),
+    CATEGORY_ALREADY_EXISTS(format(ALREADY_EXISTS,CATEGORY)),
+    CATEGORY_DESCRIPTION_TOO_LONG(format(DESCRIPTION_TOO_LONG,CATEGORY,CATEGORY_MAX_DESCRIPTION_LENGTH)),
+    CATEGORY_NAME_TOO_LONG(format(NAME_TOO_LONG,CATEGORY,CATEGORY_MAX_NAME_LENGTH)),
+    CATEGORY_DESCRIPTION_REQUIRED(format(DESCRIPTION_REQUIRED,CATEGORY)),
+    CATEGORY_NAME_REQUIRED(format(NAME_REQUIRED,CATEGORY)),
+    CATEGORY_PAGE_SORT_DIRECTION_IS_INVALID(format(PAGE_SORT_IS_INVALID,CATEGORY)),
+    CATEGORY_PAGE_NUMBER_IS_INVALID(format(PAGE_NUMBER_IS_INVALID,CATEGORY)),
+    CATEGORY_PAGE_SIZE_NUMBER_IS_INVALID(format(PAGE_SIZE_IS_INVALID,CATEGORY)),
+    BRAND_NOT_FOUND(format(NOT_FOUND,BRAND)),
+    BRAND_ALREADY_EXISTS(format(ALREADY_EXISTS,BRAND)),
+    BRAND_DESCRIPTION_TOO_LONG(format(DESCRIPTION_TOO_LONG,BRAND,BRAND_MAX_DESCRIPTION_LENGTH)),
+    BRAND_NAME_TOO_LONG(format(NAME_TOO_LONG,BRAND,BRAND_MAX_NAME_LENGTH)),
+    BRAND_DESCRIPTION_REQUIRED(format(DESCRIPTION_REQUIRED,BRAND)),
+    BRAND_NAME_REQUIRED(format(NAME_REQUIRED,BRAND)),
+    BRAND_PAGE_SORT_DIRECTION_IS_INVALID(format(PAGE_SORT_IS_INVALID,BRAND)),
+    BRAND_PAGE_NUMBER_IS_INVALID(format(PAGE_NUMBER_IS_INVALID,BRAND)),
+    BRAND_PAGE_SIZE_NUMBER_IS_INVALID(format(PAGE_SIZE_IS_INVALID,BRAND));
     private final String message;
-
     ExceptionResponse(String message) {
         this.message = message;
     }
-
     public String getMessage() {
         return this.message;
     }

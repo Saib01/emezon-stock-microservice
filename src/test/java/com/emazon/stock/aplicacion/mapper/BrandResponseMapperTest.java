@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
+import java.util.List;
 
 import static com.emazon.stock.constants.TestConstants.VALID_BRAND_DESCRIPTION;
 import static com.emazon.stock.constants.TestConstants.VALID_BRAND_NAME;
@@ -27,6 +28,15 @@ class BrandResponseMapperTest {
 
         assertThat(result).isNotNull();
         assertBrandEqual(brand,result);
+    }
+    @Test
+    @DisplayName("Should map List<Brand> to List<BrandResponse> correctly")
+    void toBrandResponsesList() {
+        List<Brand> brandList=List.of(brand);
+        List<BrandResponse> result=brandResponseMapper.toBrandResponsesList(brandList);
+
+        assertThat(brandList).hasSameSizeAs(result);
+        assertBrandEqual(brandList.get(0),result.get(0));
     }
     
     private void assertBrandEqual(Brand brand, BrandResponse brandResponse){
