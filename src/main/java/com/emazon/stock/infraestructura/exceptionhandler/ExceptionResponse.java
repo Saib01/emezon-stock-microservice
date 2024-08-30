@@ -19,7 +19,7 @@ public enum ExceptionResponse {
     BRAND_NAME_REQUIRED("Brand name cannot be null or empty.");
 
 
-    private String message;
+    private final String message;
 
     ExceptionResponse(String message) {
         this.message = message;

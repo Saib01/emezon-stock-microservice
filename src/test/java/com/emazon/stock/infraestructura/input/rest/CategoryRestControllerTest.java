@@ -1,9 +1,5 @@
 package com.emazon.stock.infraestructura.input.rest;
 
-import static com.emazon.stock.constants.TestConstants.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.mockito.Mockito.*;
 import com.emazon.stock.aplicacion.dtos.CategoryRequest;
 import com.emazon.stock.aplicacion.dtos.CategoryResponse;
 import com.emazon.stock.aplicacion.handler.ICategoryHandler;
@@ -15,10 +11,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
+
+import static com.emazon.stock.constants.TestConstants.VALID_ID;
+import static com.emazon.stock.constants.TestConstants.VALID_CATEGORY_NAME;
+import static com.emazon.stock.constants.TestConstants.VALID_CATEGORY_DESCRIPTION;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -39,6 +49,7 @@ class CategoryRestControllerTest {
         categoryResponse = new CategoryResponse(VALID_ID, VALID_CATEGORY_NAME, VALID_CATEGORY_DESCRIPTION);
     }
 
+
     @Test
     @DisplayName("Should Save Category Successfully")
     void testSaveCategory() throws Exception {
@@ -54,7 +65,7 @@ class CategoryRestControllerTest {
     @DisplayName("Should Return List of Categories")
     void testGetCategories() throws Exception {
         Pageable pageable = PageRequest.of(0, 10);
-        Page categoryResponsePage = new PageImpl<>(List.of(categoryResponse), pageable, 1);
+        Page<CategoryResponse> categoryResponsePage = new PageImpl<>(List.of(categoryResponse), pageable, 1);
         when(categoryHandler.getCategoriesByName(0, 10, "ASC")).thenReturn(categoryResponsePage);
         mockMvc.perform(get("/category")
                 .param("sortDirection", "ASC")

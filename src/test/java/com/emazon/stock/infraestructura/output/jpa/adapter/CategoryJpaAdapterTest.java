@@ -12,18 +12,30 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.data.domain.*;
-
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
 import java.util.List;
 import java.util.Optional;
 
-import static com.emazon.stock.constants.TestConstants.*;
+import static com.emazon.stock.constants.TestConstants.VALID_ID;
+import static com.emazon.stock.constants.TestConstants.INVALID_ID;
+import static com.emazon.stock.constants.TestConstants.VALID_CATEGORY_DESCRIPTION;
+import static com.emazon.stock.constants.TestConstants.VALID_CATEGORY_NAME;
+import static com.emazon.stock.constants.TestConstants.VALID_TOTAL_ELEMENTS;
+import static com.emazon.stock.constants.TestConstants.VALID_TOTAL_PAGES;
+import static com.emazon.stock.constants.TestConstants.VALID_PAGE;
+import static com.emazon.stock.constants.TestConstants.VALID_SIZE;
 import static com.emazon.stock.dominio.utils.ConstantsDominio.PROPERTY_NAME;
 import static com.emazon.stock.dominio.utils.PageValidator.DIRECTION_ASC;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.when;
 class CategoryJpaAdapterTest {
 
     @Mock
@@ -87,9 +99,7 @@ class CategoryJpaAdapterTest {
     @DisplayName("Should throw CategoryNotFoundException when category is not found")
     void getCategoryWhenNotFoundShouldThrowException() {
         when(categoryRepository.findById(INVALID_ID)).thenReturn(Optional.empty());
-        assertThrows(CategoryNotFoundException.class, () -> {
-            categoryJpaAdapter.getCategory(INVALID_ID);
-        });
+        assertThrows(CategoryNotFoundException.class, () -> categoryJpaAdapter.getCategory(INVALID_ID));
     }
 
     @Test

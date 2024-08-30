@@ -1,7 +1,15 @@
 package com.emazon.stock.dominio.utils;
 
-import com.emazon.stock.dominio.exeption.brand.*;
-import com.emazon.stock.dominio.exeption.category.*;
+import com.emazon.stock.dominio.exeption.brand.BrandNameTooLongException;
+import com.emazon.stock.dominio.exeption.brand.BrandNameRequiredException;
+import com.emazon.stock.dominio.exeption.brand.BrandDescriptionRequiredException;
+import com.emazon.stock.dominio.exeption.brand.BrandDescriptionTooLongException;
+import com.emazon.stock.dominio.exeption.brand.BrandAlreadyExistException;
+import com.emazon.stock.dominio.exeption.category.CategoryNameTooLongException;
+import com.emazon.stock.dominio.exeption.category.CategoryNameRequiredException;
+import com.emazon.stock.dominio.exeption.category.CategoryDescriptionRequiredException;
+import com.emazon.stock.dominio.exeption.category.CategoryDescriptionTooLongException;
+import com.emazon.stock.dominio.exeption.category.CategoryAlreadyExistException;
 import com.emazon.stock.dominio.modelo.INamedDescriptiveModel;
 
 import java.util.HashMap;

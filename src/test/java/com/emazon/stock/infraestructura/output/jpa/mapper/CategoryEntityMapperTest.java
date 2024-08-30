@@ -1,6 +1,5 @@
 package com.emazon.stock.infraestructura.output.jpa.mapper;
 
-
 import com.emazon.stock.dominio.modelo.Category;
 import com.emazon.stock.dominio.modelo.PageStock;
 import com.emazon.stock.infraestructura.output.jpa.entity.CategoryEntity;
@@ -8,11 +7,19 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
-import org.springframework.data.domain.*;
-
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
 import java.util.List;
 
-import static com.emazon.stock.constants.TestConstants.*;
+import static com.emazon.stock.constants.TestConstants.VALID_CATEGORY_DESCRIPTION;
+import static com.emazon.stock.constants.TestConstants.VALID_CATEGORY_NAME;
+import static com.emazon.stock.constants.TestConstants.VALID_ID;
+import static com.emazon.stock.constants.TestConstants.VALID_PAGE;
+import static com.emazon.stock.constants.TestConstants.VALID_SIZE;
+import static com.emazon.stock.constants.TestConstants.VALID_TOTAL_ELEMENTS;
 import static com.emazon.stock.dominio.utils.ConstantsDominio.PROPERTY_NAME;
 import static com.emazon.stock.dominio.utils.PageValidator.DIRECTION_ASC;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,6 +35,7 @@ class CategoryEntityMapperTest {
         categoryEntity = new CategoryEntity(VALID_ID, VALID_CATEGORY_NAME, VALID_CATEGORY_DESCRIPTION);
     }
     @Test
+    @DisplayName("Should map CategoryEntity to Category correctly")
     void toCategory() {
         Category result= categoryEntityMapper.toCategory(categoryEntity);
 
