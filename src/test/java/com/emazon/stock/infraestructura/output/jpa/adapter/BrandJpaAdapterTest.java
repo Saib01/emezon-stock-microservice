@@ -2,6 +2,7 @@ package com.emazon.stock.infraestructura.output.jpa.adapter;
 
 import com.emazon.stock.dominio.exeption.brand.BrandNotFoundException;
 import com.emazon.stock.dominio.modelo.Brand;
+import com.emazon.stock.dominio.modelo.PageStock;
 import com.emazon.stock.infraestructura.output.jpa.entity.BrandEntity;
 import com.emazon.stock.infraestructura.output.jpa.mapper.BrandEntityMapper;
 import com.emazon.stock.infraestructura.output.jpa.repository.IBrandRepository;
@@ -11,13 +12,27 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+
+import java.util.List;
 import java.util.Optional;
 
 import static com.emazon.stock.constants.TestConstants.VALID_ID;
 import static com.emazon.stock.constants.TestConstants.INVALID_ID;
-import static com.emazon.stock.constants.TestConstants.VALID_BRAND_NAME;
 import static com.emazon.stock.constants.TestConstants.VALID_BRAND_DESCRIPTION;
+import static com.emazon.stock.constants.TestConstants.VALID_BRAND_NAME;
+import static com.emazon.stock.constants.TestConstants.VALID_TOTAL_ELEMENTS;
+import static com.emazon.stock.constants.TestConstants.VALID_TOTAL_PAGES;
+import static com.emazon.stock.constants.TestConstants.VALID_PAGE;
+import static com.emazon.stock.constants.TestConstants.VALID_SIZE;
+import static com.emazon.stock.dominio.utils.ConstantsDominio.PROPERTY_NAME;
+import static com.emazon.stock.dominio.utils.ConstantsDominio.DIRECTION_ASC;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
@@ -79,4 +94,23 @@ class BrandJpaAdapterTest {
 
         verify((brandRepository), times(1)).existsByName(VALID_BRAND_NAME);
     }
+
+    @Test
+    @DisplayName("Should retrieve brands by name with pagination and sorting")
+    void getBrandsByName() {
+        Pageable pageable = PageRequest.of(VALID_PAGE, VALID_SIZE,
+                Sort.by(Sort.Direction.fromString(DIRECTION_ASC), PROPERTY_NAME.toLowerCase()));
+        Page<BrandEntity> brandEntityPage = new PageImpl<>(List.of(brandEntity), pageable, VALID_TOTAL_ELEMENTS);
+        PageStock<Brand> expectedBrandPageStock = new PageStock<>(List.of(brand),VALID_TOTAL_ELEMENTS,VALID_TOTAL_PAGES);
+
+        when(brandRepository.findAll(pageable)).thenReturn(brandEntityPage);
+        when(brandEntityMapper.toPageStock(brandEntityPage)).thenReturn(expectedBrandPageStock);
+
+        PageStock<Brand> actualBrandPageStock = brandJpaAdapter.getBrandsByName(VALID_PAGE, VALID_SIZE, DIRECTION_ASC);
+
+        assertEquals(expectedBrandPageStock,actualBrandPageStock);
+        verify(brandRepository, times(1)).findAll(pageable);
+        verify(brandEntityMapper, times(1)).toPageStock(brandEntityPage);
+    }
+
 }
