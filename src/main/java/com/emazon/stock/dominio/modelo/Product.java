@@ -4,10 +4,10 @@ import java.util.List;
 
 public class Product extends ModelBase{
     private Integer amount;
-    private Integer price;
+    private Double price;
     private Brand brand;
     private List<Category> categoryList;
-    public Product(Long id, String name, String description, Integer amount, Integer price, Brand brand, List<Category> categoryList) {
+    public Product(Long id, String name, String description, Integer amount, Double price, Brand brand, List<Category> categoryList) {
         super(id, name, description);
         this.amount = amount;
         this.price = price;
@@ -22,11 +22,11 @@ public class Product extends ModelBase{
         this.amount = amount;
     }
 
-    public Integer getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(Integer price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 

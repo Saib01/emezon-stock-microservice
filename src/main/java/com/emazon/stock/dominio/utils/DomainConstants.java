@@ -13,15 +13,15 @@ public class DomainConstants {
     public static final Long BRAND_MAX_DESCRIPTION_LENGTH = 120L;
 
     public static final String PRODUCT="Product";
-    public static final Long ZERO=0L;
+    public static final int ZERO=0;
     public static final String PROPERTY_AMOUNT="Amount";
     public static final String PROPERTY_PRICE = "Price";
     public static final String PROPERTY_ID = "Id";
 
     public static final String PROPERTY_NAME = "Name";
     public static final String PROPERTY_DESCRIPTION = "Description";
-    public static final Long PRODUCT_MAX_CATEGORY=3L;
-    public static final Long PRODUCT_MIN_CATEGORY=1L;
+    public static final int PRODUCT_MAX_CATEGORY=3;
+    public static final int PRODUCT_MIN_CATEGORY=1;
 
 
     private DomainConstants() {

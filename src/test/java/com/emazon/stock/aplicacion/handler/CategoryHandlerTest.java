@@ -23,6 +23,7 @@ import static com.emazon.stock.dominio.utils.Direction.ASC;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -62,17 +63,24 @@ class CategoryHandlerTest {
     void testSaveCategory() {
         CategoryRequest categoryRequest = new CategoryRequest();
         when(categoryRequestMapper.toCategory(categoryRequest)).thenReturn(category);
+
+        ArgumentCaptor<Category> categoryCaptor = ArgumentCaptor.forClass(Category.class);
+
         categoryHandler.saveCategory(categoryRequest);
-        verify(categoryServicePort).saveCategory(category);
+        verify(categoryServicePort).saveCategory(categoryCaptor.capture());
+        assertEquals(categoryCaptor.getValue(), category);
     }
 
     @Test
     @DisplayName("Should get Category")
     void testGetCategory() {
         CategoryResponse categoryResponse = new CategoryResponse();
+
         when(categoryServicePort.getCategory(VALID_ID)).thenReturn(category);
         when(categoryResponseMapper.toCategoryResponse(category)).thenReturn(categoryResponse);
+
         CategoryResponse result = categoryHandler.getCategory(VALID_ID);
+
         assertEquals(categoryResponse, result);
         verify(categoryServicePort).getCategory(VALID_ID);
         verify(categoryResponseMapper).toCategoryResponse(category);

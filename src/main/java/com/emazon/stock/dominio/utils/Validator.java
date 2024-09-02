@@ -51,7 +51,7 @@ public class Validator {
 
         validateIsNotNullOrEmpty(product.getName(),PRODUCT,PROPERTY_NAME);
         validateIsNotNullOrEmpty(product.getDescription(),PRODUCT,PROPERTY_DESCRIPTION);
-        validateIsGreaterThanZero(product.getAmount(),PRODUCT,PROPERTY_AMOUNT);
+        validateIsGreaterThanZero(Double.valueOf(product.getAmount()),PRODUCT,PROPERTY_AMOUNT);
         validateIsGreaterThanZero(product.getPrice(),PRODUCT,PROPERTY_PRICE);
         validateExistsInDataBase(brandPersistencePort, product.getBrand());
         validateNonDuplicateAndSize(product.getCategoryList());
@@ -76,13 +76,13 @@ public class Validator {
         Set<Long> uniqueCategoryIds = new HashSet<>();
         categoryList.stream()
                 .map(Category::getId)
-                .filter(id-> id != null && id>ZERO)
+                .filter(id-> id != null)
                 .forEach(uniqueCategoryIds::add);
         if(uniqueCategoryIds.size()!= categoryList.size()){
             throw new CategoryDuplicateException();
         }
     }
-    private static void validateIsGreaterThanZero(int number,String modelName, String property){
+    private static void validateIsGreaterThanZero(Double number,String modelName, String property){
         if (number<=ZERO) {
             throw getExceptionForKey(modelName, property, TYPE_EXCEPTIONS[3]);
         }

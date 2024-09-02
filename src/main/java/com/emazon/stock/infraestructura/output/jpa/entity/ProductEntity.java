@@ -25,7 +25,7 @@ public class ProductEntity {
     @Column(nullable = false)
     private Integer amount;
     @Column(nullable = false)
-    private Integer price;
+    private Double price;
     @ManyToOne
     @JoinColumn(name = "brand_id")
     private BrandEntity brandEntity;

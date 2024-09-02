@@ -9,6 +9,7 @@ import com.emazon.stock.infraestructura.output.jpa.repository.ICategoryRepositor
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -59,8 +60,11 @@ class CategoryJpaAdapterTest {
         when(categoryEntityMapper.toCategoryEntity(category)).thenReturn(categoryEntity);
         categoryJpaAdapter.saveCategory(category);
 
+        ArgumentCaptor<CategoryEntity> categoryEntityCaptor= ArgumentCaptor.forClass(CategoryEntity.class);
+
         verify(categoryEntityMapper, times(1)).toCategoryEntity(category);
-        verify(categoryRepository, times(1)).save(categoryEntity);
+        verify(categoryRepository, times(1)).save(categoryEntityCaptor.capture());
+        assertEquals(categoryEntityCaptor.getValue(), categoryEntity);
     }
 
     @Test

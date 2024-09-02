@@ -10,6 +10,7 @@ import com.emazon.stock.dominio.modelo.PageStock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -31,8 +32,7 @@ import static com.emazon.stock.utils.TestConstants.VALID_TOTAL_ELEMENTS;
 import static com.emazon.stock.dominio.utils.DomainConstants.PROPERTY_NAME;
 import static com.emazon.stock.dominio.utils.Direction.ASC;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class BrandHandlerTest {
 
@@ -61,18 +61,27 @@ class BrandHandlerTest {
     @DisplayName("Should save brand correctly")
     void testSaveBrand() {
         BrandRequest brandRequest = new BrandRequest();
+
         when(brandRequestMapper.toBrand(brandRequest)).thenReturn(brand);
+
         brandHandler.saveBrand(brandRequest);
-        verify(brandServicePort).saveBrand(brand);
+
+        ArgumentCaptor<Brand> brandRequestCaptor = ArgumentCaptor.forClass(Brand.class);
+
+        verify(brandServicePort).saveBrand(brandRequestCaptor.capture());
+        assertEquals(brandRequestCaptor.getValue(), brand);
     }
 
     @Test
     @DisplayName("Should get brand")
     void testGetBrand() {
         BrandResponse brandResponse = new BrandResponse();
+
         when(brandServicePort.getBrand(VALID_ID)).thenReturn(brand);
         when(brandResponseMapper.toBrandResponse(brand)).thenReturn(brandResponse);
+
         BrandResponse result = brandHandler.getBrand(VALID_ID);
+
         assertEquals(brandResponse, result);
         verify(brandServicePort).getBrand(VALID_ID);
         verify(brandResponseMapper).toBrandResponse(brand);

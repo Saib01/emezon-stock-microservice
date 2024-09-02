@@ -9,6 +9,7 @@ import com.emazon.stock.infraestructura.output.jpa.repository.IBrandRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -61,8 +62,10 @@ class BrandJpaAdapterTest {
         when(brandEntityMapper.toBrandEntity(brand)).thenReturn(brandEntity);
         brandJpaAdapter.saveBrand(brand);
 
+        ArgumentCaptor<BrandEntity> brandEntityCaptor= ArgumentCaptor.forClass(BrandEntity.class);
         verify(brandEntityMapper, times(1)).toBrandEntity(brand);
-        verify(brandRepository, times(1)).save(brandEntity);
+        verify(brandRepository, times(1)).save(brandEntityCaptor.capture());
+        assertEquals(brandEntityCaptor.getValue(),brandEntity);
     }
     
     @Test

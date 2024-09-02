@@ -15,7 +15,7 @@ public class ProductResponse {
     private String name;
     private String description;
     private Integer amount;
-    private Integer price;
+    private Double price;
     private BrandResponse brandResponse;
     private List<CategoryResponse> categoryResponseList;
 }

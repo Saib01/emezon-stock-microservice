@@ -14,6 +14,7 @@ import com.emazon.stock.dominio.spi.IBrandPersistencePort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -35,9 +36,8 @@ import static com.emazon.stock.utils.TestConstants.VALID_SIZE;
 import static com.emazon.stock.utils.TestConstants.INVALID_SIZE;
 import static com.emazon.stock.utils.TestConstants.VALID_TOTAL_ELEMENTS;
 import static com.emazon.stock.utils.TestConstants.VALID_TOTAL_PAGES;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
@@ -64,7 +64,11 @@ class BrandUseCaseTest {
 
         brandUseCase.saveBrand(brand);
 
-        verify(brandPersistencePort, times(1)).saveBrand(brand);
+        ArgumentCaptor<Brand> brandCaptor = ArgumentCaptor.forClass(Brand.class);
+
+        verify(brandPersistencePort, times(1)).saveBrand(brandCaptor.capture());
+        assertEquals(brandCaptor.getValue(), brand);
+
     }
 
     @Test
@@ -79,39 +83,34 @@ class BrandUseCaseTest {
 
         verify(brandPersistencePort, never()).saveBrand(brand);
     }
+
     @Test
-    @DisplayName("Should not save brand when name is empty")
-    void shouldNotSaveBrandWhenNameIsEmpty() {
-        brand.setName(EMPTY_PROPERTY);
-        assertThrows(BrandNameRequiredException.class,
-                () -> brandUseCase.saveBrand(brand)
+    @DisplayName("Should not save brand when name is empty or null")
+    void shouldNotSaveBrandWhenNameIsEmptyOrNull() {
+        assertAll(
+                () -> {
+                    brand.setName(EMPTY_PROPERTY);
+                    assertThrows(BrandNameRequiredException.class, () -> brandUseCase.saveBrand(brand));
+                },
+                () -> {
+                    brand.setName(NULL_PROPERTY);
+                    assertThrows(BrandNameRequiredException.class, () -> brandUseCase.saveBrand(brand));
+                }
         );
     }
 
     @Test
-    @DisplayName("Should not save brand when name is null")
-    void shouldNotSaveBrandWhenNameIsNull() {
-        brand.setName(NULL_PROPERTY);
-        assertThrows(BrandNameRequiredException.class,
-                () -> brandUseCase.saveBrand(brand)
-        );
-    }
-
-    @Test
-    @DisplayName("Should not save brand when description is null")
-    void shouldNotSaveBrandWhenDescriptionIsNull() {
-        brand.setDescription(NULL_PROPERTY);
-        assertThrows(BrandDescriptionRequiredException.class,
-                () -> brandUseCase.saveBrand(brand)
-        );
-    }
-
-    @DisplayName("Should not save brand when description is empty")
-    @Test
-    void shouldNotSaveBrandWhenDescriptionIsEmpty() {
-        brand.setDescription(EMPTY_PROPERTY);
-        assertThrows(BrandDescriptionRequiredException.class,
-                () -> brandUseCase.saveBrand(brand)
+    @DisplayName("Should not save brand when description is empty or null")
+    void shouldNotSaveBrandWhenDescriptionIsEmptyOrNull() {
+        assertAll(
+                () -> {
+                    brand.setDescription(EMPTY_PROPERTY);
+                    assertThrows(BrandDescriptionRequiredException.class, () -> brandUseCase.saveBrand(brand));
+                },
+                () -> {
+                    brand.setDescription(NULL_PROPERTY);
+                    assertThrows(BrandDescriptionRequiredException.class, () -> brandUseCase.saveBrand(brand));
+                }
         );
     }
 
@@ -142,9 +141,7 @@ class BrandUseCaseTest {
         Brand actualBrand = brandUseCase.getBrand(VALID_ID);
 
         assertNotNull(actualBrand);
-        assertEquals(brand.getName(), actualBrand.getName());
-        assertEquals(brand.getDescription(), actualBrand.getDescription());
-        assertEquals(brand.getId(), actualBrand.getId());
+        assertEquals(brand, actualBrand);
 
         verify(brandPersistencePort, times(1))
                 .getBrand(VALID_ID);
@@ -190,5 +187,6 @@ class BrandUseCaseTest {
                 () -> brandUseCase.getBrandsByName(VALID_PAGE, VALID_SIZE,INVALID_SORT_DIRECTION)
         );
     }
+
 
 }
