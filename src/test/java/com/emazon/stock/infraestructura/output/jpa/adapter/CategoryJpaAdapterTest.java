@@ -9,6 +9,7 @@ import com.emazon.stock.infraestructura.output.jpa.repository.ICategoryRepositor
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -20,16 +21,16 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 import java.util.Optional;
 
-import static com.emazon.stock.constants.TestConstants.VALID_ID;
-import static com.emazon.stock.constants.TestConstants.INVALID_ID;
-import static com.emazon.stock.constants.TestConstants.VALID_CATEGORY_DESCRIPTION;
-import static com.emazon.stock.constants.TestConstants.VALID_CATEGORY_NAME;
-import static com.emazon.stock.constants.TestConstants.VALID_TOTAL_ELEMENTS;
-import static com.emazon.stock.constants.TestConstants.VALID_TOTAL_PAGES;
-import static com.emazon.stock.constants.TestConstants.VALID_PAGE;
-import static com.emazon.stock.constants.TestConstants.VALID_SIZE;
-import static com.emazon.stock.dominio.utils.ConstantsDominio.PROPERTY_NAME;
-import static com.emazon.stock.dominio.utils.ConstantsDominio.DIRECTION_ASC;
+import static com.emazon.stock.utils.TestConstants.VALID_ID;
+import static com.emazon.stock.utils.TestConstants.INVALID_ID;
+import static com.emazon.stock.utils.TestConstants.VALID_CATEGORY_DESCRIPTION;
+import static com.emazon.stock.utils.TestConstants.VALID_CATEGORY_NAME;
+import static com.emazon.stock.utils.TestConstants.VALID_TOTAL_ELEMENTS;
+import static com.emazon.stock.utils.TestConstants.VALID_TOTAL_PAGES;
+import static com.emazon.stock.utils.TestConstants.VALID_PAGE;
+import static com.emazon.stock.utils.TestConstants.VALID_SIZE;
+import static com.emazon.stock.dominio.utils.DomainConstants.PROPERTY_NAME;
+import static com.emazon.stock.dominio.utils.Direction.ASC;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -59,22 +60,25 @@ class CategoryJpaAdapterTest {
         when(categoryEntityMapper.toCategoryEntity(category)).thenReturn(categoryEntity);
         categoryJpaAdapter.saveCategory(category);
 
+        ArgumentCaptor<CategoryEntity> categoryEntityCaptor= ArgumentCaptor.forClass(CategoryEntity.class);
+
         verify(categoryEntityMapper, times(1)).toCategoryEntity(category);
-        verify(categoryRepository, times(1)).save(categoryEntity);
+        verify(categoryRepository, times(1)).save(categoryEntityCaptor.capture());
+        assertEquals(categoryEntityCaptor.getValue(), categoryEntity);
     }
 
     @Test
     @DisplayName("Should retrieve categories by name with pagination and sorting")
     void getCategoriesByName() {
         Pageable pageable = PageRequest.of(VALID_PAGE, VALID_SIZE,
-                Sort.by(Sort.Direction.fromString(DIRECTION_ASC), PROPERTY_NAME.toLowerCase()));
+                Sort.by(Sort.Direction.fromString(ASC), PROPERTY_NAME.toLowerCase()));
         Page<CategoryEntity> categoryEntityPage = new PageImpl<>(List.of(categoryEntity), pageable, VALID_TOTAL_ELEMENTS);
         PageStock<Category> expectedCategoryPageStock = new PageStock<>(List.of(category),VALID_TOTAL_ELEMENTS,VALID_TOTAL_PAGES);
 
         when(categoryRepository.findAll(pageable)).thenReturn(categoryEntityPage);
         when(categoryEntityMapper.toPageStock(categoryEntityPage)).thenReturn(expectedCategoryPageStock);
 
-        PageStock<Category> actualCategoryPageStock = categoryJpaAdapter.getCategoriesByName(VALID_PAGE, VALID_SIZE, DIRECTION_ASC);
+        PageStock<Category> actualCategoryPageStock = categoryJpaAdapter.getCategoriesByName(VALID_PAGE, VALID_SIZE, ASC);
 
         assertEquals(expectedCategoryPageStock,actualCategoryPageStock);
         verify(categoryRepository, times(1)).findAll(pageable);
@@ -106,7 +110,7 @@ class CategoryJpaAdapterTest {
     @DisplayName("Should retrieve category by name")
     void findByName() {
         when(categoryRepository.existsByName(VALID_CATEGORY_NAME)).thenReturn(true);
-        categoryJpaAdapter.findByName(VALID_CATEGORY_NAME);
+        categoryJpaAdapter.existsByName(VALID_CATEGORY_NAME);
 
         verify((categoryRepository), times(1)).existsByName(VALID_CATEGORY_NAME);
     }

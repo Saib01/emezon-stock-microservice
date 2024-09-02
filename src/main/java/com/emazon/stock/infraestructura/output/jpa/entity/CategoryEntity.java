@@ -1,9 +1,12 @@
 package com.emazon.stock.infraestructura.output.jpa.entity;
 
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Table(name="category")
@@ -19,4 +22,12 @@ public class CategoryEntity {
     private String name;
     @Column(nullable = false,columnDefinition = "CHAR(90)")
     private String description;
+    @ManyToMany(mappedBy = "categoryEntityList",fetch = FetchType.LAZY)
+    private List<ProductEntity> productEntities ;
+
+    public CategoryEntity(Long id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+    }
 }

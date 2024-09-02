@@ -7,7 +7,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.MockitoAnnotations;
+import static org.assertj.core.api.Assertions.assertThat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,16 +23,14 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
-import static com.emazon.stock.constants.TestConstants.VALID_PAGE;
-import static com.emazon.stock.constants.TestConstants.VALID_ID;
-import static com.emazon.stock.constants.TestConstants.VALID_SIZE;
-import static com.emazon.stock.constants.TestConstants.VALID_BRAND_NAME;
-import static com.emazon.stock.constants.TestConstants.VALID_BRAND_DESCRIPTION;
-import static com.emazon.stock.constants.TestConstants.VALID_TOTAL_ELEMENTS;
-import static com.emazon.stock.dominio.utils.ConstantsDominio.DIRECTION_ASC;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static com.emazon.stock.utils.TestConstants.VALID_PAGE;
+import static com.emazon.stock.utils.TestConstants.VALID_ID;
+import static com.emazon.stock.utils.TestConstants.VALID_SIZE;
+import static com.emazon.stock.utils.TestConstants.VALID_BRAND_NAME;
+import static com.emazon.stock.utils.TestConstants.VALID_BRAND_DESCRIPTION;
+import static com.emazon.stock.utils.TestConstants.VALID_TOTAL_ELEMENTS;
+import static com.emazon.stock.dominio.utils.Direction.ASC;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -59,17 +59,27 @@ class BrandRestControllerTest {
     @Test
     @DisplayName("Should Save brand Successfully")
     void testSaveBrand() throws Exception {
-        doNothing().when(brandHandler).saveBrand(any(BrandRequest.class));
         BrandRequest brandRequest = new BrandRequest(VALID_ID, VALID_BRAND_NAME, VALID_BRAND_DESCRIPTION);
+
+        doNothing().when(brandHandler).saveBrand(brandRequest);
+
         mockMvc.perform(post("/brand/")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(brandRequest)))
                 .andExpect(status().isCreated());
+        ArgumentCaptor<BrandRequest> brandRequestCaptor = ArgumentCaptor.forClass(BrandRequest.class);
+
+        verify(brandHandler, times(1)).saveBrand(brandRequestCaptor.capture());
+
+        assertThat(brandRequestCaptor.getValue().getId()).isEqualTo(brandRequest.getId());
+        assertThat(brandRequestCaptor.getValue().getName()).isEqualTo(brandRequest.getName());
+        assertThat(brandRequestCaptor.getValue().getDescription()).isEqualTo(brandRequest.getDescription());
     }
     @Test
     @DisplayName("Should Retrieve brand By ID")
     void testGetBrandById() throws Exception {
         when(brandHandler.getBrand(VALID_ID)).thenReturn(brandResponse);
+
         mockMvc.perform(get("/brand/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(VALID_ID))
@@ -82,9 +92,11 @@ class BrandRestControllerTest {
     void testGetBrands() throws Exception {
         Pageable pageable = PageRequest.of(VALID_PAGE,VALID_SIZE);
         Page<BrandResponse> brandResponsePage = new PageImpl<>(List.of(brandResponse), pageable, VALID_TOTAL_ELEMENTS);
-        when(brandHandler.getBrandsByName(VALID_PAGE, VALID_SIZE, DIRECTION_ASC)).thenReturn(brandResponsePage);
+
+        when(brandHandler.getBrandsByName(VALID_PAGE, VALID_SIZE, ASC)).thenReturn(brandResponsePage);
+
         mockMvc.perform(get("/brand")
-                        .param("sortDirection", DIRECTION_ASC)
+                        .param("sortDirection", ASC)
                         .param("page", Integer.toString(VALID_PAGE))
                         .param("size", Integer.toString(VALID_SIZE)))
                 .andExpect(status().isOk())

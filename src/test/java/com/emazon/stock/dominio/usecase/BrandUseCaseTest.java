@@ -14,30 +14,30 @@ import com.emazon.stock.dominio.spi.IBrandPersistencePort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Collections;
 
-import static com.emazon.stock.constants.TestConstants.VALID_ID;
-import static com.emazon.stock.constants.TestConstants.INVALID_BRAND_NAME;
-import static com.emazon.stock.constants.TestConstants.VALID_BRAND_NAME;
-import static com.emazon.stock.constants.TestConstants.NULL_PROPERTY;
-import static com.emazon.stock.constants.TestConstants.EMPTY_PROPERTY;
-import static com.emazon.stock.constants.TestConstants.INVALID_BRAND_DESCRIPTION;
-import static com.emazon.stock.constants.TestConstants.VALID_BRAND_DESCRIPTION;
-import static com.emazon.stock.dominio.utils.ConstantsDominio.DIRECTION_ASC;
-import static com.emazon.stock.constants.TestConstants.INVALID_SORT_DIRECTION;
-import static com.emazon.stock.constants.TestConstants.VALID_PAGE;
-import static com.emazon.stock.constants.TestConstants.INVALID_PAGE;
-import static com.emazon.stock.constants.TestConstants.VALID_SIZE;
-import static com.emazon.stock.constants.TestConstants.INVALID_SIZE;
-import static com.emazon.stock.constants.TestConstants.VALID_TOTAL_ELEMENTS;
-import static com.emazon.stock.constants.TestConstants.VALID_TOTAL_PAGES;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static com.emazon.stock.utils.TestConstants.VALID_ID;
+import static com.emazon.stock.utils.TestConstants.INVALID_BRAND_NAME;
+import static com.emazon.stock.utils.TestConstants.VALID_BRAND_NAME;
+import static com.emazon.stock.utils.TestConstants.NULL_PROPERTY;
+import static com.emazon.stock.utils.TestConstants.EMPTY_PROPERTY;
+import static com.emazon.stock.utils.TestConstants.INVALID_BRAND_DESCRIPTION;
+import static com.emazon.stock.utils.TestConstants.VALID_BRAND_DESCRIPTION;
+import static com.emazon.stock.dominio.utils.Direction.ASC;
+import static com.emazon.stock.utils.TestConstants.INVALID_SORT_DIRECTION;
+import static com.emazon.stock.utils.TestConstants.VALID_PAGE;
+import static com.emazon.stock.utils.TestConstants.INVALID_PAGE;
+import static com.emazon.stock.utils.TestConstants.VALID_SIZE;
+import static com.emazon.stock.utils.TestConstants.INVALID_SIZE;
+import static com.emazon.stock.utils.TestConstants.VALID_TOTAL_ELEMENTS;
+import static com.emazon.stock.utils.TestConstants.VALID_TOTAL_PAGES;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
@@ -59,18 +59,22 @@ class BrandUseCaseTest {
     @Test
     @DisplayName("Should save the brand and verify that the persistence port method is called once")
     void saveBrand() {
-        when(this.brandPersistencePort.findByName(brand.getName()))
+        when(this.brandPersistencePort.existsByName(brand.getName()))
                 .thenReturn(false);
 
         brandUseCase.saveBrand(brand);
 
-        verify(brandPersistencePort, times(1)).saveBrand(brand);
+        ArgumentCaptor<Brand> brandCaptor = ArgumentCaptor.forClass(Brand.class);
+
+        verify(brandPersistencePort, times(1)).saveBrand(brandCaptor.capture());
+        assertEquals(brandCaptor.getValue(), brand);
+
     }
 
     @Test
     @DisplayName("Should not save the brand when the brand already exists")
     void shouldNotSaveBrandWhenBrandAlreadyExists() {
-        when(brandPersistencePort.findByName(brand.getName()))
+        when(brandPersistencePort.existsByName(brand.getName()))
                 .thenReturn(true);
 
         assertThrows(BrandAlreadyExistException.class,
@@ -79,39 +83,34 @@ class BrandUseCaseTest {
 
         verify(brandPersistencePort, never()).saveBrand(brand);
     }
+
     @Test
-    @DisplayName("Should not save brand when name is empty")
-    void shouldNotSaveBrandWhenNameIsEmpty() {
-        brand.setName(EMPTY_PROPERTY);
-        assertThrows(BrandNameRequiredException.class,
-                () -> brandUseCase.saveBrand(brand)
+    @DisplayName("Should not save brand when name is empty or null")
+    void shouldNotSaveBrandWhenNameIsEmptyOrNull() {
+        assertAll(
+                () -> {
+                    brand.setName(EMPTY_PROPERTY);
+                    assertThrows(BrandNameRequiredException.class, () -> brandUseCase.saveBrand(brand));
+                },
+                () -> {
+                    brand.setName(NULL_PROPERTY);
+                    assertThrows(BrandNameRequiredException.class, () -> brandUseCase.saveBrand(brand));
+                }
         );
     }
 
     @Test
-    @DisplayName("Should not save brand when name is null")
-    void shouldNotSaveBrandWhenNameIsNull() {
-        brand.setName(NULL_PROPERTY);
-        assertThrows(BrandNameRequiredException.class,
-                () -> brandUseCase.saveBrand(brand)
-        );
-    }
-
-    @Test
-    @DisplayName("Should not save brand when description is null")
-    void shouldNotSaveBrandWhenDescriptionIsNull() {
-        brand.setDescription(NULL_PROPERTY);
-        assertThrows(BrandDescriptionRequiredException.class,
-                () -> brandUseCase.saveBrand(brand)
-        );
-    }
-
-    @DisplayName("Should not save brand when description is empty")
-    @Test
-    void shouldNotSaveBrandWhenDescriptionIsEmpty() {
-        brand.setDescription(EMPTY_PROPERTY);
-        assertThrows(BrandDescriptionRequiredException.class,
-                () -> brandUseCase.saveBrand(brand)
+    @DisplayName("Should not save brand when description is empty or null")
+    void shouldNotSaveBrandWhenDescriptionIsEmptyOrNull() {
+        assertAll(
+                () -> {
+                    brand.setDescription(EMPTY_PROPERTY);
+                    assertThrows(BrandDescriptionRequiredException.class, () -> brandUseCase.saveBrand(brand));
+                },
+                () -> {
+                    brand.setDescription(NULL_PROPERTY);
+                    assertThrows(BrandDescriptionRequiredException.class, () -> brandUseCase.saveBrand(brand));
+                }
         );
     }
 
@@ -142,9 +141,7 @@ class BrandUseCaseTest {
         Brand actualBrand = brandUseCase.getBrand(VALID_ID);
 
         assertNotNull(actualBrand);
-        assertEquals(brand.getName(), actualBrand.getName());
-        assertEquals(brand.getDescription(), actualBrand.getDescription());
-        assertEquals(brand.getId(), actualBrand.getId());
+        assertEquals(brand, actualBrand);
 
         verify(brandPersistencePort, times(1))
                 .getBrand(VALID_ID);
@@ -158,29 +155,29 @@ class BrandUseCaseTest {
                 VALID_TOTAL_ELEMENTS,VALID_TOTAL_PAGES
         );
 
-        when(brandPersistencePort.getBrandsByName(VALID_PAGE, VALID_SIZE,DIRECTION_ASC))
+        when(brandPersistencePort.getBrandsByName(VALID_PAGE, VALID_SIZE,ASC))
                 .thenReturn(expectedBrandPageStock);
 
         PageStock<Brand> actualBrandPageStock=brandUseCase
-                .getBrandsByName(VALID_PAGE, VALID_SIZE,DIRECTION_ASC);
+                .getBrandsByName(VALID_PAGE, VALID_SIZE,ASC);
 
         assertEquals(expectedBrandPageStock, actualBrandPageStock);
 
         verify(brandPersistencePort, times(1))
-                .getBrandsByName(VALID_PAGE, VALID_SIZE,DIRECTION_ASC);
+                .getBrandsByName(VALID_PAGE, VALID_SIZE,ASC);
     }
     @Test
     @DisplayName("Should not return brand when the page number is invalid")
     void shouldNotGetBrandPageStockWhenPageNumberIsInvalid() {
         assertThrows(BrandPageNumberIsInvalidException.class,
-                () -> brandUseCase.getBrandsByName(INVALID_PAGE, VALID_SIZE,DIRECTION_ASC)
+                () -> brandUseCase.getBrandsByName(INVALID_PAGE, VALID_SIZE,ASC)
         );
     }
     @Test
     @DisplayName("Should not return brand when the page size is invalid")
     void shouldNotGetBrandPageStockWhenPageSizeIsInvalid() {
         assertThrows(BrandPageSizeIsInvalidException.class,
-                () -> brandUseCase.getBrandsByName(VALID_PAGE, INVALID_SIZE,DIRECTION_ASC)
+                () -> brandUseCase.getBrandsByName(VALID_PAGE, INVALID_SIZE,ASC)
         );
     }
     @Test
@@ -190,5 +187,6 @@ class BrandUseCaseTest {
                 () -> brandUseCase.getBrandsByName(VALID_PAGE, VALID_SIZE,INVALID_SORT_DIRECTION)
         );
     }
+
 
 }

@@ -13,15 +13,15 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Page;
 import java.util.List;
 
-import static com.emazon.stock.constants.TestConstants.VALID_CATEGORY_DESCRIPTION;
-import static com.emazon.stock.constants.TestConstants.VALID_CATEGORY_NAME;
-import static com.emazon.stock.constants.TestConstants.VALID_ID;
-import static com.emazon.stock.constants.TestConstants.VALID_PAGE;
-import static com.emazon.stock.constants.TestConstants.VALID_SIZE;
-import static com.emazon.stock.constants.TestConstants.VALID_TOTAL_ELEMENTS;
-import static com.emazon.stock.constants.TestConstants.VALID_TOTAL_PAGES;
-import static com.emazon.stock.dominio.utils.ConstantsDominio.PROPERTY_NAME;
-import static com.emazon.stock.dominio.utils.ConstantsDominio.DIRECTION_ASC;
+import static com.emazon.stock.utils.TestConstants.VALID_CATEGORY_DESCRIPTION;
+import static com.emazon.stock.utils.TestConstants.VALID_CATEGORY_NAME;
+import static com.emazon.stock.utils.TestConstants.VALID_ID;
+import static com.emazon.stock.utils.TestConstants.VALID_PAGE;
+import static com.emazon.stock.utils.TestConstants.VALID_SIZE;
+import static com.emazon.stock.utils.TestConstants.VALID_TOTAL_ELEMENTS;
+import static com.emazon.stock.utils.TestConstants.VALID_TOTAL_PAGES;
+import static com.emazon.stock.dominio.utils.DomainConstants.PROPERTY_NAME;
+import static com.emazon.stock.dominio.utils.Direction.ASC;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class CategoryResponseMapperTest {
@@ -47,7 +47,7 @@ class CategoryResponseMapperTest {
     void toCategoryResponsePage() {
         PageStock<Category> categories=new PageStock<>(List.of(category),VALID_TOTAL_ELEMENTS,VALID_TOTAL_PAGES);
         Pageable pageable = PageRequest.of(VALID_PAGE, VALID_SIZE,
-                Sort.by(Sort.Direction.fromString(DIRECTION_ASC),PROPERTY_NAME.toLowerCase()));
+                Sort.by(Sort.Direction.fromString(ASC),PROPERTY_NAME.toLowerCase()));
         Page<CategoryResponse> result =categoryResponseMapper.toCategoryResponsePage(categories,pageable);
 
         assertThat(categories.getTotalPages()).isEqualTo(result.getTotalPages());

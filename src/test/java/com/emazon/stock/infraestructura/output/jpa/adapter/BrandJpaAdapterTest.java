@@ -9,6 +9,7 @@ import com.emazon.stock.infraestructura.output.jpa.repository.IBrandRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -21,16 +22,16 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 import java.util.Optional;
 
-import static com.emazon.stock.constants.TestConstants.VALID_ID;
-import static com.emazon.stock.constants.TestConstants.INVALID_ID;
-import static com.emazon.stock.constants.TestConstants.VALID_BRAND_DESCRIPTION;
-import static com.emazon.stock.constants.TestConstants.VALID_BRAND_NAME;
-import static com.emazon.stock.constants.TestConstants.VALID_TOTAL_ELEMENTS;
-import static com.emazon.stock.constants.TestConstants.VALID_TOTAL_PAGES;
-import static com.emazon.stock.constants.TestConstants.VALID_PAGE;
-import static com.emazon.stock.constants.TestConstants.VALID_SIZE;
-import static com.emazon.stock.dominio.utils.ConstantsDominio.PROPERTY_NAME;
-import static com.emazon.stock.dominio.utils.ConstantsDominio.DIRECTION_ASC;
+import static com.emazon.stock.utils.TestConstants.VALID_ID;
+import static com.emazon.stock.utils.TestConstants.INVALID_ID;
+import static com.emazon.stock.utils.TestConstants.VALID_BRAND_DESCRIPTION;
+import static com.emazon.stock.utils.TestConstants.VALID_BRAND_NAME;
+import static com.emazon.stock.utils.TestConstants.VALID_TOTAL_ELEMENTS;
+import static com.emazon.stock.utils.TestConstants.VALID_TOTAL_PAGES;
+import static com.emazon.stock.utils.TestConstants.VALID_PAGE;
+import static com.emazon.stock.utils.TestConstants.VALID_SIZE;
+import static com.emazon.stock.dominio.utils.DomainConstants.PROPERTY_NAME;
+import static com.emazon.stock.dominio.utils.Direction.ASC;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -61,8 +62,10 @@ class BrandJpaAdapterTest {
         when(brandEntityMapper.toBrandEntity(brand)).thenReturn(brandEntity);
         brandJpaAdapter.saveBrand(brand);
 
+        ArgumentCaptor<BrandEntity> brandEntityCaptor= ArgumentCaptor.forClass(BrandEntity.class);
         verify(brandEntityMapper, times(1)).toBrandEntity(brand);
-        verify(brandRepository, times(1)).save(brandEntity);
+        verify(brandRepository, times(1)).save(brandEntityCaptor.capture());
+        assertEquals(brandEntityCaptor.getValue(),brandEntity);
     }
     
     @Test
@@ -90,7 +93,7 @@ class BrandJpaAdapterTest {
     @DisplayName("Should retrieve brand by name")
     void findByName() {
         when(brandRepository.existsByName(VALID_BRAND_NAME)).thenReturn(true);
-        brandJpaAdapter.findByName(VALID_BRAND_NAME);
+        brandJpaAdapter.existsByName(VALID_BRAND_NAME);
 
         verify((brandRepository), times(1)).existsByName(VALID_BRAND_NAME);
     }
@@ -99,14 +102,14 @@ class BrandJpaAdapterTest {
     @DisplayName("Should retrieve brands by name with pagination and sorting")
     void getBrandsByName() {
         Pageable pageable = PageRequest.of(VALID_PAGE, VALID_SIZE,
-                Sort.by(Sort.Direction.fromString(DIRECTION_ASC), PROPERTY_NAME.toLowerCase()));
+                Sort.by(Sort.Direction.fromString(ASC), PROPERTY_NAME.toLowerCase()));
         Page<BrandEntity> brandEntityPage = new PageImpl<>(List.of(brandEntity), pageable, VALID_TOTAL_ELEMENTS);
         PageStock<Brand> expectedBrandPageStock = new PageStock<>(List.of(brand),VALID_TOTAL_ELEMENTS,VALID_TOTAL_PAGES);
 
         when(brandRepository.findAll(pageable)).thenReturn(brandEntityPage);
         when(brandEntityMapper.toPageStock(brandEntityPage)).thenReturn(expectedBrandPageStock);
 
-        PageStock<Brand> actualBrandPageStock = brandJpaAdapter.getBrandsByName(VALID_PAGE, VALID_SIZE, DIRECTION_ASC);
+        PageStock<Brand> actualBrandPageStock = brandJpaAdapter.getBrandsByName(VALID_PAGE, VALID_SIZE, ASC);
 
         assertEquals(expectedBrandPageStock,actualBrandPageStock);
         verify(brandRepository, times(1)).findAll(pageable);

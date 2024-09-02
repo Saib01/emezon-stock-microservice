@@ -18,7 +18,7 @@ public class BrandUseCase implements IBrandServicePort {
     @Override
     public void saveBrand(Brand brand) {
         Validator.nameAndDescription(brand);
-        Validator.isNameAlreadyInUse(this.brandPersistencePort.findByName(brand.getName()),brand);
+        Validator.validateNameIsAlreadyInUse(this.brandPersistencePort,brand);
         this.brandPersistencePort.saveBrand(brand);
     }
 
