@@ -56,6 +56,10 @@ public class ControllerAdvisor {
                 exceptionMap.put(ProductNotFoundException.class,PRODUCT_NOT_FOUND.getMessage());
                 exceptionMap.put(ProductAmountInvalidException.class,PRODUCT_AMOUNT_GREATER_THAN_ZERO.getMessage());
                 exceptionMap.put(ProductPriceInvalidException.class,PRODUCT_PRICE_GREATER_THAN_ZERO.getMessage());
+                exceptionMap.put(ProductPageSortDirectionIsInvalidException.class,PRODUCT_PAGE_SORT_DIRECTION_IS_INVALID.getMessage());
+                exceptionMap.put(ProductPageSizeIsInvalidException.class,PRODUCT_PAGE_SIZE_NUMBER_IS_INVALID.getMessage());
+                exceptionMap.put(ProductPageNumberIsInvalidException.class,PRODUCT_PAGE_NUMBER_IS_INVALID.getMessage());
+                exceptionMap.put(ProductPageSortByIsInvalidException.class,PRODUCT_PAGE_SORT_BY_IS_INVALID.getMessage());
 
         }
 
@@ -83,7 +87,11 @@ public class ControllerAdvisor {
                 ProductDescriptionRequiredException.class,
                 ProductNameRequiredException.class,
                 ProductAmountInvalidException.class,
-                ProductPriceInvalidException.class
+                ProductPriceInvalidException.class,
+                ProductPageSortDirectionIsInvalidException.class,
+                ProductPageSizeIsInvalidException.class,
+                ProductPageNumberIsInvalidException.class,
+                ProductPageSortByIsInvalidException.class,
         })
         public ResponseEntity<Map<String, String>> handleBadRequestExceptions(RuntimeException ex) {
                 String message = exceptionMap.get(ex.getClass());

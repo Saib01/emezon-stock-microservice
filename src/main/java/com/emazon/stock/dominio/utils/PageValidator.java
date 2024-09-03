@@ -8,6 +8,7 @@ import com.emazon.stock.dominio.exeption.brand.BrandPageSizeIsInvalidException;
 import com.emazon.stock.dominio.exeption.brand.BrandPageSortDirectionIsInvalidException;
 import com.emazon.stock.dominio.exeption.product.ProductPageNumberIsInvalidException;
 import com.emazon.stock.dominio.exeption.product.ProductPageSortDirectionIsInvalidException;
+import com.emazon.stock.dominio.exeption.product.ProductPageSortByIsInvalidException;
 import com.emazon.stock.dominio.exeption.product.ProductPageSizeIsInvalidException;
 
 import java.util.HashMap;
@@ -36,6 +37,7 @@ public class PageValidator {
         EXCEPTION_MAP.put("ProductPageSortDirectionIsInvalid", ProductPageSortDirectionIsInvalidException::new);
         EXCEPTION_MAP.put("ProductPageNumberIsInvalid", ProductPageNumberIsInvalidException::new);
         EXCEPTION_MAP.put("ProductPageSizeIsInvalid", ProductPageSizeIsInvalidException::new);
+        EXCEPTION_MAP.put("ProductPageSortByIsInvalid", ProductPageSortByIsInvalidException::new);
     }
     private PageValidator() {
     }
@@ -45,13 +47,12 @@ public class PageValidator {
         validateSize(size,modelName);
     }
     public static String sortBy(String sortBy) {
-        System.out.println(sortBy.replaceAll(PROPERTY_NAME,"" ).toLowerCase());
         String comparator=sortBy.replaceAll(PROPERTY_NAME,"" );
         return switch (comparator.substring(0, 1).toUpperCase() +comparator.substring(1).toLowerCase()) {
             case CATEGORY -> CATEGORY.toLowerCase();
             case BRAND -> BRAND.toLowerCase();
             case PRODUCT -> PRODUCT.toLowerCase();
-            default -> throw new IllegalArgumentException("Invalid SortBy ");
+            default -> throw new ProductPageSortByIsInvalidException();
         };
     }
     private static void validateSortDirection(String sortDirection,String modelName){

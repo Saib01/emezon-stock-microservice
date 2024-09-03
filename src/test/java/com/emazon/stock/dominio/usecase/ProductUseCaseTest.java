@@ -120,6 +120,22 @@ class ProductUseCaseTest {
                 );
         }
 
+        @DisplayName("Should not save product when price is invalid")
+        @Test
+        void shouldNotSaveProductWhenProductPriceIsInvalid() {
+                product.setPrice((double)ZERO);
+
+                assertThrows(ProductPriceInvalidException.class,
+                        () -> productUseCase.saveProduct(product));
+        }
+        @DisplayName("Should not save product when amount is invalid")
+        @Test
+        void shouldNotSaveProductWhenProductAmountIsInvalid() {
+                product.setAmount(ZERO);
+
+                assertThrows(ProductAmountInvalidException.class,
+                        () -> productUseCase.saveProduct(product));
+        }
         @DisplayName("Should not save product when BrandId is invalid")
         @Test
         void shouldNotSaveProductWhenBrandIdIsInvalid() {
@@ -131,7 +147,7 @@ class ProductUseCaseTest {
                                 () -> productUseCase.saveProduct(product));
         }
 
-        @DisplayName("Should not save product when BrandId is invalid")
+        @DisplayName("Should not save product when CategoryId is invalid")
         @Test
         void shouldNotSaveProductWhenCategoryIdIsInvalid() {
                 prepareMocksForSaveProduct(false, true,false);
@@ -178,5 +194,47 @@ class ProductUseCaseTest {
                 verify(productPersistencePort, times(1))
                                 .getProduct(VALID_ID);
         }
+        @Test
+        @DisplayName("Should return a paginated page of products")
+        void shouldGetProductPageStock() {
+                PageStock<Product> expectedProductPageStock = new PageStock<>(
+                        Collections.singletonList(product),
+                        VALID_TOTAL_ELEMENTS, VALID_TOTAL_PAGES);
 
+                when(productPersistencePort.getProductsBySearchTerm(VALID_PAGE, VALID_SIZE,CATEGORY.toLowerCase(), ASC))
+                        .thenReturn(expectedProductPageStock);
+
+                PageStock<Product> actualProductPageStock = productUseCase.getProductsBySearchTerm(VALID_PAGE, VALID_SIZE,CATEGORY_PROPERTY_NAME, ASC);
+
+                assertEquals(expectedProductPageStock, actualProductPageStock);
+
+                verify(productPersistencePort, times(1)).getProductsBySearchTerm(VALID_PAGE, VALID_SIZE,CATEGORY.toLowerCase(), ASC);
+        }
+
+        @Test
+        @DisplayName("Should not return products when the page number is invalid")
+        void shouldNotGetProductPageStockWhenPageNumberIsInvalid() {
+                assertThrows(ProductPageNumberIsInvalidException.class,
+                        () -> productUseCase.getProductsBySearchTerm(INVALID_PAGE, VALID_SIZE,CATEGORY_PROPERTY_NAME, ASC));
+        }
+
+        @Test
+        @DisplayName("Should not return products when the page size is invalid")
+        void shouldNotGetProductPageStockWhenPageSizeIsInvalid() {
+                assertThrows(ProductPageSizeIsInvalidException.class,
+                        () -> productUseCase.getProductsBySearchTerm(VALID_PAGE, INVALID_SIZE,CATEGORY_PROPERTY_NAME, ASC));
+        }
+        @Test
+        @DisplayName("Should not return products when the page sorting direction is invalid")
+        void shouldNotGetProductPageStockWhenPageSortDirectionIsInvalid() {
+                assertThrows(ProductPageSortDirectionIsInvalidException.class,
+                        () -> productUseCase.getProductsBySearchTerm(VALID_PAGE, VALID_SIZE,CATEGORY_PROPERTY_NAME, INVALID_SORT_DIRECTION));
+        }
+
+        @Test
+        @DisplayName("Should not return products when the page sorting by is invalid")
+        void shouldNotGetProductPageStockWhenPageSortByIsInvalid() {
+                assertThrows(ProductPageSortByIsInvalidException.class,
+                        () -> productUseCase.getProductsBySearchTerm(VALID_PAGE, VALID_SIZE,INVALID_CATEGORY_PROPERTY_NAME, ASC));
+        }
 }

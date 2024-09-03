@@ -2,6 +2,7 @@ package com.emazon.stock.infraestructura.output.jpa.mapper;
 
 import com.emazon.stock.dominio.modelo.Brand;
 import com.emazon.stock.dominio.modelo.Category;
+import com.emazon.stock.dominio.modelo.PageStock;
 import com.emazon.stock.dominio.modelo.Product;
 import com.emazon.stock.infraestructura.output.jpa.entity.BrandEntity;
 import com.emazon.stock.infraestructura.output.jpa.entity.CategoryEntity;
@@ -11,11 +12,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 
+import static com.emazon.stock.dominio.utils.Direction.ASC;
+import static com.emazon.stock.dominio.utils.DomainConstants.PROPERTY_NAME;
 import static com.emazon.stock.utils.TestConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -63,6 +68,19 @@ class ProductEntityMapperTest {
         assertProductEqual(product,result);
     }
 
+    @Test
+    @DisplayName("Should map Page<ProductEntity> to PageStock<Product>  Successfully")
+    void toPageStock() {
+        Pageable pageable = PageRequest.of(VALID_PAGE, VALID_SIZE,
+                Sort.by(Sort.Direction.fromString(ASC),PROPERTY_NAME.toLowerCase()));
+        Page<ProductEntity> productEntityPage=new PageImpl<>(List.of(productEntity),pageable,VALID_TOTAL_ELEMENTS);
+        PageStock<Product> result=productEntityMapper.toProductPageStock(productEntityPage);
+
+        assertThat(result.getTotalPages()).isEqualTo(productEntityPage.getTotalPages());
+        assertThat(result.getTotalElements().intValue()).isEqualTo(productEntityPage.getTotalElements());
+        assertThat(result.getContent()).hasSameSizeAs(productEntityPage.getContent());
+        assertProductEqual(result.getContent().get(0),productEntityPage.getContent().get(0));
+    }
     private void assertProductEqual(Product product,ProductEntity productEntity){
         assertThat(product.getId()).isEqualTo(productEntity.getId());
         assertThat(product.getName()).isEqualTo(productEntity.getName());

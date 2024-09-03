@@ -1,5 +1,7 @@
 package com.emazon.stock.aplicacion.handler;
 
+import com.emazon.stock.aplicacion.dtos.BrandResponse;
+import com.emazon.stock.aplicacion.dtos.CategoryResponse;
 import com.emazon.stock.aplicacion.dtos.ProductRequest;
 import com.emazon.stock.aplicacion.dtos.ProductResponse;
 import com.emazon.stock.aplicacion.mapper.ProductRequestMapper;
@@ -7,6 +9,7 @@ import com.emazon.stock.aplicacion.mapper.ProductResponseMapper;
 import com.emazon.stock.dominio.api.IProductServicePort;
 import com.emazon.stock.dominio.modelo.Brand;
 import com.emazon.stock.dominio.modelo.Category;
+import com.emazon.stock.dominio.modelo.PageStock;
 import com.emazon.stock.dominio.modelo.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,10 +18,14 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
+import static com.emazon.stock.dominio.utils.Direction.ASC;
+import static com.emazon.stock.dominio.utils.DomainConstants.PROPERTY_NAME;
 import static com.emazon.stock.utils.TestConstants.*;
 import static com.emazon.stock.utils.TestConstants.VALID_ID;
 import static org.junit.jupiter.api.Assertions.*;
@@ -81,4 +88,31 @@ class ProductHandlerTest {
         verify(productResponseMapper).toProductResponse(product);
     }
 
+    @Test
+    @DisplayName("Should get Products")
+    void testGetProducts() {
+        ProductResponse productResponse =new ProductResponse(VALID_ID, VALID_PRODUCT_NAME, VALID_PRODUCT_DESCRIPTION, VALID_AMOUNT,
+                VALID_PRICE,
+                new BrandResponse(VALID_ID, VALID_BRAND_NAME, VALID_BRAND_DESCRIPTION),
+                List.of(
+                        new CategoryResponse(VALID_ID, VALID_CATEGORY_NAME, VALID_CATEGORY_DESCRIPTION)
+                )
+        );
+        Pageable pageable = PageRequest.of(VALID_PAGE, VALID_SIZE,
+                Sort.by(Sort.Direction.fromString(ASC),PROPERTY_NAME.toLowerCase()));
+        Page<ProductResponse> productResponsePage = new PageImpl<>(List.of(productResponse),pageable,VALID_TOTAL_ELEMENTS);
+        PageStock<Product> productPageStock = new PageStock<>(List.of(product), VALID_TOTAL_ELEMENTS, VALID_TOTAL_PAGES);
+
+        when(productServicePort.getProductsBySearchTerm(VALID_PAGE, VALID_SIZE,CATEGORY_PROPERTY_NAME, ASC)).thenReturn(productPageStock);
+        when(productResponseMapper.toProductResponsePage(productPageStock,pageable))
+                .thenReturn(productResponsePage);
+
+        Page<ProductResponse> result = productHandler.getProductsBySearchTerm(VALID_PAGE, VALID_SIZE,CATEGORY_PROPERTY_NAME, ASC);
+
+        assertEquals(VALID_TOTAL_ELEMENTS, result.getTotalElements());
+        assertEquals(VALID_TOTAL_PAGES, result.getTotalPages());
+        assertEquals(VALID_SIZE, result.getSize());
+        assertEquals(VALID_PRODUCT_NAME, result.getContent().get(0).getName());
+        assertEquals(VALID_PRODUCT_DESCRIPTION, result.getContent().get(0).getDescription());
+    }
 }

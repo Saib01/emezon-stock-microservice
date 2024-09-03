@@ -36,7 +36,7 @@ public class ProductHandler implements IProductHandler{
                 PageRequest.of(
                         page,
                         size,
-                        Sort.by(Sort.Direction.fromString(sortDirection),sortBy)
+                        Sort.by(Sort.Direction.fromString(sortDirection),PROPERTY_NAME.toLowerCase())
                 )
         );
     }
