@@ -26,7 +26,7 @@ public class BrandRestController {
                         @ApiResponse(responseCode = "409", description = "Brand already exists", content = @Content)
         })
         @PostMapping("/")
-        ResponseEntity<Void> saveCategory(@RequestBody BrandRequest brandRequest) {
+        ResponseEntity<Void> saveBrand(@RequestBody BrandRequest brandRequest) {
                 brandHandler.saveBrand(brandRequest);
                 return ResponseEntity.status(HttpStatus.CREATED).build();
         }
@@ -49,7 +49,7 @@ public class BrandRestController {
                         @ApiResponse(responseCode = "404", description = "Brand not found", content = @Content)
         })
         @GetMapping("/{number}")
-        ResponseEntity<BrandResponse> getCategory(@PathVariable(name = "number") Long brandNumber) {
+        ResponseEntity<BrandResponse> getBrand(@PathVariable(name = "number") Long brandNumber) {
                 return ResponseEntity.ok(brandHandler.getBrand(brandNumber));
         }
 }

@@ -1,10 +1,12 @@
 package com.emazon.stock.dominio.usecase;
 
 import com.emazon.stock.dominio.api.IProductServicePort;
+import com.emazon.stock.dominio.modelo.PageStock;
 import com.emazon.stock.dominio.modelo.Product;
 import com.emazon.stock.dominio.spi.IProductPersistencePort;
 import com.emazon.stock.dominio.spi.IBrandPersistencePort;
 import com.emazon.stock.dominio.spi.ICategoryPersistencePort;
+import com.emazon.stock.dominio.utils.PageValidator;
 import com.emazon.stock.dominio.utils.Validator;
 
 public class ProductUseCase implements IProductServicePort {
@@ -27,6 +29,14 @@ public class ProductUseCase implements IProductServicePort {
         Validator.validateProduct(product,brandPersistencePort,categoryPersistencePort);
         this.productPersistencePort.saveProduct(product);
     }
+
+    @Override
+    public PageStock<Product> getProductsBySearchTerm(int page, int size, String sortBy, String sortDirection) {
+        PageValidator.parameters(page,size,sortDirection,Product.class.getSimpleName());
+        return this.productPersistencePort.getProductsBySearchTerm(page,size,PageValidator.sortBy(sortBy),sortDirection);
+    }
+
+
 
     @Override
     public Product getProduct(Long id) {

@@ -65,7 +65,7 @@ public class Validator {
     }
 
     private static void validateExistsInDataBase(IModelPersistencePort modelPersistencePort, ModelBase object) {
-        if (!modelPersistencePort.existsById(object.getId())) {
+        if (object.getId()==null || !modelPersistencePort.existsById(object.getId())) {
             throw getExceptionForKey(object.getClass().getSimpleName(), PROPERTY_ID, TYPE_EXCEPTIONS[3]);
         }
     }
@@ -76,7 +76,6 @@ public class Validator {
         Set<Long> uniqueCategoryIds = new HashSet<>();
         categoryList.stream()
                 .map(Category::getId)
-                .filter(id-> id != null)
                 .forEach(uniqueCategoryIds::add);
         if(uniqueCategoryIds.size()!= categoryList.size()){
             throw new CategoryDuplicateException();

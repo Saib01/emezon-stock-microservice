@@ -12,11 +12,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+
+import static com.emazon.stock.dominio.utils.Direction.ASC;
 import static com.emazon.stock.utils.TestConstants.*;
 import static com.emazon.stock.utils.TestConstants.VALID_CATEGORY_DESCRIPTION;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -101,5 +108,34 @@ class ProductRestControllerTest {
                 .andExpect(jsonPath("$.categoryResponseList[0].id").value(VALID_ID))
                 .andExpect(jsonPath("$.categoryResponseList[0].name").value(VALID_CATEGORY_NAME))
                 .andExpect(jsonPath("$.categoryResponseList[0].description").value(VALID_CATEGORY_DESCRIPTION));
+    }
+
+
+    @Test
+    @DisplayName("Should Return List of Products")
+    void testGetProducts() throws Exception {
+
+        CategoryResponse categoryResponse=new CategoryResponse(VALID_ID, VALID_CATEGORY_NAME, VALID_CATEGORY_DESCRIPTION);
+        ProductResponse productResponse= new ProductResponse(VALID_ID, VALID_PRODUCT_NAME, VALID_PRODUCT_DESCRIPTION, VALID_AMOUNT,
+                VALID_PRICE,
+                new BrandResponse(VALID_ID,VALID_BRAND_NAME,VALID_BRAND_DESCRIPTION),
+                new ArrayList<>(Arrays.asList(categoryResponse)));
+
+        Pageable pageable = PageRequest.of(VALID_PAGE,VALID_SIZE);
+        Page<ProductResponse> productResponsePage = new PageImpl<>(List.of(productResponse), pageable, VALID_TOTAL_ELEMENTS);
+        when(productHandler.getProductsBySearchTerm(VALID_PAGE, VALID_SIZE,CATEGORY_PROPERTY_NAME, ASC)).thenReturn(productResponsePage);
+        mockMvc.perform(get("/product")
+                        .param("sortBy", CATEGORY_PROPERTY_NAME)
+                        .param("sortDirection", ASC)
+                        .param("page", Integer.toString(VALID_PAGE))
+                        .param("size", Integer.toString(VALID_SIZE)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].id").value(VALID_ID))
+                .andExpect(jsonPath("$.content[0].name").value(VALID_PRODUCT_NAME))
+                .andExpect(jsonPath("$.content[0].description").value(VALID_PRODUCT_DESCRIPTION))
+                .andExpect(jsonPath("$.content[0].brandResponse.id").value(VALID_ID))
+                .andExpect(jsonPath("$.content[0].brandResponse.name").value(VALID_BRAND_NAME))
+                .andExpect(jsonPath("$.content[0].categoryResponseList[0].id").value(VALID_ID))
+                .andExpect(jsonPath("$.content[0].categoryResponseList[0].name").value(VALID_CATEGORY_NAME));
     }
 }

@@ -57,7 +57,7 @@ class CategoryEntityMapperTest {
         Pageable pageable = PageRequest.of(VALID_PAGE, VALID_SIZE,
                 Sort.by(Sort.Direction.fromString(ASC),PROPERTY_NAME.toLowerCase()));
         Page<CategoryEntity> categoryEntityPage=new PageImpl<>(List.of(categoryEntity),pageable,VALID_TOTAL_ELEMENTS);
-        PageStock<Category> result=categoryEntityMapper.toPageStock(categoryEntityPage);
+        PageStock<Category> result=categoryEntityMapper.toCategoryPageStock(categoryEntityPage);
 
         assertThat(result.getTotalPages()).isEqualTo(categoryEntityPage.getTotalPages());
         assertThat(result.getTotalElements().intValue()).isEqualTo(categoryEntityPage.getTotalElements());

@@ -3,6 +3,7 @@ package com.emazon.stock.infraestructura.output.jpa.adapter;
 import com.emazon.stock.dominio.exeption.product.ProductNotFoundException;
 import com.emazon.stock.dominio.modelo.Brand;
 import com.emazon.stock.dominio.modelo.Category;
+import com.emazon.stock.dominio.modelo.PageStock;
 import com.emazon.stock.dominio.modelo.Product;
 import com.emazon.stock.infraestructura.output.jpa.entity.BrandEntity;
 import com.emazon.stock.infraestructura.output.jpa.entity.CategoryEntity;
@@ -16,11 +17,16 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
+import static com.emazon.stock.dominio.utils.Direction.ASC;
+import static com.emazon.stock.dominio.utils.DomainConstants.CATEGORY;
+import static com.emazon.stock.dominio.utils.DomainConstants.PROPERTY_NAME;
 import static com.emazon.stock.utils.TestConstants.*;
 import static com.emazon.stock.utils.TestConstants.VALID_CATEGORY_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -95,6 +101,25 @@ class ProductJpaAdapterTest {
         productJpaAdapter.existsByName(VALID_CATEGORY_NAME);
 
         verify((productRepository), times(1)).existsByName(VALID_CATEGORY_NAME);
+    }
+
+
+    @Test
+    @DisplayName("Should retrieve products by name with pagination and sorting")
+    void getProductsByName() {
+        Pageable pageable = PageRequest.of(VALID_PAGE, VALID_SIZE,
+                Sort.by(Sort.Direction.fromString(ASC),PROPERTY_NAME.toLowerCase()));
+        Page<ProductEntity> productEntityPage = new PageImpl<>(List.of(productEntity), pageable, VALID_TOTAL_ELEMENTS);
+        PageStock<Product> expectedProductPageStock = new PageStock<>(List.of(product),VALID_TOTAL_ELEMENTS,VALID_TOTAL_PAGES);
+
+        when(productRepository.getProductsBySearchTerm(CATEGORY.toLowerCase(),pageable)).thenReturn(productEntityPage);
+        when(productEntityMapper.toProductPageStock(productEntityPage)).thenReturn(expectedProductPageStock);
+
+       PageStock<Product> actualProductPageStock = productJpaAdapter.getProductsBySearchTerm(VALID_PAGE,VALID_SIZE,CATEGORY.toLowerCase(),ASC);
+
+        assertEquals(expectedProductPageStock,actualProductPageStock);
+        verify(productRepository, times(1)).getProductsBySearchTerm(CATEGORY.toLowerCase(),pageable);
+        verify(productEntityMapper, times(1)).toProductPageStock(productEntityPage);
     }
 
 }

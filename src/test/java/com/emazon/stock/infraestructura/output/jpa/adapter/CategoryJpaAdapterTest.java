@@ -76,13 +76,13 @@ class CategoryJpaAdapterTest {
         PageStock<Category> expectedCategoryPageStock = new PageStock<>(List.of(category),VALID_TOTAL_ELEMENTS,VALID_TOTAL_PAGES);
 
         when(categoryRepository.findAll(pageable)).thenReturn(categoryEntityPage);
-        when(categoryEntityMapper.toPageStock(categoryEntityPage)).thenReturn(expectedCategoryPageStock);
+        when(categoryEntityMapper.toCategoryPageStock(categoryEntityPage)).thenReturn(expectedCategoryPageStock);
 
         PageStock<Category> actualCategoryPageStock = categoryJpaAdapter.getCategoriesByName(VALID_PAGE, VALID_SIZE, ASC);
 
         assertEquals(expectedCategoryPageStock,actualCategoryPageStock);
         verify(categoryRepository, times(1)).findAll(pageable);
-        verify(categoryEntityMapper, times(1)).toPageStock(categoryEntityPage);
+        verify(categoryEntityMapper, times(1)).toCategoryPageStock(categoryEntityPage);
     }
 
     @Test

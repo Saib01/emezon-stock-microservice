@@ -16,6 +16,8 @@ public class TestConstants {
     public static final String VALID_CATEGORY_DESCRIPTION = "Devices and gadgets.";
     public static final String INVALID_CATEGORY_DESCRIPTION = "Electronics involves devices and systems that control and manipulate electrical energy for various uses.";
     public static final String EMPTY_PROPERTY = "";
+    public static final String CATEGORY_PROPERTY_NAME = "categoryName";
+    public static final String INVALID_CATEGORY_PROPERTY_NAME = "ategoryName";
     public static final String NULL_PROPERTY = null;
     public static final int VALID_PAGE=0;
     public static final int INVALID_PAGE=-5;

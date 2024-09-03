@@ -25,7 +25,7 @@ public class BrandJpaAdapter implements IBrandPersistencePort {
     @Override
     public PageStock<Brand> getBrandsByName(int page, int size, String sortDirection) {
         Pageable pageable= PageRequest.of(page,size, Sort.by(Sort.Direction.fromString(sortDirection),PROPERTY_NAME.toLowerCase()));
-        return brandEntityMapper.toPageStock(this.brandRepository.findAll(pageable));
+        return brandEntityMapper.toBrandPageStock(this.brandRepository.findAll(pageable));
     }
 
     @Override
