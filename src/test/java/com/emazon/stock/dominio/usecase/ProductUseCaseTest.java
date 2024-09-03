@@ -1,12 +1,11 @@
 package com.emazon.stock.dominio.usecase;
 
 import com.emazon.stock.dominio.exeption.brand.BrandNotFoundException;
-import com.emazon.stock.dominio.exeption.category.CategoryDuplicateException;
-import com.emazon.stock.dominio.exeption.category.CategoryListSizeException;
-import com.emazon.stock.dominio.exeption.category.CategoryNotFoundException;
+import com.emazon.stock.dominio.exeption.category.*;
 import com.emazon.stock.dominio.exeption.product.*;
 import com.emazon.stock.dominio.modelo.Brand;
 import com.emazon.stock.dominio.modelo.Category;
+import com.emazon.stock.dominio.modelo.PageStock;
 import com.emazon.stock.dominio.modelo.Product;
 import com.emazon.stock.dominio.spi.IBrandPersistencePort;
 import com.emazon.stock.dominio.spi.ICategoryPersistencePort;
@@ -24,8 +23,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static com.emazon.stock.dominio.utils.DomainConstants.PRODUCT_MAX_CATEGORY;
-import static com.emazon.stock.dominio.utils.DomainConstants.ZERO;
+import static com.emazon.stock.dominio.utils.Direction.ASC;
+import static com.emazon.stock.dominio.utils.DomainConstants.*;
 import static com.emazon.stock.utils.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;

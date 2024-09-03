@@ -18,6 +18,6 @@ public interface CategoryEntityMapper {
 
     List<CategoryEntity> toCategoryListEntity(List<Category> categoryList) ;
 
-    PageStock<Category> toPageStock(Page<CategoryEntity> categoryEntityPage);
+    PageStock<Category> toCategoryPageStock(Page<CategoryEntity> categoryEntityPage);
 
 }

@@ -107,13 +107,13 @@ class BrandJpaAdapterTest {
         PageStock<Brand> expectedBrandPageStock = new PageStock<>(List.of(brand),VALID_TOTAL_ELEMENTS,VALID_TOTAL_PAGES);
 
         when(brandRepository.findAll(pageable)).thenReturn(brandEntityPage);
-        when(brandEntityMapper.toPageStock(brandEntityPage)).thenReturn(expectedBrandPageStock);
+        when(brandEntityMapper.toBrandPageStock(brandEntityPage)).thenReturn(expectedBrandPageStock);
 
         PageStock<Brand> actualBrandPageStock = brandJpaAdapter.getBrandsByName(VALID_PAGE, VALID_SIZE, ASC);
 
         assertEquals(expectedBrandPageStock,actualBrandPageStock);
         verify(brandRepository, times(1)).findAll(pageable);
-        verify(brandEntityMapper, times(1)).toPageStock(brandEntityPage);
+        verify(brandEntityMapper, times(1)).toBrandPageStock(brandEntityPage);
     }
 
 }

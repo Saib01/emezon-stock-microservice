@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 
 @Entity
 @Table(name="brand")
@@ -20,4 +22,12 @@ public class BrandEntity {
     private String name;
     @Column(nullable = false,columnDefinition = "CHAR(120)")
     private String description;
+    @OneToMany(mappedBy = "brandEntity",fetch = FetchType.LAZY)
+    private List<ProductEntity> productEntities;
+
+    public BrandEntity(Long id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+    }
 }

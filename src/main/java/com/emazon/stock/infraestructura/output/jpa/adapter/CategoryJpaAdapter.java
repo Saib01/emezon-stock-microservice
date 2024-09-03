@@ -29,7 +29,7 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
     public PageStock<Category> getCategoriesByName(int page, int size, String sortDirection) {
         Pageable pageable = PageRequest.of(page, size,
                 Sort.by(Sort.Direction.fromString(sortDirection),PROPERTY_NAME.toLowerCase()));
-        return categoryEntityMapper.toPageStock(this.categoryRepository.findAll(pageable));
+        return categoryEntityMapper.toCategoryPageStock(this.categoryRepository.findAll(pageable));
     }
 
     @Override
