@@ -60,6 +60,7 @@ public class ControllerAdvisor {
                 exceptionMap.put(ProductPageSizeIsInvalidException.class,PRODUCT_PAGE_SIZE_NUMBER_IS_INVALID.getMessage());
                 exceptionMap.put(ProductPageNumberIsInvalidException.class,PRODUCT_PAGE_NUMBER_IS_INVALID.getMessage());
                 exceptionMap.put(ProductPageSortByIsInvalidException.class,PRODUCT_PAGE_SORT_BY_IS_INVALID.getMessage());
+                exceptionMap.put(InvalidSupplyException.class,SUPPLY_IS_INVALID.getMessage());
 
         }
 
@@ -92,6 +93,7 @@ public class ControllerAdvisor {
                 ProductPageSizeIsInvalidException.class,
                 ProductPageNumberIsInvalidException.class,
                 ProductPageSortByIsInvalidException.class,
+                InvalidSupplyException.class
         })
         public ResponseEntity<Map<String, String>> handleBadRequestExceptions(RuntimeException ex) {
                 String message = exceptionMap.get(ex.getClass());

@@ -23,7 +23,6 @@ public class DomainConstants {
     public static final int PRODUCT_MAX_CATEGORY=3;
     public static final int PRODUCT_MIN_CATEGORY=1;
 
-
     private DomainConstants() {
     }
 }

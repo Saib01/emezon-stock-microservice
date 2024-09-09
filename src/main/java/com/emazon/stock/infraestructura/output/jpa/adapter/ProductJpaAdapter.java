@@ -26,7 +26,7 @@ public class ProductJpaAdapter implements IProductPersistencePort {
     @Override
     public PageStock<Product> getProductsBySearchTerm(int page, int size, String sortBy, String sortDirection) {
         Pageable pageable = PageRequest.of(page, size,
-                Sort.by(Sort.Direction.fromString(sortDirection),PROPERTY_NAME.toLowerCase()));
+                Sort.by(Sort.Direction.fromString(sortDirection),PROPERTY_NAME.toLowerCase()));//
         return  productEntityMapper.toProductPageStock(
                 this.productRepository.getProductsBySearchTerm(sortBy,pageable));
     }

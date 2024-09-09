@@ -7,4 +7,5 @@ public interface IProductServicePort {
     void saveProduct(Product product);
     PageStock<Product> getProductsBySearchTerm(int page, int size,String sortBy, String sortDirection);
     Product getProduct(Long id);
+    void addSupply(Long id, Integer supply);
 }
