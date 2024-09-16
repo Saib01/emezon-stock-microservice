@@ -47,4 +47,9 @@ public class ProductHandler implements IProductHandler{
                 this.productServicePort.getProduct(id)
         );
     }
+
+    @Override
+    public void addSupply(Long id, Integer supply) {
+        this.productServicePort.addSupply(id,supply);
+    }
 }

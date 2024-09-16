@@ -107,4 +107,6 @@ class CategoryHandlerTest {
         assertEquals(VALID_CATEGORY_NAME, result.getContent().get(0).getName());
         assertEquals(VALID_CATEGORY_DESCRIPTION, result.getContent().get(0).getDescription());
     }
+
+
 }

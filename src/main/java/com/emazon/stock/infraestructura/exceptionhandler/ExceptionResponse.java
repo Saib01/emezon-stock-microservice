@@ -34,7 +34,9 @@ public enum ExceptionResponse {
     PRODUCT_PAGE_SORT_DIRECTION_IS_INVALID(format(PAGE_SORT_IS_INVALID,PRODUCT)),
     PRODUCT_PAGE_NUMBER_IS_INVALID(format(PAGE_NUMBER_IS_INVALID,PRODUCT)),
     PRODUCT_PAGE_SIZE_NUMBER_IS_INVALID(format(PAGE_SIZE_IS_INVALID,PRODUCT)),
-    PRODUCT_PAGE_SORT_BY_IS_INVALID("The sortBy parameter for retrieving the product page is invalid. Please use 'brandName', 'categoryName', or 'productName'.");
+    PRODUCT_PAGE_SORT_BY_IS_INVALID("The sortBy parameter for retrieving the product page is invalid. Please use 'brandName', 'categoryName', or 'productName'."),
+    SUPPLY_IS_INVALID("The supply increment must be greater than zero."),
+    JWT_INVALID("Token Invalid, not Authorized");;
     private final String message;
     ExceptionResponse(String message) {
         this.message = message;

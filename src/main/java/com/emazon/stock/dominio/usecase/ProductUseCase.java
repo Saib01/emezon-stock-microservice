@@ -1,6 +1,7 @@
 package com.emazon.stock.dominio.usecase;
 
 import com.emazon.stock.dominio.api.IProductServicePort;
+import com.emazon.stock.dominio.exeption.product.InvalidSupplyException;
 import com.emazon.stock.dominio.modelo.PageStock;
 import com.emazon.stock.dominio.modelo.Product;
 import com.emazon.stock.dominio.spi.IProductPersistencePort;
@@ -8,6 +9,8 @@ import com.emazon.stock.dominio.spi.IBrandPersistencePort;
 import com.emazon.stock.dominio.spi.ICategoryPersistencePort;
 import com.emazon.stock.dominio.utils.PageValidator;
 import com.emazon.stock.dominio.utils.Validator;
+
+import static com.emazon.stock.dominio.utils.DomainConstants.ZERO;
 
 public class ProductUseCase implements IProductServicePort {
 
@@ -33,7 +36,9 @@ public class ProductUseCase implements IProductServicePort {
     @Override
     public PageStock<Product> getProductsBySearchTerm(int page, int size, String sortBy, String sortDirection) {
         PageValidator.parameters(page,size,sortDirection,Product.class.getSimpleName());
-        return this.productPersistencePort.getProductsBySearchTerm(page,size,PageValidator.sortBy(sortBy),sortDirection);
+        return this.productPersistencePort.getProductsBySearchTerm(page,size,
+                PageValidator.sortBy(sortBy)
+                ,sortDirection);
     }
 
 
@@ -42,4 +47,15 @@ public class ProductUseCase implements IProductServicePort {
     public Product getProduct(Long id) {
         return this.productPersistencePort.getProduct(id);
     }
+
+    @Override
+    public void addSupply(Long id, Integer supply) {
+        if(supply<=ZERO){
+            throw new InvalidSupplyException();
+        }
+        Product product=this.getProduct(id);
+        product.setAmount(product.getAmount()+supply);
+        this.productPersistencePort.saveProduct(product);
+    }
 }
+

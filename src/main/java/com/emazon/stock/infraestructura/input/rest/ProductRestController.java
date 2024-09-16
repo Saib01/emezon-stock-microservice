@@ -61,4 +61,14 @@ public class ProductRestController {
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         return ResponseEntity.ok(productPage);
     }
+    @Operation(summary = "Increase supply stock", description = "Increases the stock of a supply by a given increment")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Stock updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid request")
+    })
+    @PutMapping("/{id}/add-supply")
+    public ResponseEntity<Void> addSupply(@PathVariable Long id, @RequestParam Integer increment) {
+        productHandler.addSupply(id,increment);
+        return ResponseEntity.ok().build();
+    }
 }

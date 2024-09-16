@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface IProductRepository extends JpaRepository<ProductEntity, Long> {
     boolean existsByName(String name);
     Optional<ProductEntity> findById(Long id);
-
+//Enti para jpa
     @Query("SELECT p FROM ProductEntity p " +
             "JOIN p.categoryEntityList c " +
             "JOIN p.brandEntity b " +
