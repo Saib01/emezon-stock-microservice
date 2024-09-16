@@ -20,7 +20,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 import static com.emazon.stock.dominio.utils.Direction.ASC;
@@ -49,12 +48,12 @@ class ProductUseCaseTest {
                 product = new Product(VALID_ID, VALID_PRODUCT_NAME, VALID_PRODUCT_DESCRIPTION, VALID_AMOUNT,
                                 VALID_PRICE,
                                 new Brand(VALID_ID, VALID_BRAND_NAME, VALID_BRAND_DESCRIPTION),
-                                new ArrayList<>(Arrays.asList(category)));
+                        new ArrayList<>(Collections.singletonList(category)));
 
         }
 
-        private void prepareMocksForSaveProduct(boolean productExists, boolean brandExists, boolean categoryExists) {
-                prepareMocksForSaveProduct(productExists,brandExists);
+        private void prepareMocksForSaveProduct(boolean categoryExists) {
+                prepareMocksForSaveProduct(false,true);
                 persistencePortExistsById(categoryPersistencePort,categoryExists);
         }
         private void prepareMocksForSaveProduct(boolean productExists, boolean brandExists) {
@@ -67,7 +66,7 @@ class ProductUseCaseTest {
         @Test
         @DisplayName("Should save the product and verify that the persistence port method is called once")
         void saveProduct() {
-                prepareMocksForSaveProduct(false, true, true);
+                prepareMocksForSaveProduct( true);
                 productUseCase.saveProduct(product);
 
                 ArgumentCaptor<Product> productCaptor = ArgumentCaptor.forClass(Product.class);
@@ -150,7 +149,7 @@ class ProductUseCaseTest {
         @DisplayName("Should not save product when CategoryId is invalid")
         @Test
         void shouldNotSaveProductWhenCategoryIdIsInvalid() {
-                prepareMocksForSaveProduct(false, true,false);
+                prepareMocksForSaveProduct(false);
 
                 product.getCategoryList().get(ZERO).setId(INVALID_ID);
 
@@ -161,7 +160,7 @@ class ProductUseCaseTest {
         @DisplayName("Should not save product when CategoryId is duplicate")
         @Test
         void shouldNotSaveProductWhenCategoryIdIsDuplicate() {
-                prepareMocksForSaveProduct(false, true,true);
+                prepareMocksForSaveProduct(true);
 
                 product.getCategoryList().add(category);
 
@@ -173,7 +172,7 @@ class ProductUseCaseTest {
         @DisplayName("Should not save product when CategoryListSize is invalid")
         @Test
         void shouldNotSaveProductWhenCategoryListSizeIsInvalid() {
-                prepareMocksForSaveProduct(false, true,true);
+                prepareMocksForSaveProduct(true);
 
                 product.getCategoryList().addAll(Collections.nCopies(PRODUCT_MAX_CATEGORY, category));
 
@@ -236,5 +235,25 @@ class ProductUseCaseTest {
         void shouldNotGetProductPageStockWhenPageSortByIsInvalid() {
                 assertThrows(ProductPageSortByIsInvalidException.class,
                         () -> productUseCase.getProductsBySearchTerm(VALID_PAGE, VALID_SIZE,INVALID_CATEGORY_PROPERTY_NAME, ASC));
+        }
+
+
+        @Test
+        @DisplayName("Should throw InvalidSupplyException when supply is less than or equal to zero")
+        void shouldThrowExceptionWhenSupplyIsInvalid() {
+                assertThrows(InvalidSupplyException.class, () -> productUseCase.addSupply(VALID_ID,ZERO));
+        }
+
+        @Test
+        @DisplayName("Should update product amount and save when valid supply is provided")
+        void shouldUpdateProductAmountWhenSupplyIsValid() {
+                when(productUseCase.getProduct(VALID_ID)).thenReturn(product);
+                product.setAmount(ZERO);
+
+                productUseCase.addSupply(VALID_ID,VALID_AMOUNT);
+
+                ArgumentCaptor<Product> productCaptor = ArgumentCaptor.forClass(Product.class);
+                verify(productPersistencePort).saveProduct(productCaptor.capture());
+                assertEquals(VALID_AMOUNT, productCaptor.getValue().getAmount());
         }
 }

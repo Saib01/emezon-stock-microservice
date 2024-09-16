@@ -9,5 +9,7 @@ public class InfrastructureConstants {
 
     public static final String TEMPLATE_RESPONSE_ERROR = "{\"message\": \"%s\"}";
 
-    private InfrastructureConstants(){}
+
+    private InfrastructureConstants() {
+    }
 }

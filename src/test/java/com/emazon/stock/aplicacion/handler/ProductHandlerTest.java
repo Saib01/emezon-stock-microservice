@@ -21,7 +21,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.emazon.stock.dominio.utils.Direction.ASC;
@@ -46,16 +45,15 @@ class ProductHandlerTest {
     private ProductHandler productHandler;
 
     private Product product;
-    private Category category;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        category=new Category(VALID_ID, VALID_CATEGORY_NAME, VALID_CATEGORY_DESCRIPTION);
+        Category category = new Category(VALID_ID, VALID_CATEGORY_NAME, VALID_CATEGORY_DESCRIPTION);
         product = new Product(VALID_ID, VALID_PRODUCT_NAME, VALID_PRODUCT_DESCRIPTION, VALID_AMOUNT,
                 VALID_PRICE,
                 new Brand(VALID_ID, VALID_BRAND_NAME, VALID_BRAND_DESCRIPTION),
-                new ArrayList<>(Arrays.asList(category)));
+                new ArrayList<>(List.of(category)));
     }
 
     @Test
@@ -115,4 +113,19 @@ class ProductHandlerTest {
         assertEquals(VALID_PRODUCT_NAME, result.getContent().get(0).getName());
         assertEquals(VALID_PRODUCT_DESCRIPTION, result.getContent().get(0).getDescription());
     }
-}
+
+    @Test
+    @DisplayName("Should add supply to product correctly")
+    void shouldAddSupplyCorrectly() {
+
+        ArgumentCaptor<Long> idCaptor = ArgumentCaptor.forClass(Long.class);
+        ArgumentCaptor<Integer> supplyCaptor = ArgumentCaptor.forClass(Integer.class);
+
+        productHandler.addSupply(VALID_ID, VALID_AMOUNT);
+
+
+        verify(productServicePort).addSupply(idCaptor.capture(), supplyCaptor.capture());
+
+        assertEquals(VALID_ID, idCaptor.getValue());
+        assertEquals(VALID_AMOUNT, supplyCaptor.getValue());
+    }}
