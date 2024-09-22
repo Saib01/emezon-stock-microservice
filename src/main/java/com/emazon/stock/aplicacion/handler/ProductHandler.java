@@ -12,6 +12,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static com.emazon.stock.dominio.utils.DomainConstants.PROPERTY_NAME;
 
 @Service
@@ -51,5 +53,10 @@ public class ProductHandler implements IProductHandler{
     @Override
     public void addSupply(Long id, Integer supply) {
         this.productServicePort.addSupply(id,supply);
+    }
+
+    @Override
+    public boolean validateMaxProductPerCategory(List<Long> listIdsProducts) {
+        return this.productServicePort.validateMaxProductPerCategory(listIdsProducts);
     }
 }

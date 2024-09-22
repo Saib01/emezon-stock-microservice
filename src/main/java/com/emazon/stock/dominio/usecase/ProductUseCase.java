@@ -10,7 +10,10 @@ import com.emazon.stock.dominio.spi.ICategoryPersistencePort;
 import com.emazon.stock.dominio.utils.PageValidator;
 import com.emazon.stock.dominio.utils.Validator;
 
-import static com.emazon.stock.dominio.utils.DomainConstants.ZERO;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.emazon.stock.dominio.utils.DomainConstants.*;
 
 public class ProductUseCase implements IProductServicePort {
 
@@ -42,7 +45,6 @@ public class ProductUseCase implements IProductServicePort {
     }
 
 
-
     @Override
     public Product getProduct(Long id) {
         return this.productPersistencePort.getProduct(id);
@@ -56,6 +58,17 @@ public class ProductUseCase implements IProductServicePort {
         Product product=this.getProduct(id);
         product.setAmount(product.getAmount()+supply);
         this.productPersistencePort.saveProduct(product);
+    }
+
+    @Override
+    public boolean validateMaxProductPerCategory(List<Long> listIdsProducts) {
+        List<List<Long>>categoryIdsListByProducts=this.productPersistencePort.getCategoryIdsByProductIds(listIdsProducts);
+
+        return categoryIdsListByProducts.stream()
+                .flatMap(List::stream)
+                .collect(Collectors.groupingBy(categoryId -> categoryId, Collectors.counting()))
+                .values().stream()
+                .noneMatch(count -> count > MAX_ARTICLES_PER_CATEGORY);
     }
 }
 

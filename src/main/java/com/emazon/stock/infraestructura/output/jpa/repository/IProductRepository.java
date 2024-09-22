@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface IProductRepository extends JpaRepository<ProductEntity, Long> {
@@ -22,4 +23,5 @@ public interface IProductRepository extends JpaRepository<ProductEntity, Long> {
             "ELSE p.name END")
 
     Page<ProductEntity> getProductsBySearchTerm(@Param("sortBy") String sortBy, Pageable pageable);
+    List<ProductEntity> findByIdIn(List<Long> ids);
 }

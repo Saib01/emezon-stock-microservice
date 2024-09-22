@@ -22,6 +22,7 @@ public class DomainConstants {
     public static final String PROPERTY_DESCRIPTION = "Description";
     public static final int PRODUCT_MAX_CATEGORY=3;
     public static final int PRODUCT_MIN_CATEGORY=1;
+    public static final int MAX_ARTICLES_PER_CATEGORY = 3;
 
     private DomainConstants() {
     }
