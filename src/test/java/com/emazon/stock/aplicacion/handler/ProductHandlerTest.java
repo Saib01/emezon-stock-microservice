@@ -128,4 +128,16 @@ class ProductHandlerTest {
 
         assertEquals(VALID_ID, idCaptor.getValue());
         assertEquals(VALID_AMOUNT, supplyCaptor.getValue());
-    }}
+    }
+
+    @Test
+    @DisplayName("Should return true when product limit per category is valid")
+    void shouldReturnTrueWhenProductLimitPerCategoryIsValid() {
+        when(productServicePort.validateMaxProductPerCategory(VALID_LIST_PRODUCTS_IDS)).thenReturn(true);
+
+        boolean result = productHandler.validateMaxProductPerCategory(VALID_LIST_PRODUCTS_IDS);
+
+        assertTrue(result);
+    }
+
+}

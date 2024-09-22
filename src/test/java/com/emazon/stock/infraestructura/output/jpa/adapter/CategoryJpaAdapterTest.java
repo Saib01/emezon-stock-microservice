@@ -32,8 +32,7 @@ import static com.emazon.stock.utils.TestConstants.VALID_SIZE;
 import static com.emazon.stock.dominio.utils.DomainConstants.PROPERTY_NAME;
 import static com.emazon.stock.dominio.utils.Direction.ASC;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
@@ -115,6 +114,13 @@ class CategoryJpaAdapterTest {
         verify((categoryRepository), times(1)).existsByName(VALID_CATEGORY_NAME);
     }
 
+    @Test
+    @DisplayName("Should return true when category exists by id")
+    void shouldReturnTrueWhenCategoryExistsById() {
+        when(categoryRepository.existsById(VALID_ID)).thenReturn(true);
 
+        boolean result = categoryJpaAdapter.existsById(VALID_ID);
+        assertTrue(result);
+    }
 
 }

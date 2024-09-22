@@ -21,6 +21,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import static com.emazon.stock.dominio.utils.Direction.ASC;
 import static com.emazon.stock.dominio.utils.DomainConstants.*;
@@ -255,5 +256,30 @@ class ProductUseCaseTest {
                 ArgumentCaptor<Product> productCaptor = ArgumentCaptor.forClass(Product.class);
                 verify(productPersistencePort).saveProduct(productCaptor.capture());
                 assertEquals(VALID_AMOUNT, productCaptor.getValue().getAmount());
+        }
+
+        @Test
+        @DisplayName("Should return true when product count per category is within limit")
+        void shouldReturnTrueWhenProductCountIsWithinLimit() {
+                when(productPersistencePort.getCategoryIdsByProductIds(VALID_LIST_PRODUCTS_IDS)).thenReturn(
+                        VALID_LIST_PRODUCTS_IDS.stream().map(
+                                id -> List.of(id)
+                        ).toList()
+                );
+                boolean result =productUseCase.validateMaxProductPerCategory(VALID_LIST_PRODUCTS_IDS);
+                assertTrue(result);
+        }
+        @Test
+        @DisplayName("Should return false when product count per category exceeds limit")
+        void shouldReturnFalseWhenProductCountExceedsLimit() {
+                List<Long> combinedList = new ArrayList<>(VALID_LIST_PRODUCTS_IDS);
+                combinedList.addAll(VALID_LIST_PRODUCTS_IDS_TWO);
+                when(productPersistencePort.getCategoryIdsByProductIds(combinedList)).thenReturn(
+                        combinedList.stream().map(
+                                id -> List.of(VALID_ID)
+                        ).toList()
+                );
+                boolean result =productUseCase.validateMaxProductPerCategory(combinedList);
+                assertFalse(result);
         }
 }
