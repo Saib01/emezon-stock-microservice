@@ -1,5 +1,8 @@
 package com.emazon.stock.utils;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class TestConstants {
     public static final long VALID_ID = 1L;
     public static final long INVALID_ID = 3841L;
@@ -26,7 +29,10 @@ public class TestConstants {
     public static final int VALID_TOTAL_PAGES = 1;
     public static final int VALID_TOTAL_ELEMENTS = 10;
     public static final String INVALID_SORT_DIRECTION = "Assac";
-
+    public static final Long VALID_ID_TWO=2L;
+    public static final List<Long> VALID_LIST_PRODUCTS_IDS = Arrays.asList(1L, 2L);
+    public static final List<Long> VALID_LIST_PRODUCTS_IDS_TWO = Arrays.asList(3L, 4L);
+    public static final int ONE=1;
     private TestConstants() {
     }
 }

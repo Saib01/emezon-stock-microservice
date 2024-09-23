@@ -30,8 +30,8 @@ public class BeanConfiguration {
     private final CategoryEntityMapper categoryEntityMapper;
     private final IBrandRepository brandRepository;
     private final BrandEntityMapper brandEntityMapper;
-    private final IProductRepository itemRepository;
-    private final ProductEntityMapper itemEntityMapper;
+    private final IProductRepository productRepository;
+    private final ProductEntityMapper productEntityMapper;
 
     @Bean
     ICategoryPersistencePort categoryPersistencePort() {
@@ -53,7 +53,7 @@ public class BeanConfiguration {
 
     @Bean
     IProductPersistencePort productPersistencePort() {
-        return new ProductJpaAdapter(itemRepository, itemEntityMapper);
+        return new ProductJpaAdapter(productRepository, productEntityMapper);
     }
     @Bean
     public IProductServicePort productServicePort() {

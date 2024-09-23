@@ -33,8 +33,7 @@ import static com.emazon.stock.utils.TestConstants.VALID_SIZE;
 import static com.emazon.stock.dominio.utils.DomainConstants.PROPERTY_NAME;
 import static com.emazon.stock.dominio.utils.Direction.ASC;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
@@ -115,5 +114,12 @@ class BrandJpaAdapterTest {
         verify(brandRepository, times(1)).findAll(pageable);
         verify(brandEntityMapper, times(1)).toBrandPageStock(brandEntityPage);
     }
+    @Test
+    @DisplayName("Should return true when brand exists by id")
+    void shouldReturnTrueWhenBrandExistsById() {
+        when(brandRepository.existsById(VALID_ID)).thenReturn(true);
 
+        boolean result = brandJpaAdapter.existsById(VALID_ID);
+        assertTrue(result);
+    }
 }

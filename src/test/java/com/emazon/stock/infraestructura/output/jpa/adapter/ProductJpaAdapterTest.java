@@ -25,8 +25,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.emazon.stock.dominio.utils.Direction.ASC;
-import static com.emazon.stock.dominio.utils.DomainConstants.CATEGORY;
-import static com.emazon.stock.dominio.utils.DomainConstants.PROPERTY_NAME;
+import static com.emazon.stock.dominio.utils.DomainConstants.*;
 import static com.emazon.stock.utils.TestConstants.*;
 import static com.emazon.stock.utils.TestConstants.VALID_CATEGORY_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -51,10 +50,7 @@ class ProductJpaAdapterTest {
         categoryEntity=new CategoryEntity(VALID_ID, VALID_CATEGORY_NAME, VALID_CATEGORY_DESCRIPTION);
         category=new Category(VALID_ID, VALID_CATEGORY_NAME, VALID_CATEGORY_DESCRIPTION);
 
-        productEntity = new ProductEntity(VALID_ID, VALID_PRODUCT_NAME, VALID_PRODUCT_DESCRIPTION, VALID_AMOUNT,
-                VALID_PRICE,
-                new BrandEntity(VALID_ID, VALID_BRAND_NAME, VALID_BRAND_DESCRIPTION),
-                new ArrayList<>(Arrays.asList(categoryEntity)));
+        productEntity = createProductEntity(VALID_ID);
 
         product= new Product(VALID_ID, VALID_PRODUCT_NAME, VALID_PRODUCT_DESCRIPTION, VALID_AMOUNT,
                 VALID_PRICE,
@@ -69,8 +65,8 @@ class ProductJpaAdapterTest {
         productJpaAdapter.saveProduct(product);
         ArgumentCaptor<ProductEntity> productEntityCaptor= ArgumentCaptor.forClass(ProductEntity.class);
 
-        verify(productEntityMapper, times(1)).toProductEntity(product);
-        verify(productRepository, times(1)).save(productEntityCaptor.capture());
+        verify(productEntityMapper, times(ONE)).toProductEntity(product);
+        verify(productRepository, times(ONE)).save(productEntityCaptor.capture());
         assertEquals(productEntityCaptor.getValue(), productEntity);
     }
     @Test
@@ -83,8 +79,8 @@ class ProductJpaAdapterTest {
         Product result = productJpaAdapter.getProduct(VALID_ID);
         assertThat(result).isEqualTo(product);
 
-        verify(productRepository, times(1)).findById(VALID_ID);
-        verify(productEntityMapper, times(1)).toProduct(productEntity);
+        verify(productRepository, times(ONE)).findById(VALID_ID);
+        verify(productEntityMapper, times(ONE)).toProduct(productEntity);
     }
 
     @Test
@@ -100,7 +96,7 @@ class ProductJpaAdapterTest {
         when(productRepository.existsByName(VALID_CATEGORY_NAME)).thenReturn(true);
         productJpaAdapter.existsByName(VALID_CATEGORY_NAME);
 
-        verify((productRepository), times(1)).existsByName(VALID_CATEGORY_NAME);
+        verify((productRepository), times(ONE)).existsByName(VALID_CATEGORY_NAME);
     }
 
 
@@ -118,8 +114,41 @@ class ProductJpaAdapterTest {
        PageStock<Product> actualProductPageStock = productJpaAdapter.getProductsBySearchTerm(VALID_PAGE,VALID_SIZE,CATEGORY.toLowerCase(),ASC);
 
         assertEquals(expectedProductPageStock,actualProductPageStock);
-        verify(productRepository, times(1)).getProductsBySearchTerm(CATEGORY.toLowerCase(),pageable);
-        verify(productEntityMapper, times(1)).toProductPageStock(productEntityPage);
+        verify(productRepository, times(ONE)).getProductsBySearchTerm(CATEGORY.toLowerCase(),pageable);
+        verify(productEntityMapper, times(ONE)).toProductPageStock(productEntityPage);
+    }
+    @Test
+    @DisplayName("Should return true when product exists by id")
+    void shouldReturnTrueWhenProductExistsById() {
+        when(productRepository.existsById(VALID_ID)).thenReturn(true);
+
+        boolean result = productJpaAdapter.existsById(VALID_ID);
+        assertTrue(result);
     }
 
+    @Test
+    @DisplayName("Should return category IDs by product IDs")
+    void shouldReturnCategoryIdsByProductIds() {
+        List<ProductEntity> productEntityList=Arrays.asList(productEntity, createProductEntity(VALID_ID_TWO));
+        when(productRepository.findByIdIn(VALID_LIST_PRODUCTS_IDS)).thenReturn(productEntityList);
+
+        List<List<Long>> result = productJpaAdapter.getCategoryIdsByProductIds(VALID_LIST_PRODUCTS_IDS);
+
+        assertEquals(productEntityList.size(), result.size());
+        assertEquals(productEntityList.get(ZERO).getCategoryEntityList().get(ZERO).getId(), result.get(ZERO).get(ZERO));
+        assertEquals(productEntityList.get(ONE).getCategoryEntityList().get(ZERO).getId(), result.get(ONE).get(ZERO));
+    }
+
+    ProductEntity createProductEntity(Long id){
+        return new ProductEntity(id, VALID_PRODUCT_NAME, VALID_PRODUCT_DESCRIPTION, VALID_AMOUNT,VALID_PRICE,
+                createBrandEntity(),
+                createCategoryEntityList(id)
+        );
+    }
+    BrandEntity createBrandEntity(){
+        return new BrandEntity(VALID_ID, VALID_BRAND_NAME, VALID_BRAND_DESCRIPTION);
+    }
+    List<CategoryEntity> createCategoryEntityList(Long id){
+        return Arrays.asList(new CategoryEntity(id, VALID_CATEGORY_NAME, VALID_CATEGORY_DESCRIPTION));
+    }
 }
