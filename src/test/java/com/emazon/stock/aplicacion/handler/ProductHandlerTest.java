@@ -1,9 +1,10 @@
 package com.emazon.stock.aplicacion.handler;
 
-import com.emazon.stock.aplicacion.dtos.BrandResponse;
-import com.emazon.stock.aplicacion.dtos.CategoryResponse;
-import com.emazon.stock.aplicacion.dtos.ProductRequest;
-import com.emazon.stock.aplicacion.dtos.ProductResponse;
+import com.emazon.stock.aplicacion.dtos.response.BrandResponse;
+import com.emazon.stock.aplicacion.dtos.response.CategoryResponse;
+import com.emazon.stock.aplicacion.dtos.request.ProductRequest;
+import com.emazon.stock.aplicacion.dtos.response.ProductResponse;
+import com.emazon.stock.aplicacion.handler.implement.ProductHandler;
 import com.emazon.stock.aplicacion.mapper.ProductRequestMapper;
 import com.emazon.stock.aplicacion.mapper.ProductResponseMapper;
 import com.emazon.stock.dominio.api.IProductServicePort;

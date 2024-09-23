@@ -12,8 +12,9 @@ import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.emazon.stock.aplicacion.dtos.CategoryRequest;
-import com.emazon.stock.aplicacion.dtos.CategoryResponse;
+import com.emazon.stock.aplicacion.dtos.request.CategoryRequest;
+import com.emazon.stock.aplicacion.dtos.response.CategoryResponse;
+import com.emazon.stock.aplicacion.handler.implement.CategoryHandler;
 import com.emazon.stock.aplicacion.mapper.CategoryRequestMapper;
 import com.emazon.stock.aplicacion.mapper.CategoryResponseMapper;
 import com.emazon.stock.dominio.api.ICategoryServicePort;

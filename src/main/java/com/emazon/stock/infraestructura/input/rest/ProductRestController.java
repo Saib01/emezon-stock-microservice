@@ -1,8 +1,9 @@
 package com.emazon.stock.infraestructura.input.rest;
 
-import com.emazon.stock.aplicacion.dtos.ProductRequest;
-import com.emazon.stock.aplicacion.dtos.ProductResponse;
+import com.emazon.stock.aplicacion.dtos.request.ProductRequest;
+import com.emazon.stock.aplicacion.dtos.response.ProductResponse;
 import com.emazon.stock.aplicacion.handler.IProductHandler;
+import com.emazon.stock.dominio.modelo.PageStock;
 import com.emazon.stock.infraestructura.output.jpa.repository.IProductRepository;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -55,15 +56,13 @@ public class ProductRestController {
     })
 
     @GetMapping
-    ResponseEntity<Page<ProductResponse>> getProductsByName(
+    ResponseEntity<PageStock<ProductResponse>> getProductsByName(
             @RequestParam(name = "sortBy", defaultValue = "productName") String sortBy,
             @RequestParam(name = "sortDirection", defaultValue = "ASC") String sortDirection,
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size) {
-
-        Page<ProductResponse> productPage=productHandler.getProductsBySearchTerm(page, size,sortBy, sortDirection);
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-        return ResponseEntity.ok(productPage);
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        return ResponseEntity.ok(productHandler.getProductsBySearchTerm(page, size,sortBy, sortDirection));
     }
     @Operation(summary = "Increase supply stock", description = "Increases the stock of a supply by a given increment")
     @ApiResponses(value = {

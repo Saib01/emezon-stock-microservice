@@ -1,6 +1,6 @@
 package com.emazon.stock.aplicacion.mapper;
 
-import com.emazon.stock.aplicacion.dtos.CategoryRequest;
+import com.emazon.stock.aplicacion.dtos.request.CategoryRequest;
 import com.emazon.stock.dominio.modelo.Category;
 import org.mapstruct.Mapper;
 

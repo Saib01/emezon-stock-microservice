@@ -1,7 +1,7 @@
 package com.emazon.stock.infraestructura.input.rest;
 
-import com.emazon.stock.aplicacion.dtos.BrandRequest;
-import com.emazon.stock.aplicacion.dtos.BrandResponse;
+import com.emazon.stock.aplicacion.dtos.request.BrandRequest;
+import com.emazon.stock.aplicacion.dtos.response.BrandResponse;
 import com.emazon.stock.aplicacion.handler.IBrandHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;

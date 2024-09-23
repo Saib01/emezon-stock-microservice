@@ -19,7 +19,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Collection;
 
-import static com.emazon.stock.infraestructura.exceptionhandler.ExceptionResponse.JWT_INVALID;
+import static com.emazon.stock.dominio.exeption.ExceptionResponse.JWT_INVALID;
 import static com.emazon.stock.infraestructura.util.InfrastructureConstants.*;
 import static java.lang.String.format;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;

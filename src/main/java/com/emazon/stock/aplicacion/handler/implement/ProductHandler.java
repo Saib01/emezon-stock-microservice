@@ -1,25 +1,23 @@
-package com.emazon.stock.aplicacion.handler;
+package com.emazon.stock.aplicacion.handler.implement;
 
-import com.emazon.stock.aplicacion.dtos.ProductRequest;
-import com.emazon.stock.aplicacion.dtos.ProductResponse;
+import com.emazon.stock.aplicacion.dtos.request.ProductRequest;
+import com.emazon.stock.aplicacion.dtos.response.ProductResponse;
+import com.emazon.stock.aplicacion.handler.IProductHandler;
 import com.emazon.stock.aplicacion.mapper.ProductRequestMapper;
 import com.emazon.stock.aplicacion.mapper.ProductResponseMapper;
 import com.emazon.stock.dominio.api.IProductServicePort;
+import com.emazon.stock.dominio.modelo.PageStock;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.emazon.stock.dominio.utils.DomainConstants.PROPERTY_NAME;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class ProductHandler implements IProductHandler{
+public class ProductHandler implements IProductHandler {
     private final IProductServicePort productServicePort;
     private final ProductRequestMapper productRequestMapper;
     private final ProductResponseMapper productResponseMapper;
@@ -32,14 +30,9 @@ public class ProductHandler implements IProductHandler{
     }
 
     @Override
-    public Page<ProductResponse> getProductsBySearchTerm(int page, int size, String sortBy, String sortDirection) {
-        return this.productResponseMapper.toProductResponsePage(
-                this.productServicePort.getProductsBySearchTerm(page,size,sortBy,sortDirection),
-                PageRequest.of(
-                        page,
-                        size,
-                        Sort.by(Sort.Direction.fromString(sortDirection),PROPERTY_NAME.toLowerCase())
-                )
+    public PageStock<ProductResponse> getProductsBySearchTerm(int page, int size, String sortBy, String sortDirection) {
+        return this.productResponseMapper.toProductResponsePageStock(
+                this.productServicePort.getProductsBySearchTerm(page,size,sortBy,sortDirection)
         );
     }
 

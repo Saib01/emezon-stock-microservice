@@ -7,11 +7,30 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.data.domain.Page;
 
-@Mapper(componentModel = "spring")
-public interface BrandEntityMapper {
-    Brand toBrand(BrandEntity brand);
+import java.util.Collections;
+import java.util.List;
 
-    PageStock<Brand> toBrandPageStock(Page<BrandEntity> brandEntityPage);
-    @Mapping(target = "productEntities", ignore = true)
+import static com.emazon.stock.infraestructura.util.InfrastructureConstants.*;
+import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
+
+@Mapper(componentModel = SPRING)
+public interface BrandEntityMapper {
+
+
+    Brand toBrand(BrandEntity brand);
+    @Mapping(target = PRODUCT_ENTITIES, ignore = true)
     BrandEntity toBrandEntity(Brand brand);
+    @Mapping(target = CONTENT, expression = EMPTY_IF_NULL_BRAND_ENTITY_PAGE_GET_CONTENT)
+    @Mapping(target = PAGE_NUMBER,source = NUMBER)
+    @Mapping(target = PAGE_SIZE,source = SIZE)
+    @Mapping(target = ASCENDING,ignore = true)
+    PageStock<Brand> toBrandPageStock(Page<BrandEntity> brandEntityPage);
+    default List<Brand> mapContentToEmptyIfNull(List<BrandEntity> content) {
+        if (content == null) {
+            return Collections.emptyList();
+        }
+        return content.stream()
+                .map(this::toBrand)
+                .toList();
+    }
 }

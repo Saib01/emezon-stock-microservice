@@ -1,8 +1,9 @@
 package com.emazon.stock.infraestructura.input.rest;
 
-import com.emazon.stock.aplicacion.dtos.CategoryRequest;
-import com.emazon.stock.aplicacion.dtos.CategoryResponse;
+import com.emazon.stock.aplicacion.dtos.request.CategoryRequest;
+import com.emazon.stock.aplicacion.dtos.response.CategoryResponse;
 import com.emazon.stock.aplicacion.handler.ICategoryHandler;
+import com.emazon.stock.dominio.modelo.PageStock;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -42,7 +43,7 @@ public class CategoryRestController {
                         @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content)
         })
         @GetMapping
-        ResponseEntity<Page<CategoryResponse>> getCategoriesByName(
+        ResponseEntity<PageStock<CategoryResponse>> getCategoriesByName(
                         @RequestParam(name = "sortDirection", defaultValue = "ASC") String sortDirection,
                         @RequestParam(name = "page", defaultValue = "0") int page,
                         @RequestParam(name = "size", defaultValue = "10") int size) {

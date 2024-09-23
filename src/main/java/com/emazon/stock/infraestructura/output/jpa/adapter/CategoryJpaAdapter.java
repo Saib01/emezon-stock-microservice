@@ -1,6 +1,5 @@
 package com.emazon.stock.infraestructura.output.jpa.adapter;
 
-import com.emazon.stock.dominio.exeption.category.CategoryNotFoundException;
 import com.emazon.stock.dominio.modelo.Category;
 import com.emazon.stock.dominio.modelo.PageStock;
 import com.emazon.stock.dominio.spi.ICategoryPersistencePort;
@@ -34,8 +33,9 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
 
     @Override
     public Category getCategory(Long id) {
-        return categoryEntityMapper.toCategory(
-                categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new));
+        return categoryRepository.findById(id)
+                .map(categoryEntityMapper::toCategory)
+                .orElse(null);
     }
 
     @Override

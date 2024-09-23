@@ -1,8 +1,9 @@
 package com.emazon.stock.infraestructura.input.rest;
 
-import com.emazon.stock.aplicacion.dtos.BrandRequest;
-import com.emazon.stock.aplicacion.dtos.BrandResponse;
+import com.emazon.stock.aplicacion.dtos.request.BrandRequest;
+import com.emazon.stock.aplicacion.dtos.response.BrandResponse;
 import com.emazon.stock.aplicacion.handler.IBrandHandler;
+import com.emazon.stock.dominio.modelo.PageStock;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -37,7 +38,7 @@ public class BrandRestController {
                 @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content)
         })
         @GetMapping
-        ResponseEntity<Page<BrandResponse>> getBrandsByName(
+        ResponseEntity<PageStock<BrandResponse>> getBrandsByName(
                 @RequestParam(name = "sortDirection", defaultValue = "ASC") String sortDirection,
                 @RequestParam(name = "page", defaultValue = "0") int page,
                 @RequestParam(name = "size", defaultValue = "10") int size) {

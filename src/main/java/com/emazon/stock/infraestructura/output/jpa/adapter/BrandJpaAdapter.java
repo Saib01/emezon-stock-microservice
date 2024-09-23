@@ -1,6 +1,5 @@
 package com.emazon.stock.infraestructura.output.jpa.adapter;
 
-import com.emazon.stock.dominio.exeption.brand.BrandNotFoundException;
 import com.emazon.stock.dominio.modelo.Brand;
 import com.emazon.stock.dominio.modelo.PageStock;
 import com.emazon.stock.dominio.spi.IBrandPersistencePort;
@@ -30,8 +29,9 @@ public class BrandJpaAdapter implements IBrandPersistencePort {
 
     @Override
     public Brand getBrand(Long id) {
-        return brandEntityMapper.toBrand(
-                this.brandRepository.findById(id).orElseThrow(BrandNotFoundException::new));
+        return brandRepository.findById(id)
+                .map(brandEntityMapper::toBrand)
+                .orElse(null);
     }
 
     @Override

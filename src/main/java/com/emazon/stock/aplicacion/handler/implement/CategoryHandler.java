@@ -1,19 +1,17 @@
-package com.emazon.stock.aplicacion.handler;
+package com.emazon.stock.aplicacion.handler.implement;
 
-import com.emazon.stock.aplicacion.dtos.CategoryRequest;
-import com.emazon.stock.aplicacion.dtos.CategoryResponse;
+import com.emazon.stock.aplicacion.dtos.request.CategoryRequest;
+import com.emazon.stock.aplicacion.dtos.response.CategoryResponse;
+import com.emazon.stock.aplicacion.handler.ICategoryHandler;
 import com.emazon.stock.aplicacion.mapper.CategoryRequestMapper;
 import com.emazon.stock.aplicacion.mapper.CategoryResponseMapper;
 import com.emazon.stock.dominio.api.ICategoryServicePort;
 import com.emazon.stock.dominio.modelo.Category;
+import com.emazon.stock.dominio.modelo.PageStock;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import static com.emazon.stock.dominio.utils.DomainConstants.PROPERTY_NAME;
 
 @Service
 @RequiredArgsConstructor
@@ -30,14 +28,9 @@ public class CategoryHandler implements ICategoryHandler {
         }
 
         @Override
-        public Page<CategoryResponse> getCategoriesByName(int page,int size,String sortDirection) {
-                return this.categoryResponseMapper.toCategoryResponsePage(
-                        categoryServicePort.getCategoriesByName(page,size,sortDirection),
-                        PageRequest.of(
-                                page,
-                                size,
-                                Sort.by(Sort.Direction.fromString(sortDirection),PROPERTY_NAME.toLowerCase())
-                        )
+        public PageStock<CategoryResponse> getCategoriesByName(int page, int size, String sortDirection) {
+                return this.categoryResponseMapper.toCategoryResponsePageStock(
+                        categoryServicePort.getCategoriesByName(page,size,sortDirection)
                 );
         }
 

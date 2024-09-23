@@ -1,4 +1,4 @@
-package com.emazon.stock.aplicacion.dtos;
+package com.emazon.stock.aplicacion.dtos.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

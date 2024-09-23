@@ -1,6 +1,6 @@
 package com.emazon.stock.aplicacion.mapper;
 
-import com.emazon.stock.aplicacion.dtos.ProductRequest;
+import com.emazon.stock.aplicacion.dtos.request.ProductRequest;
 import com.emazon.stock.dominio.modelo.Product;
 import com.emazon.stock.dominio.modelo.Brand;
 import com.emazon.stock.dominio.modelo.Category;

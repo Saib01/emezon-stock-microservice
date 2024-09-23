@@ -1,7 +1,7 @@
 package com.emazon.stock.aplicacion.mapper;
 
-import com.emazon.stock.aplicacion.dtos.CategoryRequest;
-import com.emazon.stock.aplicacion.dtos.ProductRequest;
+import com.emazon.stock.aplicacion.dtos.request.CategoryRequest;
+import com.emazon.stock.aplicacion.dtos.request.ProductRequest;
 import com.emazon.stock.dominio.modelo.Category;
 import com.emazon.stock.dominio.modelo.Product;
 import org.junit.jupiter.api.BeforeEach;

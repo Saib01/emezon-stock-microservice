@@ -1,6 +1,6 @@
 package com.emazon.stock.aplicacion.mapper;
 
-import com.emazon.stock.aplicacion.dtos.BrandRequest;
+import com.emazon.stock.aplicacion.dtos.request.BrandRequest;
 import com.emazon.stock.dominio.modelo.Brand;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

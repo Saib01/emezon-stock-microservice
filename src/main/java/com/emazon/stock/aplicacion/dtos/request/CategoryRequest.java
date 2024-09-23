@@ -1,4 +1,4 @@
-package com.emazon.stock.aplicacion.dtos;
+package com.emazon.stock.aplicacion.dtos.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class BrandResponse {
+public class CategoryRequest {
     private Long id;
     private String name;
     private String description;
