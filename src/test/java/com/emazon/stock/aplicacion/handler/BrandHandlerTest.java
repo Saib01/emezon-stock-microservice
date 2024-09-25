@@ -73,21 +73,21 @@ class BrandHandlerTest {
         verify(brandServicePort).getBrand(VALID_ID);
         verify(brandResponseMapper).toBrandResponse(brand);
     }
-/*
+
     @Test
     @DisplayName("Should get Brands")
     void testGetBrands() {
         BrandResponse brandResponse = new BrandResponse(VALID_ID, VALID_BRAND_NAME, VALID_BRAND_DESCRIPTION);
         Pageable pageable = PageRequest.of(VALID_PAGE, VALID_SIZE,
-                Sort.by(Sort.Direction.fromString(ASC),PROPERTY_NAME.toLowerCase()));
-        Page<BrandResponse> brandResponsePage = new PageImpl<>(List.of(brandResponse),pageable,VALID_TOTAL_ELEMENTS);
+                Sort.by(Sort.Direction.fromString(ASC), PROPERTY_NAME.toLowerCase()));
+        Page<BrandResponse> brandResponsePage = new PageImpl<>(List.of(brandResponse), pageable, VALID_TOTAL_ELEMENTS);
         PageStock<Brand> brandPageStock = new PageStock<>(List.of(brand), VALID_TOTAL_ELEMENTS, VALID_TOTAL_PAGES);
 
-        when(brandServicePort.getBrandsByName(VALID_PAGE,VALID_SIZE, ASC)).thenReturn(brandPageStock);
-        when(brandResponseMapper.toBrandResponsePage(brandPageStock,pageable))
+        when(brandServicePort.getBrandsByName(VALID_PAGE, VALID_SIZE, ASC)).thenReturn(brandPageStock);
+        when(brandResponseMapper.toBrandResponsePage(brandPageStock, pageable))
                 .thenReturn(brandResponsePage);
 
-        Page<BrandResponse> result = brandHandler.getBrandsByName(VALID_PAGE, VALID_SIZE,ASC);
+        Page<BrandResponse> result = brandHandler.getBrandsByName(VALID_PAGE, VALID_SIZE, ASC);
 
         assertEquals(VALID_TOTAL_ELEMENTS, result.getTotalElements());
         assertEquals(VALID_TOTAL_PAGES, result.getTotalPages());
@@ -95,6 +95,5 @@ class BrandHandlerTest {
         assertEquals(VALID_BRAND_NAME, result.getContent().get(0).getName());
         assertEquals(VALID_BRAND_DESCRIPTION, result.getContent().get(0).getDescription());
     }
-    */
     
 }

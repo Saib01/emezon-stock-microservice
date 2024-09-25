@@ -25,7 +25,7 @@ public class BrandEntity {
     private String name;
     @Column(nullable = false, columnDefinition = MAX_CHAR_BRAND_DESCRIPTION)
     private String description;
-    @OneToMany(mappedBy = BRAND_ENTITY, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = BRAND_ENTITY,fetch = FetchType.EAGER)
     private List<ProductEntity> productEntities;
 
     public BrandEntity(Long id, String name, String description) {

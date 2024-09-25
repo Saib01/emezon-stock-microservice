@@ -1,5 +1,6 @@
 package com.emazon.stock.infraestructura.input.rest;
 
+import com.emazon.stock.aplicacion.dtos.Message;
 import com.emazon.stock.aplicacion.dtos.brand.BrandRequest;
 import com.emazon.stock.aplicacion.dtos.brand.BrandResponse;
 import com.emazon.stock.aplicacion.handler.IBrandHandler;
@@ -10,7 +11,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,9 +34,9 @@ public class BrandRestController {
             @ApiResponse(responseCode = RESPONSE_CODE_CONFLICT, description = BRAND_ALREADY_EXISTS, content = @Content)
     })
     @PostMapping("/")
-    ResponseEntity<Void> saveBrand(@RequestBody BrandRequest brandRequest) {
+    ResponseEntity<Message> saveBrand(@RequestBody BrandRequest brandRequest) {
         brandHandler.saveBrand(brandRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(new Message(BRAND_CREATED));
     }
 
     @Operation(summary = SUMMARY_GET_A_PAGINATED_LIST_OF_BRANDS)

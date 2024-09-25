@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static com.emazon.stock.aplicacion.util.applicationConstants.CONTENT;
+import static com.emazon.stock.aplicacion.util.ApplicationConstants.CONTENT;
 import static com.emazon.stock.infraestructura.util.InfrastructureConstants.*;
 import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 
@@ -31,7 +31,7 @@ public interface BrandEntityMapper {
     PageStock<Brand> toBrandPageStock(Page<BrandEntity> brandEntityPage);
 
     default List<Brand> mapContentToEmptyIfNull(List<BrandEntity> content) {
-        return Optional.ofNullable(content.stream()
+        return Optional.of(content.stream()
                         .map(this::toBrand)
                         .toList())
                 .orElse(Collections.emptyList());

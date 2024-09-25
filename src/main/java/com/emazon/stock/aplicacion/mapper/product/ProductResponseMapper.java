@@ -13,7 +13,7 @@ import org.mapstruct.Named;
 
 import java.util.List;
 
-import static com.emazon.stock.aplicacion.util.applicationConstants.*;
+import static com.emazon.stock.aplicacion.util.ApplicationConstants.*;
 import static com.emazon.stock.dominio.utils.DomainConstants.BRAND;
 import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 

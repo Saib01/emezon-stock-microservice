@@ -9,8 +9,8 @@ import org.mapstruct.Named;
 
 import java.util.List;
 
-import static com.emazon.stock.aplicacion.util.applicationConstants.DESCRIPTION;
-import static com.emazon.stock.aplicacion.util.applicationConstants.MAP_BRAND_WITHOUT_DESCRIPTION;
+import static com.emazon.stock.aplicacion.util.ApplicationConstants.DESCRIPTION;
+import static com.emazon.stock.aplicacion.util.ApplicationConstants.MAP_BRAND_WITHOUT_DESCRIPTION;
 import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 
 @Mapper(componentModel = SPRING)

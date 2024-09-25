@@ -1,5 +1,6 @@
 package com.emazon.stock.infraestructura.input.rest;
 
+import com.emazon.stock.aplicacion.dtos.Message;
 import com.emazon.stock.aplicacion.dtos.category.CategoryRequest;
 import com.emazon.stock.aplicacion.dtos.category.CategoryResponse;
 import com.emazon.stock.aplicacion.handler.ICategoryHandler;
@@ -33,9 +34,9 @@ public class CategoryRestController {
             @ApiResponse(responseCode = RESPONSE_CODE_CONFLICT, description = CATEGORY_ALREADY_EXISTS, content = @Content)
     })
     @PostMapping("/")
-    ResponseEntity<Void> saveCategory(@RequestBody CategoryRequest categoryRequest) {
+    ResponseEntity<Message> saveCategory(@RequestBody CategoryRequest categoryRequest) {
         categoryHandler.saveCategory(categoryRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(new Message(CATEGORY_CREATED));
     }
 
     @Operation(summary = SUMMARY_GET_A_PAGINATED_LIST_OF_CATEGORIES)

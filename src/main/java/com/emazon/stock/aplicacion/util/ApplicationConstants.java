@@ -1,6 +1,6 @@
 package com.emazon.stock.aplicacion.util;
 
-public class applicationConstants {
+public class ApplicationConstants {
 
     public static final String CATEGORY_LIST = "categoryList";
     public static final String CONTENT = "content";
@@ -13,6 +13,6 @@ public class applicationConstants {
     public static final String MAP_PRODUCT_WITHOUT_CATEGORY_AND_BRAND_DESCRIPTIONS = "mapProductWithoutCategoryAndBrandDescriptions";
     public static final String JAVA_MAP_PRODUCT_LIST_WITHOUT_CATEGORY_DESCRIPTIONS_PRODUCT_PAGE_STOCK_GET_CONTENT = "java(mapProductListWithoutCategoryAndBrandDescriptions(productPageStock.getContent()))";
 
-    private applicationConstants() {
+    private ApplicationConstants() {
     }
 }

@@ -60,9 +60,9 @@ public class PageValidator {
     public static List<String> sortBy(String sortBy) {
         String comparator = sortBy.replaceAll(PROPERTY_NAME, EMPTY_STRING);
         return switch (comparator) {
-            case CATEGORY -> getSortProperties(TWO.intValue(), ZERO, ONE.intValue());
-            case BRAND -> getSortProperties(ONE.intValue(), ZERO, TWO.intValue());
-            case PRODUCT -> getSortProperties(ZERO, ONE.intValue(), TWO.intValue());
+            case CATEGORY -> getSortProperties(TWO.intValue());
+            case BRAND -> getSortProperties(ONE.intValue(), ZERO);
+            case PRODUCT -> getSortProperties(ZERO, ONE.intValue());
             default -> throw new ProductPageSortByIsInvalidException(PRODUCT_PAGE_SORT_BY_IS_INVALID);
         };
     }

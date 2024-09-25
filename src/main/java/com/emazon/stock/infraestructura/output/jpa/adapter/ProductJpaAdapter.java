@@ -13,13 +13,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+
+import static com.emazon.stock.dominio.utils.Direction.ASC;
+import static com.emazon.stock.dominio.utils.DomainConstants.ZERO;
+import static java.math.BigInteger.ONE;
 
 
 @RequiredArgsConstructor
 public class ProductJpaAdapter implements IProductPersistencePort {
+    private static final String ORDER_BY_CATEGORY = "categoryEntityList.name";
     private final IProductRepository productRepository;
     private final ProductEntityMapper productEntityMapper;
 
@@ -30,17 +34,25 @@ public class ProductJpaAdapter implements IProductPersistencePort {
 
     @Override
     public PageStock<Product> getProductsBySearchTerm(int page, int size, List<String> sortBy, String sortDirection) {
-        Pageable pageable = PageRequest.of(page, size
-                //,Sort.by(Sort.Direction.fromString("ASC"), "categoryEntityList.size()")//"categoryEntityList.name"
-                       // .and(Sort.by(Sort.Direction.fromString(sortDirection), sortBy.get(ONE.intValue())))
-                       // .and(Sort.by(Sort.Direction.fromString(sortDirection), sortBy.get(TWO.intValue())))
-        );
-        //Page<ProductEntity> productEntities=this.productRepository.getProductsBySearchTerm("category",pageable);
+        Pageable pageable =
+                sortBy.get(ZERO).equalsIgnoreCase(ORDER_BY_CATEGORY) ?
+                        PageRequest.of(page, size)
+                        : PageRequest.of(page, size,Sort.by(Sort.Direction.fromString(sortDirection), sortBy.get(ZERO),sortBy.get(ONE.intValue())));
 
-        Page<ProductEntity> productEntities=this.productRepository.getProductsBySearchTerm("category",pageable);
+        Page<ProductEntity> productEntities =
+                sortBy.get(ZERO).equalsIgnoreCase(ORDER_BY_CATEGORY) ?
+                        getProductEntitiesOrderByCategoryName(sortDirection, pageable)
+                        : productRepository.findAll(pageable);
+
         return productEntityMapper.toProductPageStock(
                 productEntities
         );
+    }
+
+    private Page<ProductEntity> getProductEntitiesOrderByCategoryName(String sortDirection, Pageable pageable) {
+        return sortDirection.equalsIgnoreCase(ASC) ?
+                productRepository.findAllOrderByCategoryNameAndProductNameAndBrandNameASC(pageable)
+                : productRepository.findAllOrderByCategoryNameAndProductNameAndBrandNameDESC(pageable);
     }
 
     @Override

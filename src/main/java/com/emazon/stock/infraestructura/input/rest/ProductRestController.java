@@ -1,5 +1,6 @@
 package com.emazon.stock.infraestructura.input.rest;
 
+import com.emazon.stock.aplicacion.dtos.Message;
 import com.emazon.stock.aplicacion.dtos.product.ProductRequest;
 import com.emazon.stock.aplicacion.dtos.product.ProductResponse;
 import com.emazon.stock.aplicacion.handler.IProductHandler;
@@ -12,7 +13,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,9 +40,10 @@ public class ProductRestController {
             @ApiResponse(responseCode = RESPONSE_CODE_CONFLICT, description = CONFLICT_PRODUCT_NOT_CREATED_DESCRIPTION, content = @Content)
     })
     @PostMapping("/")
-    ResponseEntity<Void> saveProduct(@RequestBody ProductRequest productRequest) {
+    ResponseEntity<Message> saveProduct(@RequestBody ProductRequest productRequest) {
         productHandler.saveProduct(productRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(new Message(RESPONSE_DESCRIPTION_PRODUCT_CREATED));
     }
 
     @Operation(summary = SUMMARY_GET_A_PRODUCT_BY_NUMBER)
