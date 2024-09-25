@@ -3,7 +3,7 @@ package com.emazon.stock.infraestructura.output.jpa.adapter;
 import com.emazon.stock.dominio.exeption.product.ProductNotFoundException;
 import com.emazon.stock.dominio.modelo.Brand;
 import com.emazon.stock.dominio.modelo.Category;
-import com.emazon.stock.dominio.modelo.PageStock;
+import com.emazon.stock.dominio.utils.PageStock;
 import com.emazon.stock.dominio.modelo.Product;
 import com.emazon.stock.infraestructura.output.jpa.entity.BrandEntity;
 import com.emazon.stock.infraestructura.output.jpa.entity.CategoryEntity;
@@ -108,13 +108,13 @@ class ProductJpaAdapterTest {
         Page<ProductEntity> productEntityPage = new PageImpl<>(List.of(productEntity), pageable, VALID_TOTAL_ELEMENTS);
         PageStock<Product> expectedProductPageStock = new PageStock<>(List.of(product),VALID_TOTAL_ELEMENTS,VALID_TOTAL_PAGES);
 
-        when(productRepository.getProductsBySearchTerm(CATEGORY.toLowerCase(),pageable)).thenReturn(productEntityPage);
+        when(productRepository.findAll(CATEGORY.toLowerCase(),pageable)).thenReturn(productEntityPage);
         when(productEntityMapper.toProductPageStock(productEntityPage)).thenReturn(expectedProductPageStock);
 
        PageStock<Product> actualProductPageStock = productJpaAdapter.getProductsBySearchTerm(VALID_PAGE,VALID_SIZE,CATEGORY.toLowerCase(),ASC);
 
         assertEquals(expectedProductPageStock,actualProductPageStock);
-        verify(productRepository, times(ONE)).getProductsBySearchTerm(CATEGORY.toLowerCase(),pageable);
+        verify(productRepository, times(ONE)).findAll(CATEGORY.toLowerCase(),pageable);
         verify(productEntityMapper, times(ONE)).toProductPageStock(productEntityPage);
     }
     @Test

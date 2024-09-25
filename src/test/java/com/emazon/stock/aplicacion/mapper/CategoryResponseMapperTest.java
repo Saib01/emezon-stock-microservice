@@ -1,8 +1,9 @@
 package com.emazon.stock.aplicacion.mapper;
 
-import com.emazon.stock.aplicacion.dtos.CategoryResponse;
+import com.emazon.stock.aplicacion.dtos.category.CategoryResponse;
+import com.emazon.stock.aplicacion.mapper.category.CategoryResponseMapper;
 import com.emazon.stock.dominio.modelo.Category;
-import com.emazon.stock.dominio.modelo.PageStock;
+import com.emazon.stock.dominio.utils.PageStock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -8,17 +8,20 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+import static com.emazon.stock.dominio.utils.DomainConstants.PRODUCT;
+import static com.emazon.stock.infraestructura.util.InfrastructureConstants.*;
+
 @Entity
-@Table(name="product")
+@Table(name = PRODUCT)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id_product",nullable = false)
+    @Column(name = ID_PRODUCT, nullable = false)
     private Long id;
-    @Column(nullable = false,unique = true)
+    @Column(nullable = false, unique = true)
     private String name;
     @Column(nullable = false)
     private String description;
@@ -27,14 +30,14 @@ public class ProductEntity {
     @Column(nullable = false)
     private Double price;
     @ManyToOne
-    @JoinColumn(name = "brand_id")
+    @JoinColumn(name = BRAND_ID)
     private BrandEntity brandEntity;
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.MERGE)
     @JoinTable(
-            name = "product_category",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id")
+            name = PRODUCT_CATEGORY,
+            joinColumns = @JoinColumn(name = PRODUCT_ID,referencedColumnName = ID_PRODUCT),
+            inverseJoinColumns = @JoinColumn(name = CATEGORY_ID,referencedColumnName = ID_CATEGORY)
     )
-    private List<CategoryEntity> categoryEntityList ;
+    private List<CategoryEntity> categoryEntityList;
 
 }

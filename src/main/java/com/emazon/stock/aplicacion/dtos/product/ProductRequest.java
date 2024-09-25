@@ -1,4 +1,5 @@
-package com.emazon.stock.aplicacion.dtos;
+package com.emazon.stock.aplicacion.dtos.product;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

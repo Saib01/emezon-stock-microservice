@@ -5,22 +5,33 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import java.util.List;
 import java.util.Optional;
 
+@EnableJpaRepositories
 public interface IProductRepository extends JpaRepository<ProductEntity, Long> {
     boolean existsByName(String name);
-    Optional<ProductEntity> findById(Long id);
-    @Query("SELECT p FROM ProductEntity p " +
-            "JOIN p.categoryEntityList c " +
-            "JOIN p.brandEntity b " +
-            "ORDER BY " +
-            "CASE WHEN :sortBy = 'category' THEN c.name " +
-            "WHEN :sortBy = 'brand' THEN b.name " +
-            "ELSE p.name END")
 
-    Page<ProductEntity> getProductsBySearchTerm(@Param("sortBy") String sortBy, Pageable pageable);
+    Optional<ProductEntity> findById(Long id);
+    Page<ProductEntity> findAll(Pageable pageable);
+
     List<ProductEntity> findByIdIn(List<Long> ids);
+    @Query("SELECT p FROM ProductEntity p " +
+            " JOIN p.categoryEntityList c " +
+            " JOIN p.brandEntity b " +
+            "GROUP BY p " +
+            "ORDER BY MIN(c.name) ASC"
+            +", p.name ASC, b.name ASC"
+    )
+    Page<ProductEntity> findAllOrderByCategoryNameAndProductNameAndBrandNameASC(Pageable pageable);
+    @Query("SELECT p FROM ProductEntity p " +
+            " JOIN p.categoryEntityList c " +
+            " JOIN p.brandEntity b " +
+            "GROUP BY p " +
+            "ORDER BY MIN(c.name) DESC"
+            +", p.name DESC, b.name DESC"
+            )
+    Page<ProductEntity> findAllOrderByCategoryNameAndProductNameAndBrandNameDESC(Pageable pageable);
 }

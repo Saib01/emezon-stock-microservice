@@ -9,7 +9,7 @@ import com.emazon.stock.dominio.exeption.category.CategoryPageNumberIsInvalidExc
 import com.emazon.stock.dominio.exeption.category.CategoryPageSizeIsInvalidException;
 import com.emazon.stock.dominio.exeption.category.CategoryPageSortDirectionIsInvalidException;
 import com.emazon.stock.dominio.modelo.Category;
-import com.emazon.stock.dominio.modelo.PageStock;
+import com.emazon.stock.dominio.utils.PageStock;
 import com.emazon.stock.dominio.spi.ICategoryPersistencePort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

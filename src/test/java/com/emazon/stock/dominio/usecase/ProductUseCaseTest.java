@@ -5,7 +5,7 @@ import com.emazon.stock.dominio.exeption.category.*;
 import com.emazon.stock.dominio.exeption.product.*;
 import com.emazon.stock.dominio.modelo.Brand;
 import com.emazon.stock.dominio.modelo.Category;
-import com.emazon.stock.dominio.modelo.PageStock;
+import com.emazon.stock.dominio.utils.PageStock;
 import com.emazon.stock.dominio.modelo.Product;
 import com.emazon.stock.dominio.spi.IBrandPersistencePort;
 import com.emazon.stock.dominio.spi.ICategoryPersistencePort;

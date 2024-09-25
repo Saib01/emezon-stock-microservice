@@ -8,22 +8,25 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+import static com.emazon.stock.dominio.utils.DomainConstants.CATEGORY;
+import static com.emazon.stock.infraestructura.util.InfrastructureConstants.*;
+
 @Entity
-@Table(name="category")
+@Table(name = CATEGORY)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class CategoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id_category",nullable = false)
+    @Column(name = ID_CATEGORY, nullable = false)
     private Long id;
-    @Column(nullable = false,columnDefinition = "CHAR(50)",unique = true)
+    @Column(nullable = false, columnDefinition = MAX_CHAR_CATEGORY_NAME, unique = true)
     private String name;
-    @Column(nullable = false,columnDefinition = "CHAR(90)")
+    @Column(nullable = false, columnDefinition = MAX_CHAR_CATEGORY_DESCRIPTION)
     private String description;
-    @ManyToMany(mappedBy = "categoryEntityList",fetch = FetchType.LAZY)
-    private List<ProductEntity> productEntities ;
+    @ManyToMany(mappedBy = CATEGORY_ENTITY_LIST, fetch = FetchType.LAZY)
+    private List<ProductEntity> productEntities;
 
     public CategoryEntity(Long id, String name, String description) {
         this.id = id;

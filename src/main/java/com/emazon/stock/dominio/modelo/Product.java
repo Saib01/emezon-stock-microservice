@@ -1,12 +1,15 @@
 package com.emazon.stock.dominio.modelo;
 
+import com.emazon.stock.dominio.utils.ModelBase;
+
 import java.util.List;
 
-public class Product extends ModelBase{
+public class Product extends ModelBase {
     private Integer amount;
     private Double price;
     private Brand brand;
     private List<Category> categoryList;
+
     public Product(Long id, String name, String description, Integer amount, Double price, Brand brand, List<Category> categoryList) {
         super(id, name, description);
         this.amount = amount;
@@ -14,6 +17,7 @@ public class Product extends ModelBase{
         this.brand = brand;
         this.categoryList = categoryList;
     }
+
     public Integer getAmount() {
         return amount;
     }

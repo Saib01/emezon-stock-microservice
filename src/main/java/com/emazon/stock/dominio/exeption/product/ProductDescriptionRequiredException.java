@@ -1,7 +1,9 @@
 package com.emazon.stock.dominio.exeption.product;
 
-public class ProductDescriptionRequiredException extends RuntimeException{
-    public ProductDescriptionRequiredException() {
-        super();
+import com.emazon.stock.dominio.exeption.ExceptionResponse;
+
+public class ProductDescriptionRequiredException extends RuntimeException {
+    public ProductDescriptionRequiredException(ExceptionResponse productDescriptionRequired) {
+        super(productDescriptionRequired.getMessage());
     }
 }

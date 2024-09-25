@@ -1,9 +1,8 @@
 package com.emazon.stock.infraestructura.output.jpa.adapter;
 
-import com.emazon.stock.dominio.exeption.category.CategoryNotFoundException;
 import com.emazon.stock.dominio.modelo.Category;
-import com.emazon.stock.dominio.modelo.PageStock;
 import com.emazon.stock.dominio.spi.ICategoryPersistencePort;
+import com.emazon.stock.dominio.utils.PageStock;
 import com.emazon.stock.infraestructura.output.jpa.mapper.CategoryEntityMapper;
 import com.emazon.stock.infraestructura.output.jpa.repository.ICategoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,14 +27,15 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
     @Override
     public PageStock<Category> getCategoriesByName(int page, int size, String sortDirection) {
         Pageable pageable = PageRequest.of(page, size,
-                Sort.by(Sort.Direction.fromString(sortDirection),PROPERTY_NAME.toLowerCase()));
+                Sort.by(Sort.Direction.fromString(sortDirection), PROPERTY_NAME.toLowerCase()));
         return categoryEntityMapper.toCategoryPageStock(this.categoryRepository.findAll(pageable));
     }
 
     @Override
     public Category getCategory(Long id) {
-        return categoryEntityMapper.toCategory(
-                categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new));
+        return categoryRepository.findById(id)
+                .map(categoryEntityMapper::toCategory)
+                .orElse(null);
     }
 
     @Override

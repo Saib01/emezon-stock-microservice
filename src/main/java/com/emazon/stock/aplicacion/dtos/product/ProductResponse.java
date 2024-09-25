@@ -1,4 +1,7 @@
-package com.emazon.stock.aplicacion.dtos;
+package com.emazon.stock.aplicacion.dtos.product;
+
+import com.emazon.stock.aplicacion.dtos.brand.BrandResponse;
+import com.emazon.stock.aplicacion.dtos.category.CategoryResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

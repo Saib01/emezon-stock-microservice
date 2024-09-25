@@ -1,7 +1,9 @@
 package com.emazon.stock.dominio.exeption.brand;
 
-public class BrandPageNumberIsInvalidException extends RuntimeException{
-    public BrandPageNumberIsInvalidException() {
-        super();
+import com.emazon.stock.dominio.exeption.ExceptionResponse;
+
+public class BrandPageNumberIsInvalidException extends RuntimeException {
+    public BrandPageNumberIsInvalidException(ExceptionResponse brandPageNumberIsInvalid) {
+        super(brandPageNumberIsInvalid.getMessage());
     }
 }

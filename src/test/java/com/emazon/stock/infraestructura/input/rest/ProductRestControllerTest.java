@@ -1,6 +1,10 @@
 package com.emazon.stock.infraestructura.input.rest;
 
-import com.emazon.stock.aplicacion.dtos.*;
+import com.emazon.stock.aplicacion.dtos.category.CategoryRequest;
+import com.emazon.stock.aplicacion.dtos.product.ProductRequest;
+import com.emazon.stock.aplicacion.dtos.brand.BrandResponse;
+import com.emazon.stock.aplicacion.dtos.category.CategoryResponse;
+import com.emazon.stock.aplicacion.dtos.product.ProductResponse;
 import com.emazon.stock.aplicacion.handler.IProductHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;

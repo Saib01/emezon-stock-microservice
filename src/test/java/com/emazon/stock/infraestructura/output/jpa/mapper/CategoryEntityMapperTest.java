@@ -1,7 +1,7 @@
 package com.emazon.stock.infraestructura.output.jpa.mapper;
 
 import com.emazon.stock.dominio.modelo.Category;
-import com.emazon.stock.dominio.modelo.PageStock;
+import com.emazon.stock.dominio.utils.PageStock;
 import com.emazon.stock.infraestructura.output.jpa.entity.CategoryEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

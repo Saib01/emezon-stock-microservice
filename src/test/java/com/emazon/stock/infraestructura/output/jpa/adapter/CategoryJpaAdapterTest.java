@@ -2,7 +2,7 @@ package com.emazon.stock.infraestructura.output.jpa.adapter;
 
 import com.emazon.stock.dominio.exeption.category.CategoryNotFoundException;
 import com.emazon.stock.dominio.modelo.Category;
-import com.emazon.stock.dominio.modelo.PageStock;
+import com.emazon.stock.dominio.utils.PageStock;
 import com.emazon.stock.infraestructura.output.jpa.entity.CategoryEntity;
 import com.emazon.stock.infraestructura.output.jpa.mapper.CategoryEntityMapper;
 import com.emazon.stock.infraestructura.output.jpa.repository.ICategoryRepository;

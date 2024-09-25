@@ -1,7 +1,9 @@
 package com.emazon.stock.dominio.exeption.product;
 
-public class ProductPageNumberIsInvalidException extends RuntimeException{
-    public ProductPageNumberIsInvalidException() {
-        super();
+import com.emazon.stock.dominio.exeption.ExceptionResponse;
+
+public class ProductPageNumberIsInvalidException extends RuntimeException {
+    public ProductPageNumberIsInvalidException(ExceptionResponse productPageNumberIsInvalid) {
+        super(productPageNumberIsInvalid.getMessage());
     }
 }

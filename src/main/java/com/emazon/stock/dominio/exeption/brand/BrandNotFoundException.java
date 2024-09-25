@@ -1,7 +1,9 @@
 package com.emazon.stock.dominio.exeption.brand;
 
+import com.emazon.stock.dominio.exeption.ExceptionResponse;
+
 public class BrandNotFoundException extends RuntimeException {
-    public BrandNotFoundException() {
-        super();
+    public BrandNotFoundException(ExceptionResponse brandNotFound) {
+        super(brandNotFound.getMessage());
     }
 }
