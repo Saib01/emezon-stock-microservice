@@ -2,7 +2,7 @@ package com.emazon.stock.infraestructura.output.jpa.adapter;
 
 import com.emazon.stock.dominio.exeption.brand.BrandNotFoundException;
 import com.emazon.stock.dominio.modelo.Brand;
-import com.emazon.stock.dominio.modelo.PageStock;
+import com.emazon.stock.dominio.utils.PageStock;
 import com.emazon.stock.infraestructura.output.jpa.entity.BrandEntity;
 import com.emazon.stock.infraestructura.output.jpa.mapper.BrandEntityMapper;
 import com.emazon.stock.infraestructura.output.jpa.repository.IBrandRepository;

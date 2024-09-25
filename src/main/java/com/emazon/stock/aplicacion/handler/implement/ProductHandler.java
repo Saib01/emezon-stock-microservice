@@ -1,12 +1,12 @@
 package com.emazon.stock.aplicacion.handler.implement;
 
-import com.emazon.stock.aplicacion.dtos.request.ProductRequest;
-import com.emazon.stock.aplicacion.dtos.response.ProductResponse;
+import com.emazon.stock.aplicacion.dtos.product.ProductRequest;
+import com.emazon.stock.aplicacion.dtos.product.ProductResponse;
 import com.emazon.stock.aplicacion.handler.IProductHandler;
-import com.emazon.stock.aplicacion.mapper.ProductRequestMapper;
-import com.emazon.stock.aplicacion.mapper.ProductResponseMapper;
+import com.emazon.stock.aplicacion.mapper.product.ProductRequestMapper;
+import com.emazon.stock.aplicacion.mapper.product.ProductResponseMapper;
 import com.emazon.stock.dominio.api.IProductServicePort;
-import com.emazon.stock.dominio.modelo.PageStock;
+import com.emazon.stock.dominio.utils.PageStock;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,7 +32,7 @@ public class ProductHandler implements IProductHandler {
     @Override
     public PageStock<ProductResponse> getProductsBySearchTerm(int page, int size, String sortBy, String sortDirection) {
         return this.productResponseMapper.toProductResponsePageStock(
-                this.productServicePort.getProductsBySearchTerm(page,size,sortBy,sortDirection)
+                this.productServicePort.getProductsBySearchTerm(page, size, sortBy, sortDirection)
         );
     }
 
@@ -45,7 +45,7 @@ public class ProductHandler implements IProductHandler {
 
     @Override
     public void addSupply(Long id, Integer supply) {
-        this.productServicePort.addSupply(id,supply);
+        this.productServicePort.addSupply(id, supply);
     }
 
     @Override

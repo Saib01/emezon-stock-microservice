@@ -1,15 +1,7 @@
 package com.emazon.stock.infraestructura.exceptionhandler;
 
-import com.emazon.stock.dominio.exeption.brand.BrandNotFoundException;
-import com.emazon.stock.dominio.exeption.brand.BrandAlreadyExistException;
-import com.emazon.stock.dominio.exeption.brand.BrandNameTooLongException;
-import com.emazon.stock.dominio.exeption.brand.BrandNameRequiredException;
-import com.emazon.stock.dominio.exeption.brand.BrandDescriptionTooLongException;
-import com.emazon.stock.dominio.exeption.brand.BrandDescriptionRequiredException;
+import com.emazon.stock.dominio.exeption.brand.*;
 import com.emazon.stock.dominio.exeption.category.*;
-import com.emazon.stock.dominio.exeption.brand.BrandPageSortDirectionIsInvalidException;
-import com.emazon.stock.dominio.exeption.brand.BrandPageSizeIsInvalidException;
-import com.emazon.stock.dominio.exeption.brand.BrandPageNumberIsInvalidException;
 import com.emazon.stock.dominio.exeption.product.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,56 +13,59 @@ import java.util.Map;
 
 @ControllerAdvice
 public class ControllerAdvisor {
-        private static final String MESSAGE = "Message";
+    private static final String MESSAGE = "Message";
 
-        private ResponseEntity<Map<String, String>> buildResponse(HttpStatus status, String message) {
-                return ResponseEntity.status(status)
-                        .body(Collections.singletonMap(MESSAGE, message));
-        }
-        @ExceptionHandler({
-                CategoryDescriptionTooLongException.class,
-                CategoryNameTooLongException.class,
-                CategoryDescriptionRequiredException.class,
-                CategoryNameRequiredException.class,
-                CategoryPageSortDirectionIsInvalidException.class,
-                CategoryPageSizeIsInvalidException.class,
-                CategoryPageNumberIsInvalidException.class,
-                CategoryDuplicateException.class,
-                CategoryListSizeException.class,
-                BrandDescriptionTooLongException.class,
-                BrandNameTooLongException.class,
-                BrandDescriptionRequiredException.class,
-                BrandNameRequiredException.class,
-                BrandPageSortDirectionIsInvalidException.class,
-                BrandPageSizeIsInvalidException.class,
-                BrandPageNumberIsInvalidException.class,
-                ProductDescriptionRequiredException.class,
-                ProductNameRequiredException.class,
-                ProductAmountInvalidException.class,
-                ProductPriceInvalidException.class,
-                ProductPageSortDirectionIsInvalidException.class,
-                ProductPageSizeIsInvalidException.class,
-                ProductPageNumberIsInvalidException.class,
-                ProductPageSortByIsInvalidException.class,
-                InvalidSupplyException.class
-        })
-        public ResponseEntity<Map<String, String>> handleBadRequestExceptions(RuntimeException ex) {
-                return buildResponse(HttpStatus.BAD_REQUEST,ex.getMessage());
-        }
-        @ExceptionHandler({
-                CategoryAlreadyExistException.class,
-                BrandAlreadyExistException.class,
-                ProductAlreadyExistException.class
-        })
-        public ResponseEntity<Map<String, String>> handleConflictExceptions(RuntimeException ex) {
-                return buildResponse(HttpStatus.CONFLICT,ex.getMessage());
-        }
-        @ExceptionHandler({
-                CategoryNotFoundException.class,
-                BrandNotFoundException.class,
-                ProductNotFoundException.class
-        })
-        public ResponseEntity<Map<String, String>> handleNotFoundExceptions(RuntimeException ex) {
-                return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage());
-        }
+    private ResponseEntity<Map<String, String>> buildResponse(HttpStatus status, String message) {
+        return ResponseEntity.status(status)
+                .body(Collections.singletonMap(MESSAGE, message));
+    }
+
+    @ExceptionHandler({
+            CategoryDescriptionTooLongException.class,
+            CategoryNameTooLongException.class,
+            CategoryDescriptionRequiredException.class,
+            CategoryNameRequiredException.class,
+            CategoryPageSortDirectionIsInvalidException.class,
+            CategoryPageSizeIsInvalidException.class,
+            CategoryPageNumberIsInvalidException.class,
+            CategoryDuplicateException.class,
+            CategoryListSizeException.class,
+            BrandDescriptionTooLongException.class,
+            BrandNameTooLongException.class,
+            BrandDescriptionRequiredException.class,
+            BrandNameRequiredException.class,
+            BrandPageSortDirectionIsInvalidException.class,
+            BrandPageSizeIsInvalidException.class,
+            BrandPageNumberIsInvalidException.class,
+            ProductDescriptionRequiredException.class,
+            ProductNameRequiredException.class,
+            ProductAmountInvalidException.class,
+            ProductPriceInvalidException.class,
+            ProductPageSortDirectionIsInvalidException.class,
+            ProductPageSizeIsInvalidException.class,
+            ProductPageNumberIsInvalidException.class,
+            ProductPageSortByIsInvalidException.class,
+            InvalidSupplyException.class
+    })
+    public ResponseEntity<Map<String, String>> handleBadRequestExceptions(RuntimeException ex) {
+        return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler({
+            CategoryAlreadyExistException.class,
+            BrandAlreadyExistException.class,
+            ProductAlreadyExistException.class
+    })
+    public ResponseEntity<Map<String, String>> handleConflictExceptions(RuntimeException ex) {
+        return buildResponse(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
+    @ExceptionHandler({
+            CategoryNotFoundException.class,
+            BrandNotFoundException.class,
+            ProductNotFoundException.class
+    })
+    public ResponseEntity<Map<String, String>> handleNotFoundExceptions(RuntimeException ex) {
+        return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
 }

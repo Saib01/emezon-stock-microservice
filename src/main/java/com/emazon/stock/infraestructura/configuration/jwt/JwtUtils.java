@@ -9,9 +9,8 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-
-import static com.emazon.stock.dominio.exeption.ExceptionResponse.JWT_INVALID;
-import static com.emazon.stock.infraestructura.util.InfrastructureConstants.*;
+import static com.emazon.stock.infraestructura.util.InfrastructureConstants.JWT_KEY_GENERATOR;
+import static com.emazon.stock.infraestructura.util.InfrastructureConstants.JWT_USER_GENERATOR;
 
 @Component
 public class JwtUtils {
@@ -28,16 +27,11 @@ public class JwtUtils {
                     .build();
             return verifier.verify(token);
         } catch (JWTVerificationException exception) {
-            throw new JWTVerificationException(JWT_INVALID.getMessage());
+            return null;
         }
-    }
-
-    public String extractUsername(DecodedJWT decodedJWT) {
-        return decodedJWT.getSubject();
     }
 
     public Claim getSpecificClaim(DecodedJWT decodedJWT, String claimName) {
         return decodedJWT.getClaim(claimName);
     }
-
 }

@@ -2,7 +2,7 @@ package com.emazon.stock.infraestructura.output.jpa.mapper;
 
 import com.emazon.stock.dominio.modelo.Brand;
 import com.emazon.stock.dominio.modelo.Category;
-import com.emazon.stock.dominio.modelo.PageStock;
+import com.emazon.stock.dominio.utils.PageStock;
 import com.emazon.stock.dominio.modelo.Product;
 import com.emazon.stock.infraestructura.output.jpa.entity.BrandEntity;
 import com.emazon.stock.infraestructura.output.jpa.entity.CategoryEntity;

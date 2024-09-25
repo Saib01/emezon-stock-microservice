@@ -1,16 +1,16 @@
 package com.emazon.stock.aplicacion.handler;
 
-import com.emazon.stock.aplicacion.dtos.response.BrandResponse;
-import com.emazon.stock.aplicacion.dtos.response.CategoryResponse;
-import com.emazon.stock.aplicacion.dtos.request.ProductRequest;
-import com.emazon.stock.aplicacion.dtos.response.ProductResponse;
+import com.emazon.stock.aplicacion.dtos.brand.BrandResponse;
+import com.emazon.stock.aplicacion.dtos.category.CategoryResponse;
+import com.emazon.stock.aplicacion.dtos.product.ProductRequest;
+import com.emazon.stock.aplicacion.dtos.product.ProductResponse;
 import com.emazon.stock.aplicacion.handler.implement.ProductHandler;
-import com.emazon.stock.aplicacion.mapper.ProductRequestMapper;
-import com.emazon.stock.aplicacion.mapper.ProductResponseMapper;
+import com.emazon.stock.aplicacion.mapper.product.ProductRequestMapper;
+import com.emazon.stock.aplicacion.mapper.product.ProductResponseMapper;
 import com.emazon.stock.dominio.api.IProductServicePort;
 import com.emazon.stock.dominio.modelo.Brand;
 import com.emazon.stock.dominio.modelo.Category;
-import com.emazon.stock.dominio.modelo.PageStock;
+import com.emazon.stock.dominio.utils.PageStock;
 import com.emazon.stock.dominio.modelo.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

@@ -1,4 +1,4 @@
-package com.emazon.stock.aplicacion.dtos.request;
+package com.emazon.stock.aplicacion.dtos.category;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CategoryRequest {
+public class CategoryResponse {
     private Long id;
     private String name;
     private String description;

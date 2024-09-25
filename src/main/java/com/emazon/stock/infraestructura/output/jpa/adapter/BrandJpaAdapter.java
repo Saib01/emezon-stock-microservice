@@ -1,8 +1,8 @@
 package com.emazon.stock.infraestructura.output.jpa.adapter;
 
 import com.emazon.stock.dominio.modelo.Brand;
-import com.emazon.stock.dominio.modelo.PageStock;
 import com.emazon.stock.dominio.spi.IBrandPersistencePort;
+import com.emazon.stock.dominio.utils.PageStock;
 import com.emazon.stock.infraestructura.output.jpa.mapper.BrandEntityMapper;
 import com.emazon.stock.infraestructura.output.jpa.repository.IBrandRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +16,7 @@ import static com.emazon.stock.dominio.utils.DomainConstants.PROPERTY_NAME;
 public class BrandJpaAdapter implements IBrandPersistencePort {
     private final IBrandRepository brandRepository;
     private final BrandEntityMapper brandEntityMapper;
+
     @Override
     public void saveBrand(Brand brand) {
         this.brandRepository.save(brandEntityMapper.toBrandEntity(brand));
@@ -23,7 +24,8 @@ public class BrandJpaAdapter implements IBrandPersistencePort {
 
     @Override
     public PageStock<Brand> getBrandsByName(int page, int size, String sortDirection) {
-        Pageable pageable= PageRequest.of(page,size, Sort.by(Sort.Direction.fromString(sortDirection),PROPERTY_NAME.toLowerCase()));
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDirection), PROPERTY_NAME.toLowerCase()));
         return brandEntityMapper.toBrandPageStock(this.brandRepository.findAll(pageable));
     }
 

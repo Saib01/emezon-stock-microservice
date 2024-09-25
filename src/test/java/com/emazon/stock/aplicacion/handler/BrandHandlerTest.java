@@ -1,10 +1,10 @@
 package com.emazon.stock.aplicacion.handler;
 
-import com.emazon.stock.aplicacion.dtos.request.BrandRequest;
-import com.emazon.stock.aplicacion.dtos.response.BrandResponse;
+import com.emazon.stock.aplicacion.dtos.brand.BrandRequest;
+import com.emazon.stock.aplicacion.dtos.brand.BrandResponse;
 import com.emazon.stock.aplicacion.handler.implement.BrandHandler;
-import com.emazon.stock.aplicacion.mapper.BrandRequestMapper;
-import com.emazon.stock.aplicacion.mapper.BrandResponseMapper;
+import com.emazon.stock.aplicacion.mapper.brand.BrandRequestMapper;
+import com.emazon.stock.aplicacion.mapper.brand.BrandResponseMapper;
 import com.emazon.stock.dominio.api.IBrandServicePort;
 import com.emazon.stock.dominio.modelo.Brand;
 import org.junit.jupiter.api.BeforeEach;

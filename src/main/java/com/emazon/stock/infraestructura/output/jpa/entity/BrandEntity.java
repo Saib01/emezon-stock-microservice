@@ -7,22 +7,25 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+import static com.emazon.stock.dominio.utils.DomainConstants.BRAND;
+import static com.emazon.stock.infraestructura.util.InfrastructureConstants.*;
+
 
 @Entity
-@Table(name="brand")
+@Table(name = BRAND)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class BrandEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id_brand",nullable = false)
+    @Column(name = ID_BRAND, nullable = false)
     private Long id;
-    @Column(nullable = false,columnDefinition = "CHAR(50)",unique = true)
+    @Column(nullable = false, columnDefinition = MAX_CHAR_BRAND_NAME, unique = true)
     private String name;
-    @Column(nullable = false,columnDefinition = "CHAR(120)")
+    @Column(nullable = false, columnDefinition = MAX_CHAR_BRAND_DESCRIPTION)
     private String description;
-    @OneToMany(mappedBy = "brandEntity",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = BRAND_ENTITY, fetch = FetchType.LAZY)
     private List<ProductEntity> productEntities;
 
     public BrandEntity(Long id, String name, String description) {

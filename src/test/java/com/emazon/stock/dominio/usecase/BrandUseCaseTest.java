@@ -9,7 +9,7 @@ import com.emazon.stock.dominio.exeption.brand.BrandPageNumberIsInvalidException
 import com.emazon.stock.dominio.exeption.brand.BrandPageSizeIsInvalidException;
 import com.emazon.stock.dominio.exeption.brand.BrandPageSortDirectionIsInvalidException;
 import com.emazon.stock.dominio.modelo.Brand;
-import com.emazon.stock.dominio.modelo.PageStock;
+import com.emazon.stock.dominio.utils.PageStock;
 import com.emazon.stock.dominio.spi.IBrandPersistencePort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

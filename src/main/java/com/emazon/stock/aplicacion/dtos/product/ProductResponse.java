@@ -1,4 +1,7 @@
-package com.emazon.stock.aplicacion.dtos.request;
+package com.emazon.stock.aplicacion.dtos.product;
+
+import com.emazon.stock.aplicacion.dtos.brand.BrandResponse;
+import com.emazon.stock.aplicacion.dtos.category.CategoryResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,12 +13,12 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ProductRequest {
+public class ProductResponse {
     private Long id;
     private String name;
     private String description;
     private Integer amount;
     private Double price;
-    private Long brandId;
-    private List<Long> categoryIdsList;
+    private BrandResponse brandResponse;
+    private List<CategoryResponse> categoryResponseList;
 }

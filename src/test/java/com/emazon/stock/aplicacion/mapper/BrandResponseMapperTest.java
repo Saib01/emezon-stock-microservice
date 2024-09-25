@@ -1,8 +1,9 @@
 package com.emazon.stock.aplicacion.mapper;
 
-import com.emazon.stock.aplicacion.dtos.response.BrandResponse;
+import com.emazon.stock.aplicacion.dtos.brand.BrandResponse;
+import com.emazon.stock.aplicacion.mapper.brand.BrandResponseMapper;
 import com.emazon.stock.dominio.modelo.Brand;
-import com.emazon.stock.dominio.modelo.PageStock;
+import com.emazon.stock.dominio.utils.PageStock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

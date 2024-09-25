@@ -1,4 +1,4 @@
-package com.emazon.stock.dominio.modelo;
+package com.emazon.stock.dominio.utils;
 
 
 import java.util.List;
@@ -14,7 +14,8 @@ public class PageStock<T> {
     private Integer numberOfElements;
     private boolean ascending;
     private boolean empty;
-    public PageStock(List<T> content, Integer totalElements, Integer totalPages, Integer pageNumber, boolean first, boolean last,Integer pageSize) {
+
+    public PageStock(List<T> content, Integer totalElements, Integer totalPages, Integer pageNumber, boolean first, boolean last, Integer pageSize) {
         this.content = content;
         this.totalElements = totalElements;
         this.totalPages = totalPages;
@@ -23,7 +24,7 @@ public class PageStock<T> {
         this.first = first;
         this.last = last;
         this.empty = content.isEmpty();
-        this.numberOfElements=content.size();
+        this.numberOfElements = content.size();
     }
 
     public List<T> getContent() {

@@ -11,7 +11,9 @@ import com.emazon.stock.dominio.exeption.product.ProductPageSizeIsInvalidExcepti
 import com.emazon.stock.dominio.exeption.product.ProductPageSortByIsInvalidException;
 import com.emazon.stock.dominio.exeption.product.ProductPageSortDirectionIsInvalidException;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -32,18 +34,18 @@ public class PageValidator {
     private static final Map<String, Supplier<RuntimeException>> EXCEPTION_MAP = new HashMap<>();
 
     static {
-        EXCEPTION_MAP.put("categoryPageSortDirectionIsInvalid", () -> new CategoryPageSortDirectionIsInvalidException(CATEGORY_PAGE_SORT_DIRECTION_IS_INVALID));
-        EXCEPTION_MAP.put("categoryPageNumberIsInvalid", () -> new CategoryPageNumberIsInvalidException(CATEGORY_PAGE_NUMBER_IS_INVALID));
-        EXCEPTION_MAP.put("categoryPageSizeIsInvalid", () -> new CategoryPageSizeIsInvalidException(CATEGORY_PAGE_SIZE_NUMBER_IS_INVALID));
+        EXCEPTION_MAP.put("CategoryPageSortDirectionIsInvalid", () -> new CategoryPageSortDirectionIsInvalidException(CATEGORY_PAGE_SORT_DIRECTION_IS_INVALID));
+        EXCEPTION_MAP.put("CategoryPageNumberIsInvalid", () -> new CategoryPageNumberIsInvalidException(CATEGORY_PAGE_NUMBER_IS_INVALID));
+        EXCEPTION_MAP.put("CategoryPageSizeIsInvalid", () -> new CategoryPageSizeIsInvalidException(CATEGORY_PAGE_SIZE_NUMBER_IS_INVALID));
 
-        EXCEPTION_MAP.put("brandPageSortDirectionIsInvalid", () -> new BrandPageSortDirectionIsInvalidException(BRAND_PAGE_SORT_DIRECTION_IS_INVALID));
-        EXCEPTION_MAP.put("brandPageNumberIsInvalid", () -> new BrandPageNumberIsInvalidException(BRAND_PAGE_NUMBER_IS_INVALID));
-        EXCEPTION_MAP.put("brandPageSizeIsInvalid", () -> new BrandPageSizeIsInvalidException(BRAND_PAGE_SIZE_NUMBER_IS_INVALID));
+        EXCEPTION_MAP.put("BrandPageSortDirectionIsInvalid", () -> new BrandPageSortDirectionIsInvalidException(BRAND_PAGE_SORT_DIRECTION_IS_INVALID));
+        EXCEPTION_MAP.put("BrandPageNumberIsInvalid", () -> new BrandPageNumberIsInvalidException(BRAND_PAGE_NUMBER_IS_INVALID));
+        EXCEPTION_MAP.put("BrandPageSizeIsInvalid", () -> new BrandPageSizeIsInvalidException(BRAND_PAGE_SIZE_NUMBER_IS_INVALID));
 
-        EXCEPTION_MAP.put("productPageSortDirectionIsInvalid", () -> new ProductPageSortDirectionIsInvalidException(PRODUCT_PAGE_SORT_DIRECTION_IS_INVALID));
-        EXCEPTION_MAP.put("productPageNumberIsInvalid", () -> new ProductPageNumberIsInvalidException(PRODUCT_PAGE_NUMBER_IS_INVALID));
-        EXCEPTION_MAP.put("productPageSizeIsInvalid", () -> new ProductPageSizeIsInvalidException(PRODUCT_PAGE_SIZE_NUMBER_IS_INVALID));
-        EXCEPTION_MAP.put("productPageSortByIsInvalid", () -> new ProductPageSortByIsInvalidException(PRODUCT_PAGE_SORT_BY_IS_INVALID));
+        EXCEPTION_MAP.put("ProductPageSortDirectionIsInvalid", () -> new ProductPageSortDirectionIsInvalidException(PRODUCT_PAGE_SORT_DIRECTION_IS_INVALID));
+        EXCEPTION_MAP.put("ProductPageNumberIsInvalid", () -> new ProductPageNumberIsInvalidException(PRODUCT_PAGE_NUMBER_IS_INVALID));
+        EXCEPTION_MAP.put("ProductPageSizeIsInvalid", () -> new ProductPageSizeIsInvalidException(PRODUCT_PAGE_SIZE_NUMBER_IS_INVALID));
+        EXCEPTION_MAP.put("ProductPageSortByIsInvalid", () -> new ProductPageSortByIsInvalidException(PRODUCT_PAGE_SORT_BY_IS_INVALID));
     }
 
     private PageValidator() {
@@ -55,16 +57,20 @@ public class PageValidator {
         validateSize(size, modelName);
     }
 
-    public static String sortBy(String sortBy) {
+    public static List<String> sortBy(String sortBy) {
         String comparator = sortBy.replaceAll(PROPERTY_NAME, EMPTY_STRING);
         return switch (comparator) {
-            case CATEGORY -> SORT_PROPERTIES[TWO.intValue()];
-            case BRAND -> SORT_PROPERTIES[ONE.intValue()];
-            case PRODUCT -> SORT_PROPERTIES[ZERO];
+            case CATEGORY -> getSortProperties(TWO.intValue(), ZERO, ONE.intValue());
+            case BRAND -> getSortProperties(ONE.intValue(), ZERO, TWO.intValue());
+            case PRODUCT -> getSortProperties(ZERO, ONE.intValue(), TWO.intValue());
             default -> throw new ProductPageSortByIsInvalidException(PRODUCT_PAGE_SORT_BY_IS_INVALID);
         };
     }
-
+    private static List<String> getSortProperties(int... indices) {
+        return Arrays.stream(indices)
+                .mapToObj(index -> SORT_PROPERTIES[index])
+                .toList();
+    }
     private static void validateSortDirection(String sortDirection, String modelName) {
         if (!(sortDirection.equalsIgnoreCase(ASC) || sortDirection.equalsIgnoreCase(DESC))) {
             throw getExceptionForKey(modelName, PROPERTY_PAGE_SORT_DIRECTION);
