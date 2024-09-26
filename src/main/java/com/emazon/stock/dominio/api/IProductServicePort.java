@@ -15,4 +15,6 @@ public interface IProductServicePort {
     void addSupply(Long id, Integer supply);
 
     boolean validateMaxProductPerCategory(List<Long> listIdsProducts);
+
+    PageStock<Product> getPaginatedProductsInShoppingCart(List<Long> listIdsProducts, String categoryName, String brandName, int page, int size, String sortDirection);
 }

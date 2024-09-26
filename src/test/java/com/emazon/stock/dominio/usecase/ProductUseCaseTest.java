@@ -11,6 +11,7 @@ import com.emazon.stock.dominio.spi.IBrandPersistencePort;
 import com.emazon.stock.dominio.spi.ICategoryPersistencePort;
 import com.emazon.stock.dominio.spi.IModelPersistencePort;
 import com.emazon.stock.dominio.spi.IProductPersistencePort;
+import com.emazon.stock.dominio.utils.PageValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -197,20 +198,17 @@ class ProductUseCaseTest {
         @Test
         @DisplayName("Should return a paginated page of products")
         void shouldGetProductPageStock() {
-                PageStock<Product> expectedProductPageStock = new PageStock<>(
-                        Collections.singletonList(product),
-                        VALID_TOTAL_ELEMENTS, VALID_TOTAL_PAGES);
+                PageStock<Product> expectedProductPageStock = new PageStock<>(List.of(product),VALID_TOTAL_ELEMENTS,VALID_TOTAL_PAGES,VALID_PAGE,true,true,VALID_SIZE);
 
-                when(productPersistencePort.getProductsBySearchTerm(VALID_PAGE, VALID_SIZE,CATEGORY.toLowerCase(), ASC))
+                when(productPersistencePort.getProductsBySearchTerm(VALID_PAGE, VALID_SIZE, PageValidator.sortBy(CATEGORY.concat(PROPERTY_NAME)), ASC))
                         .thenReturn(expectedProductPageStock);
 
                 PageStock<Product> actualProductPageStock = productUseCase.getProductsBySearchTerm(VALID_PAGE, VALID_SIZE,CATEGORY_PROPERTY_NAME, ASC);
 
                 assertEquals(expectedProductPageStock, actualProductPageStock);
 
-                verify(productPersistencePort, times(1)).getProductsBySearchTerm(VALID_PAGE, VALID_SIZE,CATEGORY.toLowerCase(), ASC);
+                verify(productPersistencePort, times(ONE)).getProductsBySearchTerm(VALID_PAGE, VALID_SIZE,PageValidator.sortBy(CATEGORY.concat(PROPERTY_NAME)), ASC);
         }
-
         @Test
         @DisplayName("Should not return products when the page number is invalid")
         void shouldNotGetProductPageStockWhenPageNumberIsInvalid() {
@@ -248,7 +246,8 @@ class ProductUseCaseTest {
         @Test
         @DisplayName("Should update product amount and save when valid supply is provided")
         void shouldUpdateProductAmountWhenSupplyIsValid() {
-                when(productUseCase.getProduct(VALID_ID)).thenReturn(product);
+                when(productPersistencePort.getProduct(VALID_ID))
+                        .thenReturn(product);
                 product.setAmount(ZERO);
 
                 productUseCase.addSupply(VALID_ID,VALID_AMOUNT);
@@ -256,6 +255,12 @@ class ProductUseCaseTest {
                 ArgumentCaptor<Product> productCaptor = ArgumentCaptor.forClass(Product.class);
                 verify(productPersistencePort).saveProduct(productCaptor.capture());
                 assertEquals(VALID_AMOUNT, productCaptor.getValue().getAmount());
+        }
+        @Test
+        @DisplayName("Should update product amount and save when valid supply is provided")
+        void shouldNotUpdateProductAmountWhenSupplyIsInvalid() {
+                assertThrows(InvalidSupplyException.class,
+                        () -> productUseCase.addSupply(VALID_ID,ZERO));
         }
 
         @Test

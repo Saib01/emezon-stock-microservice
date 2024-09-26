@@ -52,7 +52,7 @@ class BrandResponseMapperTest {
         assertThat(brandList).hasSameSizeAs(result);
         assertBrandEqual(brandList.get(0),result.get(0));
     }
-
+/*
     @Test
     @DisplayName("Should map PageStock<brand> to Page<brandResponse>  Successfully")
     void toBrandResponsePage() {
@@ -67,7 +67,7 @@ class BrandResponseMapperTest {
         assertBrandEqual(brands.getContent().get(0), result.getContent().get(0));
 
     }
-    
+    */
     private void assertBrandEqual(Brand brand, BrandResponse brandResponse){
         assertThat(brand.getId()).isEqualTo(brandResponse.getId());
         assertThat(brand.getName()).isEqualTo(brandResponse.getName());

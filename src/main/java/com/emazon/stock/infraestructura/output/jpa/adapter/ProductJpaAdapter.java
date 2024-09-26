@@ -15,15 +15,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
+import java.util.Objects;
 
 import static com.emazon.stock.dominio.utils.Direction.ASC;
+import static com.emazon.stock.dominio.utils.DomainConstants.PROPERTY_NAME;
 import static com.emazon.stock.dominio.utils.DomainConstants.ZERO;
 import static java.math.BigInteger.ONE;
 
 
 @RequiredArgsConstructor
 public class ProductJpaAdapter implements IProductPersistencePort {
-    private static final String ORDER_BY_CATEGORY = "categoryEntityList.name";
+    public static final String ORDER_BY_CATEGORY = "categoryEntityList.name";
     private final IProductRepository productRepository;
     private final ProductEntityMapper productEntityMapper;
 
@@ -41,7 +43,7 @@ public class ProductJpaAdapter implements IProductPersistencePort {
 
         Page<ProductEntity> productEntities =
                 sortBy.get(ZERO).equalsIgnoreCase(ORDER_BY_CATEGORY) ?
-                        getProductEntitiesOrderByCategoryName(sortDirection, pageable)
+                        this.getProductEntitiesOrderByCategoryName(sortDirection, pageable)
                         : productRepository.findAll(pageable);
 
         return productEntityMapper.toProductPageStock(
@@ -79,5 +81,24 @@ public class ProductJpaAdapter implements IProductPersistencePort {
                         .map(CategoryEntity::getId)
                         .toList())
                 .toList();
+    }
+    @Override
+    public PageStock<Product> getPaginatedProductsInShoppingCart(List<Long> listIdsProducts, List<String> filter, int page, int size, String sortDirection) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDirection), PROPERTY_NAME.toLowerCase()));
+
+        Page<ProductEntity> productEntities=filter.stream().allMatch(Objects::nonNull)?
+                this.productRepository.findByIdInAndCategoryEntityList_NameAndBrandEntity_Name(
+                        listIdsProducts,filter.get(ZERO),filter.get(ONE.intValue()),pageable
+                )
+                : getProductEntitiesByCategoryNameOrBrandName(listIdsProducts, filter.get(ZERO),filter.get(ONE.intValue()), pageable);
+        return productEntityMapper.toProductPageStock(
+                    productEntities
+        );
+    }
+
+    private Page<ProductEntity> getProductEntitiesByCategoryNameOrBrandName(List<Long> listIdsProducts, String categoryName, String brandName, Pageable pageable) {
+        return categoryName != null ?
+                this.productRepository.findByIdInAndCategoryEntityList_Name(listIdsProducts, categoryName, pageable)
+                : this.productRepository.findByIdInAndBrandEntity_Name(listIdsProducts, brandName, pageable);
     }
 }

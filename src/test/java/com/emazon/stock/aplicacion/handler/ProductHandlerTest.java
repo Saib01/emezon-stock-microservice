@@ -29,8 +29,7 @@ import static com.emazon.stock.dominio.utils.DomainConstants.PROPERTY_NAME;
 import static com.emazon.stock.utils.TestConstants.*;
 import static com.emazon.stock.utils.TestConstants.VALID_ID;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class ProductHandlerTest {
     @Mock
@@ -97,22 +96,17 @@ class ProductHandlerTest {
                         new CategoryResponse(VALID_ID, VALID_CATEGORY_NAME, VALID_CATEGORY_DESCRIPTION)
                 )
         );
-        Pageable pageable = PageRequest.of(VALID_PAGE, VALID_SIZE,
-                Sort.by(Sort.Direction.fromString(ASC),PROPERTY_NAME.toLowerCase()));
-        Page<ProductResponse> productResponsePage = new PageImpl<>(List.of(productResponse),pageable,VALID_TOTAL_ELEMENTS);
-        PageStock<Product> productPageStock = new PageStock<>(List.of(product), VALID_TOTAL_ELEMENTS, VALID_TOTAL_PAGES);
+        PageStock<Product> productPageStock = new PageStock<>(List.of(product),VALID_TOTAL_ELEMENTS,VALID_TOTAL_PAGES,VALID_PAGE,true,true,VALID_SIZE);
+        PageStock<ProductResponse> expectedProductResponsePageStock=new PageStock<>(List.of(productResponse),VALID_TOTAL_ELEMENTS,VALID_TOTAL_PAGES,VALID_PAGE,true,true,VALID_SIZE);
 
-        when(productServicePort.getProductsBySearchTerm(VALID_PAGE, VALID_SIZE,CATEGORY_PROPERTY_NAME, ASC)).thenReturn(productPageStock);
-        when(productResponseMapper.toProductResponsePage(productPageStock,pageable))
-                .thenReturn(productResponsePage);
+        when(productServicePort.getProductsBySearchTerm(VALID_PAGE, VALID_SIZE,CATEGORY_PROPERTY_NAME, ASC)).thenReturn(productPageStock );
+        when(productResponseMapper.toProductResponsePageStock(productPageStock))
+                .thenReturn(expectedProductResponsePageStock);
 
-        Page<ProductResponse> result = productHandler.getProductsBySearchTerm(VALID_PAGE, VALID_SIZE,CATEGORY_PROPERTY_NAME, ASC);
+        PageStock<ProductResponse> result = productHandler.getProductsBySearchTerm(VALID_PAGE, VALID_SIZE,CATEGORY_PROPERTY_NAME, ASC);
 
-        assertEquals(VALID_TOTAL_ELEMENTS, result.getTotalElements());
-        assertEquals(VALID_TOTAL_PAGES, result.getTotalPages());
-        assertEquals(VALID_SIZE, result.getSize());
-        assertEquals(VALID_PRODUCT_NAME, result.getContent().get(0).getName());
-        assertEquals(VALID_PRODUCT_DESCRIPTION, result.getContent().get(0).getDescription());
+        assertEquals(result,expectedProductResponsePageStock);
+        verify(this.productServicePort,times(ONE)).getProductsBySearchTerm(VALID_PAGE, VALID_SIZE,CATEGORY_PROPERTY_NAME, ASC);
     }
 
     @Test

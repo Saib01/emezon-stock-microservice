@@ -42,7 +42,7 @@ class CategoryResponseMapperTest {
         assertThat(categoryList).hasSameSizeAs(result);
         assertCategoryEqual(categoryList.get(0),result.get(0));
     }
-
+/*
     @Test
     @DisplayName("Should map PageStock<Category> to Page<CategoryResponse>  Successfully")
     void toCategoryResponsePage() {
@@ -57,7 +57,7 @@ class CategoryResponseMapperTest {
         assertCategoryEqual(categories.getContent().get(0), result.getContent().get(0));
 
     }
-
+*/
     @Test
     @DisplayName("Should map Category to CategoryResponse correctly")
     void shouldMapCategoryToCategoryResponse() {

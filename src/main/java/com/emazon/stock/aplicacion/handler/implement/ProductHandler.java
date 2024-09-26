@@ -1,5 +1,6 @@
 package com.emazon.stock.aplicacion.handler.implement;
 
+import com.emazon.stock.aplicacion.dtos.ShoppingCartListRequest;
 import com.emazon.stock.aplicacion.dtos.product.ProductRequest;
 import com.emazon.stock.aplicacion.dtos.product.ProductResponse;
 import com.emazon.stock.aplicacion.handler.IProductHandler;
@@ -51,5 +52,19 @@ public class ProductHandler implements IProductHandler {
     @Override
     public boolean validateMaxProductPerCategory(List<Long> listIdsProducts) {
         return this.productServicePort.validateMaxProductPerCategory(listIdsProducts);
+    }
+
+    @Override
+    public PageStock<ProductResponse> getPaginatedProductsInShoppingCart(int page, int size, String sortDirection, ShoppingCartListRequest shoppingCartListRequest) {
+        return this.productResponseMapper.toProductResponsePageStock(
+                this.productServicePort.getPaginatedProductsInShoppingCart(
+                        shoppingCartListRequest.getListIdsProducts(),
+                        shoppingCartListRequest.getCategoryName(),
+                        shoppingCartListRequest.getBrandName(),
+                        page,
+                        size,
+                        sortDirection
+                )
+        );
     }
 }

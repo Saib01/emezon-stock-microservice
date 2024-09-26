@@ -5,10 +5,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Message {
-    String message;
+public class Response {
+    private String message;
 
-    public Message(String message) {
+    public Response(String message) {
         this.message = message;
     }
 }

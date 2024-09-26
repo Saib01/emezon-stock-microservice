@@ -66,7 +66,7 @@ public class PageValidator {
             default -> throw new ProductPageSortByIsInvalidException(PRODUCT_PAGE_SORT_BY_IS_INVALID);
         };
     }
-    private static List<String> getSortProperties(int... indices) {
+    public static List<String> getSortProperties(int... indices) {
         return Arrays.stream(indices)
                 .mapToObj(index -> SORT_PROPERTIES[index])
                 .toList();

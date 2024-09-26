@@ -18,6 +18,7 @@ public interface IProductRepository extends JpaRepository<ProductEntity, Long> {
     Page<ProductEntity> findAll(Pageable pageable);
 
     List<ProductEntity> findByIdIn(List<Long> ids);
+
     @Query("SELECT p FROM ProductEntity p " +
             " JOIN p.categoryEntityList c " +
             " JOIN p.brandEntity b " +
@@ -34,4 +35,10 @@ public interface IProductRepository extends JpaRepository<ProductEntity, Long> {
             +", p.name DESC, b.name DESC"
             )
     Page<ProductEntity> findAllOrderByCategoryNameAndProductNameAndBrandNameDESC(Pageable pageable);
+
+    Page<ProductEntity> findByIdInAndCategoryEntityList_NameAndBrandEntity_Name(List<Long> ids, String categoryName, String brandName, Pageable pageable);
+    Page<ProductEntity> findByIdInAndCategoryEntityList_Name(List<Long> ids, String categoryName, Pageable pageable);
+    Page<ProductEntity> findByIdInAndBrandEntity_Name(List<Long> ids, String brandName, Pageable pageable);
+
+
 }

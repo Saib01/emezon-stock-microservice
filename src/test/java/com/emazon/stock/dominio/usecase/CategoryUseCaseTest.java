@@ -20,21 +20,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import java.util.Collections;
 
-import static com.emazon.stock.utils.TestConstants.VALID_ID;
-import static com.emazon.stock.utils.TestConstants.INVALID_CATEGORY_NAME;
-import static com.emazon.stock.utils.TestConstants.VALID_CATEGORY_NAME;
-import static com.emazon.stock.utils.TestConstants.NULL_PROPERTY;
-import static com.emazon.stock.utils.TestConstants.EMPTY_PROPERTY;
-import static com.emazon.stock.utils.TestConstants.INVALID_CATEGORY_DESCRIPTION;
-import static com.emazon.stock.utils.TestConstants.VALID_CATEGORY_DESCRIPTION;
 import static com.emazon.stock.dominio.utils.Direction.ASC;
-import static com.emazon.stock.utils.TestConstants.INVALID_SORT_DIRECTION;
-import static com.emazon.stock.utils.TestConstants.VALID_PAGE;
-import static com.emazon.stock.utils.TestConstants.INVALID_PAGE;
-import static com.emazon.stock.utils.TestConstants.VALID_SIZE;
-import static com.emazon.stock.utils.TestConstants.INVALID_SIZE;
-import static com.emazon.stock.utils.TestConstants.VALID_TOTAL_ELEMENTS;
-import static com.emazon.stock.utils.TestConstants.VALID_TOTAL_PAGES;
+import static com.emazon.stock.utils.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
@@ -66,7 +53,7 @@ class CategoryUseCaseTest {
 
         ArgumentCaptor<Category> categoryCaptor = ArgumentCaptor.forClass(Category.class);
 
-        verify(categoryPersistencePort, times(1)).saveCategory(categoryCaptor.capture());
+        verify(categoryPersistencePort, times(ONE)).saveCategory(categoryCaptor.capture());
         assertEquals(categoryCaptor.getValue(), category);
 
     }
@@ -135,15 +122,14 @@ class CategoryUseCaseTest {
         assertNotNull(actualCategory);
         assertEquals(category, actualCategory);
 
-        verify(categoryPersistencePort, times(1)).getCategory(VALID_ID);
+        verify(categoryPersistencePort, times(ONE)).getCategory(VALID_ID);
     }
 
     @Test
     @DisplayName("Should return a paginated page of categories")
     void shouldGetCategoryPageStock() {
         PageStock<Category> expectedCategoryPageStock = new PageStock<>(
-                Collections.singletonList(category),
-                VALID_TOTAL_ELEMENTS, VALID_TOTAL_PAGES);
+                Collections.singletonList(category),VALID_TOTAL_ELEMENTS,VALID_TOTAL_PAGES,VALID_PAGE,true,true,VALID_SIZE);
 
         when(categoryPersistencePort.getCategoriesByName(VALID_PAGE, VALID_SIZE, ASC))
                 .thenReturn(expectedCategoryPageStock);
@@ -152,7 +138,7 @@ class CategoryUseCaseTest {
 
         assertEquals(expectedCategoryPageStock, actualCategoryPageStock);
 
-        verify(categoryPersistencePort, times(1)).getCategoriesByName(VALID_PAGE, VALID_SIZE,
+        verify(categoryPersistencePort, times(ONE)).getCategoriesByName(VALID_PAGE, VALID_SIZE,
                 ASC);
     }
 

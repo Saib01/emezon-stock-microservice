@@ -1,6 +1,6 @@
 package com.emazon.stock.infraestructura.input.rest;
 
-import com.emazon.stock.aplicacion.dtos.Message;
+import com.emazon.stock.aplicacion.dtos.Response;
 import com.emazon.stock.aplicacion.dtos.brand.BrandRequest;
 import com.emazon.stock.aplicacion.dtos.brand.BrandResponse;
 import com.emazon.stock.aplicacion.handler.IBrandHandler;
@@ -34,9 +34,9 @@ public class BrandRestController {
             @ApiResponse(responseCode = RESPONSE_CODE_CONFLICT, description = BRAND_ALREADY_EXISTS, content = @Content)
     })
     @PostMapping("/")
-    ResponseEntity<Message> saveBrand(@RequestBody BrandRequest brandRequest) {
+    ResponseEntity<Response> saveBrand(@RequestBody BrandRequest brandRequest) {
         brandHandler.saveBrand(brandRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new Message(BRAND_CREATED));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new Response(BRAND_CREATED));
     }
 
     @Operation(summary = SUMMARY_GET_A_PAGINATED_LIST_OF_BRANDS)
