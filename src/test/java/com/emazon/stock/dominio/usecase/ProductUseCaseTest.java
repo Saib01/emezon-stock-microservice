@@ -40,16 +40,18 @@ class ProductUseCaseTest {
         private ICategoryPersistencePort categoryPersistencePort;
         @InjectMocks
         private ProductUseCase productUseCase;
-        Product product;
-        Category category;
+        private Product product;
+        private Category category;
+        private Brand brand;
 
         @BeforeEach
         void setUp() {
                 MockitoAnnotations.openMocks(this);
                 category=new Category(VALID_ID, VALID_CATEGORY_NAME, VALID_CATEGORY_DESCRIPTION);
+                brand = new Brand(VALID_ID, VALID_BRAND_NAME, VALID_BRAND_DESCRIPTION);
                 product = new Product(VALID_ID, VALID_PRODUCT_NAME, VALID_PRODUCT_DESCRIPTION, VALID_AMOUNT,
                                 VALID_PRICE,
-                                new Brand(VALID_ID, VALID_BRAND_NAME, VALID_BRAND_DESCRIPTION),
+                        brand,
                         new ArrayList<>(Collections.singletonList(category)));
 
         }
@@ -100,7 +102,7 @@ class ProductUseCaseTest {
                                 assertThrows(ProductNameRequiredException.class, () -> productUseCase.saveProduct(product));
                         },
                         () -> {
-                                product.setName(NULL_PROPERTY);
+                                product.setName(null);
                                 assertThrows(ProductNameRequiredException.class, () -> productUseCase.saveProduct(product));
                         }
                 );
@@ -115,7 +117,7 @@ class ProductUseCaseTest {
                                 assertThrows(ProductDescriptionRequiredException.class, () -> productUseCase.saveProduct(product));
                         },
                         () -> {
-                                product.setDescription(NULL_PROPERTY);
+                                product.setDescription(null);
                                 assertThrows(ProductDescriptionRequiredException.class, () -> productUseCase.saveProduct(product));
                         }
                 );
@@ -286,5 +288,80 @@ class ProductUseCaseTest {
                 );
                 boolean result =productUseCase.validateMaxProductPerCategory(combinedList);
                 assertFalse(result);
+        }
+
+        @Test
+        @DisplayName("Should return paginated products when valid parameters are provided. Filter by categoryName and brandName")
+        void shouldReturnPaginatedProductsWithFilterByCategoryNameAndBrandName() {
+                PageStock<Product> mockProductPageStock = prepareGetPaginatedProductInShoppingCart(VALID_LIST_PRODUCTS_IDS,true);
+                assertPageStockProduct(mockProductPageStock,VALID_CATEGORY_NAME,VALID_BRAND_NAME,VALID_LIST_PRODUCTS_IDS);
+        }
+        @Test
+        @DisplayName("Should return paginated products when valid parameters are provided. Filter by categoryName")
+        void shouldReturnPaginatedProductsWithFilterByCategoryName() {
+                PageStock<Product> mockProductPageStock = prepareGetPaginatedProductInShoppingCart(VALID_LIST_PRODUCTS_IDS,true);
+                assertPageStockProduct(mockProductPageStock,VALID_CATEGORY_NAME,null,VALID_LIST_PRODUCTS_IDS);
+        }
+        @Test
+        @DisplayName("Should return paginated products when valid parameters are provided. Filter by brandName")
+        void shouldReturnPaginatedProductsWithFilterByBrandName() {
+                PageStock<Product> mockProductPageStock = prepareGetPaginatedProductInShoppingCart(VALID_LIST_PRODUCTS_IDS,true);
+                assertPageStockProduct(mockProductPageStock,null,VALID_BRAND_NAME,VALID_LIST_PRODUCTS_IDS);
+        }
+        @Test
+        @DisplayName("Should return paginated products when valid parameters are provided. Filter by brandName")
+        void shouldReturnPaginatedProductsWhenFilterByBrandNameIsInvalid() {
+                PageStock<Product> mockProductPageStock = prepareGetPaginatedProductInShoppingCart(VALID_LIST_PRODUCTS_IDS,false);
+                assertThrows(ProductFilterNotFoundException.class,
+                        () -> assertPageStockProduct(mockProductPageStock,null,VALID_BRAND_NAME,VALID_LIST_PRODUCTS_IDS)
+                );
+        }
+        @Test
+        @DisplayName("Should not return paginated products when valid parameters are provided.")
+        void shouldNotReturnPaginatedProductsWhenNoFilterIsApplied() {
+                PageStock<Product> mockProductPageStock = prepareGetPaginatedProductInShoppingCart(VALID_LIST_PRODUCTS_IDS,true);
+                assertThrows(ProductFilterNotFoundException.class,
+                        () -> assertPageStockProduct(mockProductPageStock,null,null,VALID_LIST_PRODUCTS_IDS)
+                );
+        }
+        @Test
+        @DisplayName("Should not return paginated products when products Ids is invalid.")
+        void shouldNotReturnPaginatedProductsWhenProductsIdsIsInvalid() {
+                PageStock<Product> mockProductPageStock = prepareGetPaginatedProductInShoppingCart(INVALID_LIST_PRODUCTS_IDS,true);
+                assertThrows(ProductNotFoundException.class,
+                        () -> assertPageStockProduct(mockProductPageStock,null,null,INVALID_LIST_PRODUCTS_IDS)
+                );
+        }
+        @Test
+        @DisplayName("Should not return paginated products when products Ids is empty.")
+        void shouldNotReturnPaginatedProductsWhenProductsIdsIsEmpty() {
+                PageStock<Product> mockProductPageStock = prepareGetPaginatedProductInShoppingCart(EMPTY_LIST,true);
+                assertThrows(ProductListSizeException.class,
+                        () -> assertPageStockProduct(mockProductPageStock,null,null,EMPTY_LIST)
+                );
+        }
+        private PageStock<Product> prepareGetPaginatedProductInShoppingCart(List<Long> idsProducts,boolean exist) {
+                PageStock<Product> mockProductPageStock = new PageStock<>(idsProducts.stream()
+                        .map(id ->
+                                new Product(
+                                        VALID_ID, VALID_PRODUCT_NAME,
+                                        VALID_PRODUCT_DESCRIPTION,VALID_AMOUNT, VALID_PRICE,brand,
+                                        new ArrayList<>(Collections.singletonList(category))
+                                )
+                        )
+                        .toList(),VALID_TOTAL_ELEMENTS,VALID_TOTAL_PAGES,VALID_PAGE,true,true,VALID_SIZE);
+                mockProductPageStock.setAscending(true);
+                when(productPersistencePort.getPaginatedProductsInShoppingCart(
+                        any(), any(), anyInt(), anyInt(), anyString())).thenReturn(mockProductPageStock);
+                when(categoryPersistencePort.existsByName(anyString())).thenReturn(true);
+                when(brandPersistencePort.existsByName(anyString())).thenReturn(exist);
+                return mockProductPageStock;
+        }
+
+        private void assertPageStockProduct(PageStock<Product> mockProductPageStock,String categoryName,String  brandName,List<Long> idsProduct) {
+                PageStock<Product> result = productUseCase.getPaginatedProductsInShoppingCart(
+                        idsProduct, categoryName, brandName, VALID_PAGE, VALID_SIZE, ASC);
+
+                assertEquals(result, mockProductPageStock);
         }
 }

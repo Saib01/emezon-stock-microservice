@@ -137,7 +137,8 @@ class BrandUseCaseTest {
     @DisplayName("Should return a paginated page of brand")
     void shouldGetBrandPageStock() {
         PageStock<Brand> expectedBrandPageStock = new PageStock<>(
-                Collections.singletonList(brand),VALID_TOTAL_ELEMENTS,VALID_TOTAL_PAGES,VALID_PAGE,true,true,VALID_SIZE);;
+                Collections.singletonList(brand),VALID_TOTAL_ELEMENTS,VALID_TOTAL_PAGES,VALID_PAGE,true,true,VALID_SIZE
+        );
 
         when(brandPersistencePort.getBrandsByName(VALID_PAGE, VALID_SIZE,ASC))
                 .thenReturn(expectedBrandPageStock);

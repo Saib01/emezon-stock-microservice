@@ -1,19 +1,15 @@
 package com.emazon.stock.aplicacion.handler;
 
 import static com.emazon.stock.utils.TestConstants.*;
-import static com.emazon.stock.utils.TestConstants.CATEGORY_PROPERTY_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.emazon.stock.aplicacion.dtos.brand.BrandResponse;
 import com.emazon.stock.aplicacion.dtos.category.CategoryRequest;
 import com.emazon.stock.aplicacion.dtos.category.CategoryResponse;
-import com.emazon.stock.aplicacion.dtos.product.ProductResponse;
 import com.emazon.stock.aplicacion.handler.implement.CategoryHandler;
 import com.emazon.stock.aplicacion.mapper.category.CategoryRequestMapper;
 import com.emazon.stock.aplicacion.mapper.category.CategoryResponseMapper;
 import com.emazon.stock.dominio.api.ICategoryServicePort;
 import com.emazon.stock.dominio.modelo.Category;
-import com.emazon.stock.dominio.modelo.Product;
 import com.emazon.stock.dominio.utils.PageStock;
 import static com.emazon.stock.dominio.utils.Direction.ASC;
 import static org.mockito.Mockito.*;

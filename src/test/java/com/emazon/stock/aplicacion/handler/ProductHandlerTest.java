@@ -19,13 +19,11 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.data.domain.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.emazon.stock.dominio.utils.Direction.ASC;
-import static com.emazon.stock.dominio.utils.DomainConstants.PROPERTY_NAME;
 import static com.emazon.stock.utils.TestConstants.*;
 import static com.emazon.stock.utils.TestConstants.VALID_ID;
 import static org.junit.jupiter.api.Assertions.*;
