@@ -13,7 +13,7 @@ import java.util.Map;
 
 @ControllerAdvice
 public class ControllerAdvisor {
-    private static final String MESSAGE = "Message";
+    private static final String MESSAGE = "Response";
 
     private ResponseEntity<Map<String, String>> buildResponse(HttpStatus status, String message) {
         return ResponseEntity.status(status)
@@ -45,6 +45,7 @@ public class ControllerAdvisor {
             ProductPageSizeIsInvalidException.class,
             ProductPageNumberIsInvalidException.class,
             ProductPageSortByIsInvalidException.class,
+            ProductListSizeException.class,
             InvalidSupplyException.class
     })
     public ResponseEntity<Map<String, String>> handleBadRequestExceptions(RuntimeException ex) {
@@ -63,7 +64,8 @@ public class ControllerAdvisor {
     @ExceptionHandler({
             CategoryNotFoundException.class,
             BrandNotFoundException.class,
-            ProductNotFoundException.class
+            ProductNotFoundException.class,
+            ProductFilterNotFoundException.class
     })
     public ResponseEntity<Map<String, String>> handleNotFoundExceptions(RuntimeException ex) {
         return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage());

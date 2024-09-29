@@ -1,15 +1,6 @@
 package com.emazon.stock.aplicacion.handler;
 
-import static com.emazon.stock.utils.TestConstants.VALID_ID;
-import static com.emazon.stock.utils.TestConstants.VALID_CATEGORY_DESCRIPTION;
-import static com.emazon.stock.utils.TestConstants.VALID_CATEGORY_NAME;
-import static com.emazon.stock.utils.TestConstants.VALID_SIZE;
-import static com.emazon.stock.utils.TestConstants.VALID_PAGE;
-import static com.emazon.stock.utils.TestConstants.VALID_TOTAL_PAGES;
-import static com.emazon.stock.utils.TestConstants.VALID_TOTAL_ELEMENTS;
-import static com.emazon.stock.dominio.utils.DomainConstants.PROPERTY_NAME;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
+import static com.emazon.stock.utils.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.emazon.stock.aplicacion.dtos.category.CategoryRequest;
@@ -21,6 +12,8 @@ import com.emazon.stock.dominio.api.ICategoryServicePort;
 import com.emazon.stock.dominio.modelo.Category;
 import com.emazon.stock.dominio.utils.PageStock;
 import static com.emazon.stock.dominio.utils.Direction.ASC;
+import static org.mockito.Mockito.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,11 +21,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 
 
 import java.util.List;
@@ -91,23 +79,17 @@ class CategoryHandlerTest {
     @DisplayName("Should get Categories")
     void testGetCategories() {
         CategoryResponse categoryResponse = new CategoryResponse(VALID_ID, VALID_CATEGORY_NAME, VALID_CATEGORY_DESCRIPTION);
-        Pageable pageable = PageRequest.of(VALID_PAGE, VALID_SIZE,
-                Sort.by(Sort.Direction.fromString(ASC),PROPERTY_NAME.toLowerCase()));
-        Page<CategoryResponse> categoryResponsePage = new PageImpl<>(List.of(categoryResponse),pageable,VALID_TOTAL_ELEMENTS);
-        PageStock<Category> categoryPageStock = new PageStock<>(List.of(category), VALID_TOTAL_ELEMENTS, VALID_TOTAL_PAGES);
+        PageStock<CategoryResponse> expectedCategoryResponsePageStock = new PageStock<>(List.of(categoryResponse),VALID_TOTAL_ELEMENTS,VALID_TOTAL_PAGES,VALID_PAGE,true,true,VALID_SIZE);
+        PageStock<Category> categoryPageStock = new PageStock<>(List.of(category),VALID_TOTAL_ELEMENTS,VALID_TOTAL_PAGES,VALID_PAGE,true,true,VALID_SIZE);
 
         when(categoryServicePort.getCategoriesByName(VALID_PAGE,VALID_SIZE,ASC)).thenReturn(categoryPageStock);
-        when(categoryResponseMapper.toCategoryResponsePage(categoryPageStock,pageable))
-                .thenReturn(categoryResponsePage);
+        when(categoryResponseMapper.toCategoryResponsePageStock(categoryPageStock))
+                .thenReturn(expectedCategoryResponsePageStock);
 
-        Page<CategoryResponse> result = categoryHandler.getCategoriesByName(VALID_PAGE, VALID_SIZE,ASC);
+        PageStock<CategoryResponse> result = categoryHandler.getCategoriesByName(VALID_PAGE, VALID_SIZE,ASC);
 
-        assertEquals(VALID_TOTAL_ELEMENTS, result.getTotalElements());
-        assertEquals(VALID_TOTAL_PAGES, result.getTotalPages());
-        assertEquals(VALID_SIZE, result.getSize());
-        assertEquals(VALID_CATEGORY_NAME, result.getContent().get(0).getName());
-        assertEquals(VALID_CATEGORY_DESCRIPTION, result.getContent().get(0).getDescription());
+        assertEquals(result,expectedCategoryResponsePageStock);
+        verify(this.categoryServicePort,times(ONE)).getCategoriesByName(VALID_PAGE, VALID_SIZE, ASC);
     }
-
 
 }

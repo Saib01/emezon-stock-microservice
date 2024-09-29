@@ -1,20 +1,16 @@
-package com.emazon.stock.aplicacion.mapper;
+package com.emazon.stock.aplicacion.mapper.brand;
 
 import com.emazon.stock.aplicacion.dtos.brand.BrandResponse;
-import com.emazon.stock.aplicacion.mapper.brand.BrandResponseMapper;
 import com.emazon.stock.dominio.modelo.Brand;
 import com.emazon.stock.dominio.utils.PageStock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
+import static com.emazon.stock.dominio.utils.DomainConstants.ZERO;
 import static com.emazon.stock.utils.TestConstants.VALID_BRAND_DESCRIPTION;
 import static com.emazon.stock.utils.TestConstants.VALID_BRAND_NAME;
 import static com.emazon.stock.utils.TestConstants.VALID_ID;
@@ -22,9 +18,9 @@ import static com.emazon.stock.utils.TestConstants.VALID_PAGE;
 import static com.emazon.stock.utils.TestConstants.VALID_SIZE;
 import static com.emazon.stock.utils.TestConstants.VALID_TOTAL_ELEMENTS;
 import static com.emazon.stock.utils.TestConstants.VALID_TOTAL_PAGES;
-import static com.emazon.stock.dominio.utils.DomainConstants.PROPERTY_NAME;
-import static com.emazon.stock.dominio.utils.Direction.ASC;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 class BrandResponseMapperTest {
 
     private final BrandResponseMapper brandResponseMapper = Mappers.getMapper(BrandResponseMapper.class);
@@ -44,6 +40,14 @@ class BrandResponseMapperTest {
     }
 
     @Test
+    @DisplayName("Should map brand to brandResponse correctly without description")
+    void shouldMapBrandToBrandResponseWithoutDescription() {
+        BrandResponse result = brandResponseMapper.mapBrandWithoutDescription(brand);
+
+        assertThat(result).isNotNull();
+        assertNull(result.getDescription());
+    }
+    @Test
     @DisplayName("Should map List<Brand> to List<BrandResponse> correctly")
     void toBrandResponsesList() {
         List<Brand> brandList=List.of(brand);
@@ -56,18 +60,18 @@ class BrandResponseMapperTest {
     @Test
     @DisplayName("Should map PageStock<brand> to Page<brandResponse>  Successfully")
     void toBrandResponsePage() {
-        PageStock<Brand> brands=new PageStock<>(List.of(brand),VALID_TOTAL_ELEMENTS,VALID_TOTAL_PAGES);
-        Pageable pageable = PageRequest.of(VALID_PAGE, VALID_SIZE,
-                Sort.by(Sort.Direction.fromString(ASC),PROPERTY_NAME.toLowerCase()));
-        Page<BrandResponse> result =brandResponseMapper.toBrandResponsePage(brands,pageable);
-
+        PageStock<Brand> brands=new PageStock<>(List.of(brand),VALID_TOTAL_ELEMENTS,VALID_TOTAL_PAGES,VALID_PAGE,true,true,VALID_SIZE);
+        PageStock<BrandResponse> result =brandResponseMapper.toBrandResponsePageStock(brands);
+        assertThat(brands.getTotalElements()).isEqualTo(result.getTotalElements());
         assertThat(brands.getTotalPages()).isEqualTo(result.getTotalPages());
-        assertThat(brands.getTotalElements().intValue()).isEqualTo(result.getTotalElements());
+        assertThat(brands.getTotalPages()).isEqualTo(result.getTotalPages());
+        assertThat(brands.isFirst()).isEqualTo(result.isFirst());
+        assertThat(brands.isLast()).isEqualTo(result.isLast());
+        assertThat(brands.isAscending()).isEqualTo(result.isAscending());
         assertThat(brands.getContent()).hasSameSizeAs(result.getContent());
-        assertBrandEqual(brands.getContent().get(0), result.getContent().get(0));
+        assertBrandEqual(brands.getContent().get(ZERO), result.getContent().get(ZERO));
 
     }
-    
     private void assertBrandEqual(Brand brand, BrandResponse brandResponse){
         assertThat(brand.getId()).isEqualTo(brandResponse.getId());
         assertThat(brand.getName()).isEqualTo(brandResponse.getName());

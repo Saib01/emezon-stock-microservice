@@ -13,4 +13,6 @@ public interface IProductPersistencePort extends IModelPersistencePort {
     Product getProduct(Long id);
 
     List<List<Long>> getCategoryIdsByProductIds(List<Long> listIdsProducts);
+
+    PageStock<Product> getPaginatedProductsInShoppingCart(List<Long> listIdsProducts, List<String> filter, int page, int size, String sortDirection);
 }

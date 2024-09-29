@@ -7,6 +7,7 @@ import com.emazon.stock.aplicacion.mapper.brand.BrandRequestMapper;
 import com.emazon.stock.aplicacion.mapper.brand.BrandResponseMapper;
 import com.emazon.stock.dominio.api.IBrandServicePort;
 import com.emazon.stock.dominio.modelo.Brand;
+import com.emazon.stock.dominio.utils.PageStock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,9 +16,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static com.emazon.stock.utils.TestConstants.VALID_ID;
-import static com.emazon.stock.utils.TestConstants.VALID_BRAND_DESCRIPTION;
-import static com.emazon.stock.utils.TestConstants.VALID_BRAND_NAME;
+import java.util.List;
+
+import static com.emazon.stock.dominio.utils.Direction.ASC;
+import static com.emazon.stock.utils.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -78,22 +80,15 @@ class BrandHandlerTest {
     @DisplayName("Should get Brands")
     void testGetBrands() {
         BrandResponse brandResponse = new BrandResponse(VALID_ID, VALID_BRAND_NAME, VALID_BRAND_DESCRIPTION);
-        Pageable pageable = PageRequest.of(VALID_PAGE, VALID_SIZE,
-                Sort.by(Sort.Direction.fromString(ASC), PROPERTY_NAME.toLowerCase()));
-        Page<BrandResponse> brandResponsePage = new PageImpl<>(List.of(brandResponse), pageable, VALID_TOTAL_ELEMENTS);
-        PageStock<Brand> brandPageStock = new PageStock<>(List.of(brand), VALID_TOTAL_ELEMENTS, VALID_TOTAL_PAGES);
+        PageStock<BrandResponse> expectedBrandResponsePageStock = new PageStock<>(List.of(brandResponse),VALID_TOTAL_ELEMENTS,VALID_TOTAL_PAGES,VALID_PAGE,true,true,VALID_SIZE);
+        PageStock<Brand> brandPageStock = new PageStock<>(List.of(brand),VALID_TOTAL_ELEMENTS,VALID_TOTAL_PAGES,VALID_PAGE,true,true,VALID_SIZE);
 
         when(brandServicePort.getBrandsByName(VALID_PAGE, VALID_SIZE, ASC)).thenReturn(brandPageStock);
-        when(brandResponseMapper.toBrandResponsePage(brandPageStock, pageable))
-                .thenReturn(brandResponsePage);
+        when(brandResponseMapper.toBrandResponsePageStock(brandPageStock))
+                .thenReturn(expectedBrandResponsePageStock);
 
-        Page<BrandResponse> result = brandHandler.getBrandsByName(VALID_PAGE, VALID_SIZE, ASC);
-
-        assertEquals(VALID_TOTAL_ELEMENTS, result.getTotalElements());
-        assertEquals(VALID_TOTAL_PAGES, result.getTotalPages());
-        assertEquals(VALID_SIZE, result.getSize());
-        assertEquals(VALID_BRAND_NAME, result.getContent().get(0).getName());
-        assertEquals(VALID_BRAND_DESCRIPTION, result.getContent().get(0).getDescription());
+        PageStock<BrandResponse> result = brandHandler.getBrandsByName(VALID_PAGE, VALID_SIZE, ASC);
+        assertEquals(result,expectedBrandResponsePageStock);
+        verify(this.brandServicePort,times(ONE)).getBrandsByName(VALID_PAGE, VALID_SIZE, ASC);
     }
-    
 }

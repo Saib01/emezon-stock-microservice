@@ -1,6 +1,5 @@
 package com.emazon.stock.infraestructura.output.jpa.adapter;
 
-import com.emazon.stock.dominio.exeption.brand.BrandNotFoundException;
 import com.emazon.stock.dominio.modelo.Brand;
 import com.emazon.stock.dominio.utils.PageStock;
 import com.emazon.stock.infraestructura.output.jpa.entity.BrandEntity;
@@ -22,16 +21,9 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 import java.util.Optional;
 
-import static com.emazon.stock.utils.TestConstants.VALID_ID;
-import static com.emazon.stock.utils.TestConstants.INVALID_ID;
-import static com.emazon.stock.utils.TestConstants.VALID_BRAND_DESCRIPTION;
-import static com.emazon.stock.utils.TestConstants.VALID_BRAND_NAME;
-import static com.emazon.stock.utils.TestConstants.VALID_TOTAL_ELEMENTS;
-import static com.emazon.stock.utils.TestConstants.VALID_TOTAL_PAGES;
-import static com.emazon.stock.utils.TestConstants.VALID_PAGE;
-import static com.emazon.stock.utils.TestConstants.VALID_SIZE;
 import static com.emazon.stock.dominio.utils.DomainConstants.PROPERTY_NAME;
 import static com.emazon.stock.dominio.utils.Direction.ASC;
+import static com.emazon.stock.utils.TestConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
@@ -62,8 +54,8 @@ class BrandJpaAdapterTest {
         brandJpaAdapter.saveBrand(brand);
 
         ArgumentCaptor<BrandEntity> brandEntityCaptor= ArgumentCaptor.forClass(BrandEntity.class);
-        verify(brandEntityMapper, times(1)).toBrandEntity(brand);
-        verify(brandRepository, times(1)).save(brandEntityCaptor.capture());
+        verify(brandEntityMapper, times(ONE)).toBrandEntity(brand);
+        verify(brandRepository, times(ONE)).save(brandEntityCaptor.capture());
         assertEquals(brandEntityCaptor.getValue(),brandEntity);
     }
     
@@ -73,20 +65,17 @@ class BrandJpaAdapterTest {
 
         when(brandRepository.findById(VALID_ID)).thenReturn(Optional.of(brandEntity));
         when(brandEntityMapper.toBrand(brandEntity)).thenReturn(brand);
+        when(brandRepository.findById(INVALID_ID)).thenReturn(Optional.empty());
 
         Brand result = brandJpaAdapter.getBrand(VALID_ID);
         assertThat(result).isEqualTo(brand);
+        assertNull(brandJpaAdapter.getBrand(INVALID_ID));
 
-        verify(brandRepository, times(1)).findById(VALID_ID);
-        verify(brandEntityMapper, times(1)).toBrand(brandEntity);
+        verify(brandRepository, times(ONE)).findById(VALID_ID);
+        verify(brandEntityMapper, times(ONE)).toBrand(brandEntity);
+        verify(brandRepository, times(ONE)).findById(INVALID_ID);
     }
 
-    @Test
-    @DisplayName("Should throw BrandNotFoundException when brand is not found")
-    void getBrandWhenNotFoundShouldThrowException() {
-        when(brandRepository.findById(INVALID_ID)).thenReturn(Optional.empty());
-        assertThrows(BrandNotFoundException.class, () -> brandJpaAdapter.getBrand(INVALID_ID));
-    }
 
     @Test
     @DisplayName("Should retrieve brand by name")
@@ -94,16 +83,15 @@ class BrandJpaAdapterTest {
         when(brandRepository.existsByName(VALID_BRAND_NAME)).thenReturn(true);
         brandJpaAdapter.existsByName(VALID_BRAND_NAME);
 
-        verify((brandRepository), times(1)).existsByName(VALID_BRAND_NAME);
+        verify((brandRepository), times(ONE)).existsByName(VALID_BRAND_NAME);
     }
-
     @Test
     @DisplayName("Should retrieve brands by name with pagination and sorting")
     void getBrandsByName() {
         Pageable pageable = PageRequest.of(VALID_PAGE, VALID_SIZE,
                 Sort.by(Sort.Direction.fromString(ASC), PROPERTY_NAME.toLowerCase()));
         Page<BrandEntity> brandEntityPage = new PageImpl<>(List.of(brandEntity), pageable, VALID_TOTAL_ELEMENTS);
-        PageStock<Brand> expectedBrandPageStock = new PageStock<>(List.of(brand),VALID_TOTAL_ELEMENTS,VALID_TOTAL_PAGES);
+        PageStock<Brand> expectedBrandPageStock = new PageStock<>(List.of(brand),VALID_TOTAL_ELEMENTS,VALID_TOTAL_PAGES,VALID_PAGE,true,true,VALID_SIZE);
 
         when(brandRepository.findAll(pageable)).thenReturn(brandEntityPage);
         when(brandEntityMapper.toBrandPageStock(brandEntityPage)).thenReturn(expectedBrandPageStock);
@@ -111,9 +99,10 @@ class BrandJpaAdapterTest {
         PageStock<Brand> actualBrandPageStock = brandJpaAdapter.getBrandsByName(VALID_PAGE, VALID_SIZE, ASC);
 
         assertEquals(expectedBrandPageStock,actualBrandPageStock);
-        verify(brandRepository, times(1)).findAll(pageable);
-        verify(brandEntityMapper, times(1)).toBrandPageStock(brandEntityPage);
+        verify(brandRepository, times(ONE)).findAll(pageable);
+        verify(brandEntityMapper, times(ONE)).toBrandPageStock(brandEntityPage);
     }
+
     @Test
     @DisplayName("Should return true when brand exists by id")
     void shouldReturnTrueWhenBrandExistsById() {

@@ -21,21 +21,8 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.Collections;
 
-import static com.emazon.stock.utils.TestConstants.VALID_ID;
-import static com.emazon.stock.utils.TestConstants.INVALID_BRAND_NAME;
-import static com.emazon.stock.utils.TestConstants.VALID_BRAND_NAME;
-import static com.emazon.stock.utils.TestConstants.NULL_PROPERTY;
-import static com.emazon.stock.utils.TestConstants.EMPTY_PROPERTY;
-import static com.emazon.stock.utils.TestConstants.INVALID_BRAND_DESCRIPTION;
-import static com.emazon.stock.utils.TestConstants.VALID_BRAND_DESCRIPTION;
 import static com.emazon.stock.dominio.utils.Direction.ASC;
-import static com.emazon.stock.utils.TestConstants.INVALID_SORT_DIRECTION;
-import static com.emazon.stock.utils.TestConstants.VALID_PAGE;
-import static com.emazon.stock.utils.TestConstants.INVALID_PAGE;
-import static com.emazon.stock.utils.TestConstants.VALID_SIZE;
-import static com.emazon.stock.utils.TestConstants.INVALID_SIZE;
-import static com.emazon.stock.utils.TestConstants.VALID_TOTAL_ELEMENTS;
-import static com.emazon.stock.utils.TestConstants.VALID_TOTAL_PAGES;
+import static com.emazon.stock.utils.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
@@ -66,7 +53,7 @@ class BrandUseCaseTest {
 
         ArgumentCaptor<Brand> brandCaptor = ArgumentCaptor.forClass(Brand.class);
 
-        verify(brandPersistencePort, times(1)).saveBrand(brandCaptor.capture());
+        verify(brandPersistencePort, times(ONE)).saveBrand(brandCaptor.capture());
         assertEquals(brandCaptor.getValue(), brand);
 
     }
@@ -143,16 +130,14 @@ class BrandUseCaseTest {
         assertNotNull(actualBrand);
         assertEquals(brand, actualBrand);
 
-        verify(brandPersistencePort, times(1))
+        verify(brandPersistencePort, times(ONE))
                 .getBrand(VALID_ID);
     }
-
     @Test
     @DisplayName("Should return a paginated page of brand")
     void shouldGetBrandPageStock() {
         PageStock<Brand> expectedBrandPageStock = new PageStock<>(
-                Collections.singletonList(brand),
-                VALID_TOTAL_ELEMENTS,VALID_TOTAL_PAGES
+                Collections.singletonList(brand),VALID_TOTAL_ELEMENTS,VALID_TOTAL_PAGES,VALID_PAGE,true,true,VALID_SIZE
         );
 
         when(brandPersistencePort.getBrandsByName(VALID_PAGE, VALID_SIZE,ASC))
@@ -163,7 +148,7 @@ class BrandUseCaseTest {
 
         assertEquals(expectedBrandPageStock, actualBrandPageStock);
 
-        verify(brandPersistencePort, times(1))
+        verify(brandPersistencePort, times(ONE))
                 .getBrandsByName(VALID_PAGE, VALID_SIZE,ASC);
     }
     @Test

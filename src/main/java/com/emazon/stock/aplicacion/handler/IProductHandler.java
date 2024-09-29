@@ -1,5 +1,6 @@
 package com.emazon.stock.aplicacion.handler;
 
+import com.emazon.stock.aplicacion.dtos.ShoppingCartListRequest;
 import com.emazon.stock.aplicacion.dtos.product.ProductRequest;
 import com.emazon.stock.aplicacion.dtos.product.ProductResponse;
 import com.emazon.stock.dominio.utils.PageStock;
@@ -16,6 +17,8 @@ public interface IProductHandler {
     void addSupply(Long id, Integer supply);
 
     boolean validateMaxProductPerCategory(List<Long> listIdsProducts);
+
+    PageStock<ProductResponse> getPaginatedProductsInShoppingCart(int page, int size, String sortDirection, ShoppingCartListRequest shoppingCartListRequest);
 }
 
 

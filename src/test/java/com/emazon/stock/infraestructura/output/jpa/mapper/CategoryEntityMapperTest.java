@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Page;
 import java.util.List;
 
+import static com.emazon.stock.dominio.utils.DomainConstants.ZERO;
 import static com.emazon.stock.utils.TestConstants.VALID_CATEGORY_DESCRIPTION;
 import static com.emazon.stock.utils.TestConstants.VALID_CATEGORY_NAME;
 import static com.emazon.stock.utils.TestConstants.VALID_ID;
@@ -62,7 +63,7 @@ class CategoryEntityMapperTest {
         assertThat(result.getTotalPages()).isEqualTo(categoryEntityPage.getTotalPages());
         assertThat(result.getTotalElements().intValue()).isEqualTo(categoryEntityPage.getTotalElements());
         assertThat(result.getContent()).hasSameSizeAs(categoryEntityPage.getContent());
-        assertCategoryEqual(result.getContent().get(0),categoryEntityPage.getContent().get(0));
+        assertCategoryEqual(result.getContent().get(ZERO),categoryEntityPage.getContent().get(ZERO));
     }
 
     private void assertCategoryEqual(Category category,CategoryEntity categoryEntity){

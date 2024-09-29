@@ -31,7 +31,10 @@ public class TestConstants {
     public static final String INVALID_SORT_DIRECTION = "Assac";
     public static final Long VALID_ID_TWO=2L;
     public static final List<Long> VALID_LIST_PRODUCTS_IDS = Arrays.asList(1L, 2L);
+    public static final List<Long> INVALID_LIST_PRODUCTS_IDS = Arrays.asList(-1L, -2L);
     public static final List<Long> VALID_LIST_PRODUCTS_IDS_TWO = Arrays.asList(3L, 4L);
+    public static final List<Long> EMPTY_LIST=Arrays.asList();
+    public static final List<String> VALID_SORT_BY=List.of("categoryName","brandName");
     public static final int ONE=1;
     private TestConstants() {
     }

@@ -13,6 +13,7 @@ import java.util.List;
 
 import static com.emazon.stock.dominio.utils.Direction.ASC;
 import static com.emazon.stock.dominio.utils.DomainConstants.PROPERTY_NAME;
+import static com.emazon.stock.dominio.utils.DomainConstants.ZERO;
 import static com.emazon.stock.utils.TestConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -54,7 +55,7 @@ class BrandEntityMapperTest {
         assertThat(result.getTotalPages()).isEqualTo(brandEntityPage.getTotalPages());
         assertThat(result.getTotalElements().intValue()).isEqualTo(brandEntityPage.getTotalElements());
         assertThat(result.getContent()).hasSameSizeAs(brandEntityPage.getContent());
-        assertBrandEqual(result.getContent().get(0),brandEntityPage.getContent().get(0));
+        assertBrandEqual(result.getContent().get(ZERO),brandEntityPage.getContent().get(ZERO));
     }
     private void assertBrandEqual(Brand brand, BrandEntity brandEntity){
         assertThat(brand.getId()).isEqualTo(brandEntity.getId());

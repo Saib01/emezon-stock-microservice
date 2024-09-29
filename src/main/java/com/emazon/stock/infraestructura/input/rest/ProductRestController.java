@@ -1,10 +1,13 @@
 package com.emazon.stock.infraestructura.input.rest;
 
-import com.emazon.stock.aplicacion.dtos.Message;
+import com.emazon.stock.aplicacion.dtos.Response;
+import com.emazon.stock.aplicacion.dtos.ShoppingCartListRequest;
 import com.emazon.stock.aplicacion.dtos.product.ProductRequest;
 import com.emazon.stock.aplicacion.dtos.product.ProductResponse;
 import com.emazon.stock.aplicacion.handler.IProductHandler;
 import com.emazon.stock.dominio.utils.PageStock;
+import com.emazon.stock.infraestructura.output.jpa.mapper.ProductEntityMapper;
+import com.emazon.stock.infraestructura.output.jpa.repository.IProductRepository;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,6 +36,8 @@ public class ProductRestController {
 
     private final IProductHandler productHandler;
     private final ObjectMapper objectMapper;
+    private final IProductRepository productRepository;
+    private final ProductEntityMapper productEntityMapper;
 
     @Operation(summary = SUMMARY_ADD_A_NEW_PRODUCT)
     @ApiResponses(value = {
@@ -40,10 +45,10 @@ public class ProductRestController {
             @ApiResponse(responseCode = RESPONSE_CODE_CONFLICT, description = CONFLICT_PRODUCT_NOT_CREATED_DESCRIPTION, content = @Content)
     })
     @PostMapping("/")
-    ResponseEntity<Message> saveProduct(@RequestBody ProductRequest productRequest) {
+    ResponseEntity<Response> saveProduct(@RequestBody ProductRequest productRequest) {
         productHandler.saveProduct(productRequest);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(new Message(RESPONSE_DESCRIPTION_PRODUCT_CREATED));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new Response(RESPONSE_DESCRIPTION_PRODUCT_CREATED));
     }
 
     @Operation(summary = SUMMARY_GET_A_PRODUCT_BY_NUMBER)
@@ -95,4 +100,15 @@ public class ProductRestController {
                 this.productHandler.validateMaxProductPerCategory(listIdsProducts)
         );
     }
+
+    @PostMapping("/product-list")
+    public ResponseEntity<PageStock<ProductResponse>> getPaginatedProductsInShoppingCart(
+            @RequestBody ShoppingCartListRequest shoppingCartListRequest,
+            @RequestParam(name = SORT_DIRECTION, defaultValue = ASC) String sortDirection,
+            @RequestParam(name = PAGE, defaultValue = DEFAULT_PAGE_NUMBER) int page,
+            @RequestParam(name = SIZE, defaultValue = DEFAULT_PAGE_SIZE ) int size) {
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        return ResponseEntity.ok(productHandler.getPaginatedProductsInShoppingCart(page, size, sortDirection,shoppingCartListRequest));
+    }
+
 }

@@ -1,6 +1,5 @@
 package com.emazon.stock.infraestructura.output.jpa.adapter;
 
-import com.emazon.stock.dominio.exeption.product.ProductNotFoundException;
 import com.emazon.stock.dominio.modelo.Brand;
 import com.emazon.stock.dominio.modelo.Category;
 import com.emazon.stock.dominio.utils.PageStock;
@@ -25,15 +24,20 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.emazon.stock.dominio.utils.Direction.ASC;
+import static com.emazon.stock.dominio.utils.Direction.DESC;
 import static com.emazon.stock.dominio.utils.DomainConstants.*;
+import static com.emazon.stock.dominio.utils.PageValidator.getSortProperties;
+import static com.emazon.stock.infraestructura.output.jpa.adapter.ProductJpaAdapter.ORDER_BY_CATEGORY;
 import static com.emazon.stock.utils.TestConstants.*;
 import static com.emazon.stock.utils.TestConstants.VALID_CATEGORY_NAME;
+import static java.math.BigInteger.TWO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 
 class ProductJpaAdapterTest {
+    public static final int FOUR = 4;
     @Mock
     private ProductEntityMapper productEntityMapper ;
     @InjectMocks
@@ -75,20 +79,18 @@ class ProductJpaAdapterTest {
 
         when(productRepository.findById(VALID_ID)).thenReturn(Optional.of(productEntity));
         when(productEntityMapper.toProduct(productEntity)).thenReturn(product);
+        when(productRepository.findById(INVALID_ID)).thenReturn(Optional.empty());
 
         Product result = productJpaAdapter.getProduct(VALID_ID);
         assertThat(result).isEqualTo(product);
+        assertNull(productJpaAdapter.getProduct(INVALID_ID));
 
         verify(productRepository, times(ONE)).findById(VALID_ID);
         verify(productEntityMapper, times(ONE)).toProduct(productEntity);
+        verify(productRepository, times(ONE)).findById(INVALID_ID);
+
     }
 
-    @Test
-    @DisplayName("Should throw ProductNotFoundException when product is not found")
-    void getProductWhenNotFoundShouldThrowException() {
-        when(productRepository.findById(INVALID_ID)).thenReturn(Optional.empty());
-        assertThrows(ProductNotFoundException.class, () -> productJpaAdapter.getProduct(INVALID_ID));
-    }
 
     @Test
     @DisplayName("Should retrieve product by name")
@@ -99,24 +101,33 @@ class ProductJpaAdapterTest {
         verify((productRepository), times(ONE)).existsByName(VALID_CATEGORY_NAME);
     }
 
-
     @Test
     @DisplayName("Should retrieve products by name with pagination and sorting")
     void getProductsByName() {
-        Pageable pageable = PageRequest.of(VALID_PAGE, VALID_SIZE,
-                Sort.by(Sort.Direction.fromString(ASC),PROPERTY_NAME.toLowerCase()));
-        Page<ProductEntity> productEntityPage = new PageImpl<>(List.of(productEntity), pageable, VALID_TOTAL_ELEMENTS);
-        PageStock<Product> expectedProductPageStock = new PageStock<>(List.of(product),VALID_TOTAL_ELEMENTS,VALID_TOTAL_PAGES);
-
-        when(productRepository.findAll(CATEGORY.toLowerCase(),pageable)).thenReturn(productEntityPage);
+        Page<ProductEntity> productEntityPage = new PageImpl<>(List.of(productEntity), PageRequest.of(VALID_PAGE, VALID_SIZE), VALID_TOTAL_ELEMENTS);
+        PageStock<Product> expectedProductPageStock = new PageStock<>(List.of(product),VALID_TOTAL_ELEMENTS,VALID_TOTAL_PAGES,VALID_PAGE,true,true,VALID_SIZE);
         when(productEntityMapper.toProductPageStock(productEntityPage)).thenReturn(expectedProductPageStock);
 
-       PageStock<Product> actualProductPageStock = productJpaAdapter.getProductsBySearchTerm(VALID_PAGE,VALID_SIZE,CATEGORY.toLowerCase(),ASC);
+        when(productRepository.findAllOrderByCategoryNameAndProductNameAndBrandNameASC(any())).thenReturn(productEntityPage);
+        when(productRepository.findAllOrderByCategoryNameAndProductNameAndBrandNameDESC(any())).thenReturn(productEntityPage);
+        when(productRepository.findAll(any(Pageable.class))).thenReturn(productEntityPage);
 
-        assertEquals(expectedProductPageStock,actualProductPageStock);
-        verify(productRepository, times(ONE)).findAll(CATEGORY.toLowerCase(),pageable);
-        verify(productEntityMapper, times(ONE)).toProductPageStock(productEntityPage);
+        assertEqualsAndVerifyPageStock(expectedProductPageStock,List.of(ORDER_BY_CATEGORY),ASC);
+        assertEqualsAndVerifyPageStock(expectedProductPageStock,List.of(ORDER_BY_CATEGORY),DESC);
+        assertEqualsAndVerifyPageStock(expectedProductPageStock,getSortProperties(ONE,ZERO),ASC);
+        assertEqualsAndVerifyPageStock(expectedProductPageStock,getSortProperties(ZERO,ONE),DESC);
+
+        verify(productRepository, times(ONE)).findAllOrderByCategoryNameAndProductNameAndBrandNameASC(any());
+        verify(productRepository, times(ONE)).findAllOrderByCategoryNameAndProductNameAndBrandNameDESC(any());
+        verify(productRepository, times(TWO.intValue())).findAll(any(Pageable.class));
+        verify(productEntityMapper, times(FOUR)).toProductPageStock(productEntityPage);
     }
+
+    private void assertEqualsAndVerifyPageStock( PageStock<Product> expectedProductPageStock,List<String> sortBy,String sortDirection) {
+        PageStock<Product> actualProductPageStock = productJpaAdapter.getProductsBySearchTerm(VALID_PAGE,VALID_SIZE,sortBy,sortDirection);
+        assertEquals(expectedProductPageStock,actualProductPageStock);
+    }
+
     @Test
     @DisplayName("Should return true when product exists by id")
     void shouldReturnTrueWhenProductExistsById() {
@@ -150,5 +161,54 @@ class ProductJpaAdapterTest {
     }
     List<CategoryEntity> createCategoryEntityList(Long id){
         return Arrays.asList(new CategoryEntity(id, VALID_CATEGORY_NAME, VALID_CATEGORY_DESCRIPTION));
+    }
+
+    @Test
+    @DisplayName("Should return paginated products when valid parameters are provided with filter")
+    void shouldReturnPaginatedProductsWhenValidParametersAreProvidedWithFilter() {
+        Pageable pageable = PageRequest.of(VALID_PAGE, VALID_SIZE, Sort.by(Sort.Direction.fromString(ASC), PROPERTY_NAME.toLowerCase()));
+        Page<ProductEntity> productEntityPage = new PageImpl<>(List.of(productEntity), pageable, VALID_TOTAL_ELEMENTS);
+
+        when(productRepository.findByIdInAndCategoryEntityList_NameAndBrandEntity_Name(VALID_LIST_PRODUCTS_IDS, VALID_SORT_BY.get(ZERO), VALID_SORT_BY.get(ONE), pageable))
+                .thenReturn(productEntityPage);
+
+        assertGetPaginated(productEntityPage, VALID_SORT_BY);
+
+        verify(productRepository).findByIdInAndCategoryEntityList_NameAndBrandEntity_Name(VALID_LIST_PRODUCTS_IDS, VALID_SORT_BY.get(ZERO), VALID_SORT_BY.get(ONE), pageable);
+    }
+
+    @Test
+    @DisplayName("Should return paginated products when valid parameters are provided with filter by brand name")
+    void shouldReturnPaginatedProductsWhenValidParametersAreProvidedWithFilterByBrandName() {
+        Pageable pageable = PageRequest.of(VALID_PAGE, VALID_SIZE, Sort.by(Sort.Direction.fromString(ASC), PROPERTY_NAME.toLowerCase()));
+        Page<ProductEntity> productEntityPage = new PageImpl<>(List.of(productEntity), pageable, VALID_TOTAL_ELEMENTS);
+        when(productRepository.findByIdInAndBrandEntity_Name(VALID_LIST_PRODUCTS_IDS, VALID_SORT_BY.get(ONE), pageable))
+                .thenReturn(productEntityPage);
+        assertGetPaginated(productEntityPage, Arrays.asList(null,VALID_SORT_BY.get(ONE)));
+
+        verify(productRepository).findByIdInAndBrandEntity_Name(VALID_LIST_PRODUCTS_IDS, VALID_SORT_BY.get(ONE), pageable);
+    }
+    @Test
+    @DisplayName("Should return paginated products when valid parameters are provided with filter by category name")
+    void shouldReturnPaginatedProductsWhenValidParametersAreProvidedWithFilterByCategoryName() {
+        Pageable pageable = PageRequest.of(VALID_PAGE, VALID_SIZE, Sort.by(Sort.Direction.fromString(ASC), PROPERTY_NAME.toLowerCase()));
+        Page<ProductEntity> productEntityPage = new PageImpl<>(List.of(productEntity), pageable, VALID_TOTAL_ELEMENTS);
+        when(productRepository.findByIdInAndCategoryEntityList_Name(VALID_LIST_PRODUCTS_IDS, VALID_SORT_BY.get(ZERO), pageable))
+                .thenReturn(productEntityPage);
+        assertGetPaginated(productEntityPage, Arrays.asList(VALID_SORT_BY.get(ZERO),null));
+
+        verify(productRepository).findByIdInAndCategoryEntityList_Name(VALID_LIST_PRODUCTS_IDS, VALID_SORT_BY.get(ZERO), pageable);
+    }
+
+    private void assertGetPaginated(Page<ProductEntity> productEntityPage, List<String> filter) {
+        PageStock<Product> expectedProductPageStock = new PageStock<>(List.of(product),VALID_TOTAL_ELEMENTS,VALID_TOTAL_PAGES,VALID_PAGE,true,true,VALID_SIZE);
+
+        when(productEntityMapper.toProductPageStock(productEntityPage)).thenReturn(expectedProductPageStock);
+
+        PageStock<Product> actualPageStock = productJpaAdapter.getPaginatedProductsInShoppingCart(VALID_LIST_PRODUCTS_IDS, filter,VALID_PAGE, VALID_SIZE,ASC);
+
+        assertNotNull(actualPageStock);
+        assertEquals(expectedProductPageStock, actualPageStock);
+        verify(productEntityMapper).toProductPageStock(productEntityPage);
     }
 }
