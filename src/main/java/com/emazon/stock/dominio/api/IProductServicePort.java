@@ -17,4 +17,10 @@ public interface IProductServicePort {
     boolean validateMaxProductPerCategory(List<Long> listIdsProducts);
 
     PageStock<Product> getPaginatedProductsInShoppingCart(List<Long> listIdsProducts, String categoryName, String brandName, int page, int size, String sortDirection);
+
+    List<Product> reduceStockAfterPurchase(List<Product> productRequestList);
+
+    void restoreStockToPreviousState(List<Product> list);
+
+    Boolean isProductNameAvailable(String productName);
 }

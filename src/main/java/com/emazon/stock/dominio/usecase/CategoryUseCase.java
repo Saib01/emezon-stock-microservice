@@ -41,4 +41,9 @@ public class CategoryUseCase implements ICategoryServicePort {
                 .orElseThrow(() -> new CategoryNotFoundException(CATEGORY_NOT_FOUND)
                 );
     }
+
+    @Override
+    public Boolean isCategoryNameAvailable(String categoryName) {
+        return !this.categoryPersistencePort.existsByName(categoryName);
+    }
 }

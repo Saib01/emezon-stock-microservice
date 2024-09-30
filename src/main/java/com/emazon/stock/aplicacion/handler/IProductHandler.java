@@ -19,6 +19,12 @@ public interface IProductHandler {
     boolean validateMaxProductPerCategory(List<Long> listIdsProducts);
 
     PageStock<ProductResponse> getPaginatedProductsInShoppingCart(int page, int size, String sortDirection, ShoppingCartListRequest shoppingCartListRequest);
+
+    List<ProductResponse> reduceStockAfterPurchase(List<ProductRequest> productRequestList);
+
+    void restoreStockToPreviousState(List<ProductRequest> productRequestList);
+
+    Boolean isProductNameAvailable(String productName);
 }
 
 

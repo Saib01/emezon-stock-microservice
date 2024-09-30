@@ -21,7 +21,7 @@ class BrandRequestMapperTest {
         Brand result = brandRequestMapper.toBrand(brandRequest);
 
         assertThat(result).isNotNull();
-        assertThat(result.getId()).isEqualTo(brandRequest.getId());
+        assertThat(result.getId()).isNull();
         assertThat(result.getName()).isEqualTo(brandRequest.getName());
         assertThat(result.getDescription()).isEqualTo(brandRequest.getDescription());
     }

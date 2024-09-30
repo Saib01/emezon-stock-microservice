@@ -1,6 +1,7 @@
 package com.emazon.stock.dominio.usecase;
 
 import com.emazon.stock.dominio.api.IProductServicePort;
+import com.emazon.stock.dominio.exeption.InsufficientStockException;
 import com.emazon.stock.dominio.exeption.product.InvalidSupplyException;
 import com.emazon.stock.dominio.exeption.product.ProductFilterNotFoundException;
 import com.emazon.stock.dominio.exeption.product.ProductListSizeException;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 import static com.emazon.stock.dominio.exeption.ExceptionResponse.*;
 import static com.emazon.stock.dominio.utils.Direction.ASC;
 import static com.emazon.stock.dominio.utils.DomainConstants.*;
+import static com.emazon.stock.dominio.utils.Validator.validateIsGreaterThanZero;
 import static java.lang.String.format;
 
 public class ProductUseCase implements IProductServicePort {
@@ -85,12 +87,8 @@ public class ProductUseCase implements IProductServicePort {
     public PageStock<Product> getPaginatedProductsInShoppingCart(List<Long> listIdsProducts, String categoryNameFilter, String brandNameFilter, int page, int size, String sortDirection) {
         PageValidator.parameters(page, size, sortDirection, Product.class.getSimpleName());
 
-        if(listIdsProducts==null||listIdsProducts.isEmpty()){
-            throw new ProductListSizeException(PRODUCT_LIST_SIZE);
-        }
-        if (listIdsProducts.stream().anyMatch(id -> id <= ZERO)) {
-            throw new ProductNotFoundException(PRODUCT_NOT_FOUND);
-        }
+        validateProductIdList(listIdsProducts);
+
         PageStock<Product> productPageStock=this.productPersistencePort.getPaginatedProductsInShoppingCart(
                 listIdsProducts,
                 validateAndGetFilter(categoryNameFilter, brandNameFilter),
@@ -100,14 +98,74 @@ public class ProductUseCase implements IProductServicePort {
         return productPageStock;
     }
 
+    @Override
+    public List<Product> reduceStockAfterPurchase(List<Product> productShoppingCart) {
+        return adjustProductStockFromShoppingCart(productShoppingCart,false);
+    }
+
+    @Override
+    public void restoreStockToPreviousState(List<Product> productShoppingCart) {
+        adjustProductStockFromShoppingCart(productShoppingCart,true);
+    }
+
+    @Override
+    public Boolean isProductNameAvailable(String productName) {
+        return !productPersistencePort.existsByName(productName);
+    }
+
+    private List<Product> adjustProductStockFromShoppingCart(List<Product> productShoppingCart, boolean isRestoring) {
+        List<Product> products = validateAndGetProductsFromShoppingCart(productShoppingCart);
+        Map<Long, Integer> unitsInCart = productShoppingCart.stream()
+                .collect(Collectors.toMap(Product::getId, Product::getAmount));
+
+        adjustAmountFromProductList(unitsInCart, products,isRestoring);
+
+        productPersistencePort.saveAllProduct(products);
+        products.forEach(product -> product.setAmount(unitsInCart.get(product.getId())));
+        return products;
+    }
+
+    private List<Product> validateAndGetProductsFromShoppingCart(List<Product> productShoppingCart) {
+        validateList(productShoppingCart);
+        List<Long> productIdsList=productShoppingCart.stream().map(
+                product -> {
+                    validateIsGreaterThanZero(product.getAmount(), PROPERTY_AMOUNT);
+                    validateIsGreaterThanZero(product.getId(),PROPERTY_ID);
+                    return product.getId();
+                }
+        ).toList();
+        return productPersistencePort.getProductsByProductIds(productIdsList);
+    }
+
+    private static void adjustAmountFromProductList(Map<Long, Integer> unitsInCart, List<Product> products, boolean isRestoring) {
+        products.forEach(product -> {
+
+            int stock = product.getAmount();
+            int units = unitsInCart.get(product.getId());
+            if (!isRestoring && stock < units) {
+                throw new InsufficientStockException(INSUFFICIENT_STOCK);
+            }
+            product.setAmount(isRestoring ? stock + units : stock - units);
+        });
+    }
+
+
+    private static void validateProductIdList(List<Long> listIdsProducts) {
+        validateList(listIdsProducts);
+        if (listIdsProducts.stream().anyMatch(id -> id <= ZERO)) {
+            throw new ProductNotFoundException(PRODUCT_NOT_FOUND);
+        }
+    }
+    private static <T> void validateList(List<T> list) {
+        if (list == null || list.isEmpty()) {
+            throw new ProductListSizeException(PRODUCT_LIST_SIZE);
+        }
+    }
+
     private List<String> validateAndGetFilter(String categoryNameFilter, String brandNameFilter) {
         List<String> filter = new ArrayList<>();
         filter.add(validateFilterName(categoryNameFilter,this.categoryPersistencePort,CATEGORY));
         filter.add(validateFilterName(brandNameFilter,this.brandPersistencePort,BRAND));
-
-        if (filter.stream().allMatch(Objects::isNull)) {
-            throwProductFilterException(BRAND_NAME_OR_CATEGORY);
-        }
         return filter;
     }
 

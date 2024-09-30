@@ -12,4 +12,6 @@ public interface ICategoryHandler {
     PageStock<CategoryResponse> getCategoriesByName(int page, int size, String sortDirection);
 
     CategoryResponse getCategory(Long categoryNumber);
+
+    Boolean isCategoryNameAvailable(String categoryName);
 }

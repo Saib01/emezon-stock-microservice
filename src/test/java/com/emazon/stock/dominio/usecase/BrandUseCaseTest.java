@@ -173,5 +173,13 @@ class BrandUseCaseTest {
         );
     }
 
+    @Test
+    @DisplayName("Should return false when the brand name exist")
+    void shouldReturnFalseWhenBrandNameExist() {
+        String brandName="apple";
+        when(this.brandPersistencePort.existsByName(brandName)).thenReturn(true);
 
+        boolean result=this.brandUseCase.isBrandNameAvailable(brandName);
+        assertEquals(false,result);
+    }
 }

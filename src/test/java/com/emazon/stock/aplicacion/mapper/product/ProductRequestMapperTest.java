@@ -36,7 +36,7 @@ class ProductRequestMapperTest {
         Product result = productRequestMapper.toProduct(productRequest);
 
         assertThat(result).isNotNull();
-        assertThat(result.getId()).isEqualTo(productRequest.getId());
+        assertThat(result.getId()).isNull();
         assertThat(result.getName()).isEqualTo(productRequest.getName());
         assertThat(result.getDescription()).isEqualTo(productRequest.getDescription());
         assertEquals(result.getAmount(),productRequest.getAmount());

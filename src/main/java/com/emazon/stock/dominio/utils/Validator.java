@@ -46,6 +46,7 @@ public class Validator {
         EXCEPTION_MAP.put("ProductNameExist", () -> new ProductAlreadyExistException(PRODUCT_ALREADY_EXISTS));
         EXCEPTION_MAP.put("ProductAmountInvalid", () -> new ProductAmountInvalidException(PRODUCT_AMOUNT_GREATER_THAN_ZERO));
         EXCEPTION_MAP.put("ProductPriceInvalid", () -> new ProductPriceInvalidException(PRODUCT_PRICE_GREATER_THAN_ZERO));
+        EXCEPTION_MAP.put("ProductIdInvalid", () -> new ProductNotFoundException(PRODUCT_NOT_FOUND));
     }
 
     private Validator() {
@@ -93,7 +94,7 @@ public class Validator {
         }
     }
 
-    private static <T extends Number> void validateIsGreaterThanZero(T number, String property) {
+    public static <T extends Number> void validateIsGreaterThanZero(T number, String property) {
         if (number == null || number.doubleValue() <= ZERO) {
             throw getExceptionForKey(SIMPLE_NAME_PRODUCT, property, TYPE_EXCEPTIONS[INDEX_INVALID]);
         }

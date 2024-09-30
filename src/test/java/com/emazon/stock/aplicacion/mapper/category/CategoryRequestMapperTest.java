@@ -21,7 +21,7 @@ class CategoryRequestMapperTest {
         Category result = categoryRequestMapper.toCategory(categoryRequest);
 
         assertThat(result).isNotNull();
-        assertThat(result.getId()).isEqualTo(categoryRequest.getId());
+        assertThat(result.getId()).isNull();
         assertThat(result.getName()).isEqualTo(categoryRequest.getName());
         assertThat(result.getDescription()).isEqualTo(categoryRequest.getDescription());
     }

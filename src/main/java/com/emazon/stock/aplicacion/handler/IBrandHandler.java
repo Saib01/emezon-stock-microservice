@@ -10,4 +10,6 @@ public interface IBrandHandler {
     PageStock<BrandResponse> getBrandsByName(int page, int size, String sortDirection);
 
     BrandResponse getBrand(Long id);
+
+    Boolean isBrandNameAvailable(String brandName);
 }

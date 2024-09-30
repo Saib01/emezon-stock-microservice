@@ -39,6 +39,7 @@ public interface IProductRepository extends JpaRepository<ProductEntity, Long> {
     Page<ProductEntity> findByIdInAndCategoryEntityList_NameAndBrandEntity_Name(List<Long> ids, String categoryName, String brandName, Pageable pageable);
     Page<ProductEntity> findByIdInAndCategoryEntityList_Name(List<Long> ids, String categoryName, Pageable pageable);
     Page<ProductEntity> findByIdInAndBrandEntity_Name(List<Long> ids, String brandName, Pageable pageable);
+    Page<ProductEntity> findByIdIn(List<Long> ids, Pageable pageable);
 
 
 }

@@ -38,4 +38,9 @@ public class BrandHandler implements IBrandHandler {
     public BrandResponse getBrand(Long id) {
         return brandResponseMapper.toBrandResponse(brandServicePort.getBrand(id));
     }
+
+    @Override
+    public Boolean isBrandNameAvailable(String brandName) {
+        return brandServicePort.isBrandNameAvailable(brandName);
+    }
 }

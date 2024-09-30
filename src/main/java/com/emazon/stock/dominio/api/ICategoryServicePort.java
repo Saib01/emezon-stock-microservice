@@ -10,4 +10,6 @@ public interface ICategoryServicePort {
     PageStock<Category> getCategoriesByName(int page, int size, String sortDirection);
 
     Category getCategory(Long id);
+
+    Boolean isCategoryNameAvailable(String categoryName);
 }

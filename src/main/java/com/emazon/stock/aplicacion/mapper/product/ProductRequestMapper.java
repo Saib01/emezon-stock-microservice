@@ -14,9 +14,13 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 
 @Mapper(componentModel = SPRING)
 public interface ProductRequestMapper {
+
     default Product toProduct(ProductRequest productRequest) {
+        return toProduct(productRequest,false);
+    }
+    default Product toProduct(ProductRequest productRequest,boolean assignId) {
         return new Product(
-                productRequest.getId(),
+                assignId?productRequest.getId():null,
                 productRequest.getName(),
                 productRequest.getDescription(),
                 productRequest.getAmount(),
