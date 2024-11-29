@@ -24,6 +24,7 @@ public class DomainConstants {
     public static final int MAX_ARTICLES_PER_CATEGORY = 3;
 
     public static final String BRAND_NAME_OR_CATEGORY = "brand name or category";
+    public static final String ID="id";
 
     private DomainConstants() {
     }

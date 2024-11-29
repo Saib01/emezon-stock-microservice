@@ -1,5 +1,6 @@
 package com.emazon.stock.infraestructura.exceptionhandler;
 
+import com.emazon.stock.dominio.exeption.InsufficientStockException;
 import com.emazon.stock.dominio.exeption.brand.*;
 import com.emazon.stock.dominio.exeption.category.*;
 import com.emazon.stock.dominio.exeption.product.*;
@@ -55,7 +56,8 @@ public class ControllerAdvisor {
     @ExceptionHandler({
             CategoryAlreadyExistException.class,
             BrandAlreadyExistException.class,
-            ProductAlreadyExistException.class
+            ProductAlreadyExistException.class,
+            InsufficientStockException.class
     })
     public ResponseEntity<Map<String, String>> handleConflictExceptions(RuntimeException ex) {
         return buildResponse(HttpStatus.CONFLICT, ex.getMessage());

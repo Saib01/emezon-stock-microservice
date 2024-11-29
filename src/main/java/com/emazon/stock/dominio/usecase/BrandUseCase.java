@@ -42,4 +42,9 @@ public class BrandUseCase implements IBrandServicePort {
                 .orElseThrow(() -> new BrandNotFoundException(BRAND_NOT_FOUND)
                 );
     }
+
+    @Override
+    public Boolean isBrandNameAvailable(String brandName) {
+        return !this.brandPersistencePort.existsByName(brandName);
+    }
 }

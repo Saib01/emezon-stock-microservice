@@ -61,4 +61,16 @@ public class BrandRestController {
     ResponseEntity<BrandResponse> getBrand(@PathVariable(name = NUMBER) Long brandNumber) {
         return ResponseEntity.ok(brandHandler.getBrand(brandNumber));
     }
+
+    @Operation(summary = VALIDATE_IF_THE_BRAND_NAME_IS_AVAILABLE)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = RESPONSE_CODE_SUCCESS, description = BRAND_NAME_IS_AVAILABLE,
+                    content = @Content(schema = @Schema(implementation = Boolean.class))),
+            @ApiResponse(responseCode = RESPONSE_CODE_BAD_REQUEST, description = INVALID_BRAND_NAME_FORMAT, content = @Content),
+            @ApiResponse(responseCode = RESPONSE_CODE_INTERNAL_SERVER, description = INTERNAL_SERVER_ERROR, content = @Content)
+    })
+    @PostMapping("/validate-name")
+    ResponseEntity<Boolean> isBrandNameAvailable(@RequestBody String brandName) {
+        return ResponseEntity.ok( brandHandler.isBrandNameAvailable(brandName));
+    }
 }

@@ -67,4 +67,28 @@ public class ProductHandler implements IProductHandler {
                 )
         );
     }
+
+    @Override
+    public List<ProductResponse> reduceStockAfterPurchase(List<ProductRequest> productRequestList) {
+        return   this.productResponseMapper.mapProductListWithoutCategoryAndBrandDescriptions(productServicePort.reduceStockAfterPurchase(
+                        productRequestList.stream()
+                                .map(productRequest -> productRequestMapper.toProduct(productRequest,true))
+                                .toList()
+                )
+        );
+    }
+
+    @Override
+    public void restoreStockToPreviousState(List<ProductRequest> productRequestList) {
+        productServicePort.restoreStockToPreviousState(
+                        productRequestList.stream()
+                                .map(productRequest -> productRequestMapper.toProduct(productRequest,true))
+                                .toList()
+                );
+    }
+
+    @Override
+    public Boolean isProductNameAvailable(String productName) {
+        return productServicePort.isProductNameAvailable(productName);
+    }
 }

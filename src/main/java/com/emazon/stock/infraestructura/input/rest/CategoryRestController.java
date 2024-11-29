@@ -61,4 +61,15 @@ public class CategoryRestController {
     ResponseEntity<CategoryResponse> getCategory(@PathVariable(name = NUMBER) Long categoryNumber) {
         return ResponseEntity.ok(categoryHandler.getCategory(categoryNumber));
     }
+
+
+    @Operation(summary = SUMMARY_ADD_A_NEW_CATEGORY)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = RESPONSE_CODE_CREATED, description = CATEGORY_CREATED, content = @Content),
+            @ApiResponse(responseCode = RESPONSE_CODE_CONFLICT, description = CATEGORY_ALREADY_EXISTS, content = @Content)
+    })
+    @PostMapping("/validate-name")
+    ResponseEntity<Boolean> isCategoryNameAvailable(@RequestBody String categoryName) {
+        return ResponseEntity.ok( categoryHandler.isCategoryNameAvailable(categoryName));
+    }
 }

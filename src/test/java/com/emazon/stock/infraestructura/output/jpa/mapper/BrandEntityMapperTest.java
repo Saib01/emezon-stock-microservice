@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class BrandEntityMapperTest {
 
 
+
     private final BrandEntityMapper brandEntityMapper = Mappers.getMapper(BrandEntityMapper.class);
     BrandEntity brandEntity;
 

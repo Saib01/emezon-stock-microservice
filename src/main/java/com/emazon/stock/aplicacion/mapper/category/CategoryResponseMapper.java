@@ -31,4 +31,5 @@ public interface CategoryResponseMapper {
     @Named(MAP_CATEGORY_LIST_WITHOUT_DESCRIPTIONS)
     @IterableMapping(qualifiedByName = MAP_CATEGORY_WITHOUT_DESCRIPTION)
     List<CategoryResponse> mapCategoryListWithoutDescriptions(List<Category> categories);
+
 }

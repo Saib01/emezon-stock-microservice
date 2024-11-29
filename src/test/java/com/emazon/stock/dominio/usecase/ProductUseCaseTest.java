@@ -317,14 +317,6 @@ class ProductUseCaseTest {
                 );
         }
         @Test
-        @DisplayName("Should not return paginated products when valid parameters are provided.")
-        void shouldNotReturnPaginatedProductsWhenNoFilterIsApplied() {
-                PageStock<Product> mockProductPageStock = prepareGetPaginatedProductInShoppingCart(VALID_LIST_PRODUCTS_IDS,true);
-                assertThrows(ProductFilterNotFoundException.class,
-                        () -> assertPageStockProduct(mockProductPageStock,null,null,VALID_LIST_PRODUCTS_IDS)
-                );
-        }
-        @Test
         @DisplayName("Should not return paginated products when products Ids is invalid.")
         void shouldNotReturnPaginatedProductsWhenProductsIdsIsInvalid() {
                 PageStock<Product> mockProductPageStock = prepareGetPaginatedProductInShoppingCart(INVALID_LIST_PRODUCTS_IDS,true);
@@ -340,6 +332,45 @@ class ProductUseCaseTest {
                         () -> assertPageStockProduct(mockProductPageStock,null,null,EMPTY_LIST)
                 );
         }
+        @Test
+        @DisplayName("Should return false when the product name exist")
+        void shouldReturnFalseWhenProductNameExist() {
+                String productName="keyboard";
+                when(this.productPersistencePort.existsByName(productName)).thenReturn(true);
+
+                boolean result=this.productUseCase.isProductNameAvailable(productName);
+                assertEquals(false,result);
+        }
+        @Test
+        @DisplayName("Should reduce the stock after purchasing")
+        void shouldReduceTheStockAfterPurchasing() {
+                Product productShoppingCart=new Product(VALID_ID, null, null, VALID_AMOUNT,
+                        null,
+                        null,
+                        null);
+                when(productPersistencePort.getProductsByProductIds(List.of(VALID_ID))).thenReturn(List.of(product));
+                doNothing().when(productPersistencePort).saveAllProduct(anyList());
+
+                List<Product> result=this.productUseCase.reduceStockAfterPurchase(List.of(productShoppingCart));
+
+                assertEquals(productShoppingCart.getAmount(),result.get(ZERO).getAmount());
+                verify(productPersistencePort, times(1)).saveAllProduct(anyList());
+        }
+
+        @Test
+        @DisplayName("Should reduce the stock after purchasing")
+        void shouldRestoreStockToPreviousState() {
+                Product productShoppingCart=new Product(VALID_ID, null, null, VALID_AMOUNT,
+                        null,
+                        null,
+                        null);
+                when(productPersistencePort.getProductsByProductIds(List.of(VALID_ID))).thenReturn(List.of(product));
+                doNothing().when(productPersistencePort).saveAllProduct(anyList());
+
+                this.productUseCase.restoreStockToPreviousState(List.of(productShoppingCart));
+                verify(productPersistencePort, times(1)).saveAllProduct(anyList());
+        }
+
         private PageStock<Product> prepareGetPaginatedProductInShoppingCart(List<Long> idsProducts,boolean exist) {
                 PageStock<Product> mockProductPageStock = new PageStock<>(idsProducts.stream()
                         .map(id ->

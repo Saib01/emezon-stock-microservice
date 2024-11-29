@@ -39,4 +39,9 @@ public class CategoryHandler implements ICategoryHandler {
     public CategoryResponse getCategory(Long categoryNumber) {
         return categoryResponseMapper.toCategoryResponse(categoryServicePort.getCategory(categoryNumber));
     }
+
+    @Override
+    public Boolean isCategoryNameAvailable(String categoryName) {
+        return categoryServicePort.isCategoryNameAvailable(categoryName);
+    }
 }

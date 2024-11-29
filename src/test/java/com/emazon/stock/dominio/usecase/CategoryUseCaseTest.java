@@ -162,4 +162,14 @@ class CategoryUseCaseTest {
         assertThrows(CategoryPageSortDirectionIsInvalidException.class,
                 () -> categoryUseCase.getCategoriesByName(VALID_PAGE, VALID_SIZE, INVALID_SORT_DIRECTION));
     }
+
+    @Test
+    @DisplayName("Should return false when the category name exist")
+    void shouldReturnFalseWhenCategoryNameExist() {
+        String categoryName="technology";
+        when(this.categoryPersistencePort.existsByName(categoryName)).thenReturn(true);
+
+        boolean result=this.categoryUseCase.isCategoryNameAvailable(categoryName);
+        assertEquals(false,result);
+    }
 }

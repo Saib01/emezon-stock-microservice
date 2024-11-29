@@ -32,8 +32,6 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 @RequestMapping("/api/product")
 @RequiredArgsConstructor
 public class ProductRestController {
-
-
     private final IProductHandler productHandler;
     private final ObjectMapper objectMapper;
     private final IProductRepository productRepository;
@@ -101,6 +99,14 @@ public class ProductRestController {
         );
     }
 
+    @Operation(summary = GET_PAGINATED_LIST_OF_PRODUCTS_IN_SHOPPING_CART,
+            description = RETRIEVE_A_PAGINATED_LIST_OF_PRODUCTS_IN_THE_SHOPPING_CART_BASED_ON_THE_PROVIDED_LIST_REQUEST)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = RESPONSE_CODE_SUCCESS, description = SUCCESSFULLY_RETRIEVED_PAGINATED_PRODUCT_LIST,
+                    content = @Content(schema = @Schema(implementation = PageStock.class))),
+            @ApiResponse(responseCode = RESPONSE_CODE_BAD_REQUEST, description = INVALID_REQUEST_DATA, content = @Content),
+            @ApiResponse(responseCode = RESPONSE_CODE_INTERNAL_SERVER, description = INTERNAL_SERVER_ERROR1, content = @Content)
+    })
     @PostMapping("/product-list")
     public ResponseEntity<PageStock<ProductResponse>> getPaginatedProductsInShoppingCart(
             @RequestBody ShoppingCartListRequest shoppingCartListRequest,
@@ -111,4 +117,41 @@ public class ProductRestController {
         return ResponseEntity.ok(productHandler.getPaginatedProductsInShoppingCart(page, size, sortDirection,shoppingCartListRequest));
     }
 
+    @Operation(summary = REDUCE_STOCK_AFTER_PURCHASE)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = RESPONSE_CODE_SUCCESS, description = STOCK_REDUCED_SUCCESSFULLY,
+                    content = @Content(schema = @Schema(implementation = ProductResponse.class))),
+            @ApiResponse(responseCode = RESPONSE_CODE_BAD_REQUEST, description = INVALID_PRODUCT_REQUEST_DATA, content = @Content),
+            @ApiResponse(responseCode = RESPONSE_CODE_INTERNAL_SERVER, description = INTERNAL_SERVER_ERROR_WHILE_REDUCING_STOCK, content = @Content)
+    })
+    @PutMapping("/reduce-stock")
+    public ResponseEntity<List<ProductResponse>> reduceStockAfterPurchase(@RequestBody List<ProductRequest> productRequestList) {
+
+        return ResponseEntity.ok(productHandler.reduceStockAfterPurchase(productRequestList));
+    }
+
+    @Operation(summary = RESTORE_STOCK_TO_PREVIOUS_STATE)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = RESPONSE_CODE_SUCCESS, description = STOCK_RESTORED_SUCCESSFULLY,
+                    content = @Content(schema = @Schema(implementation = Response.class))),
+            @ApiResponse(responseCode = RESPONSE_CODE_BAD_REQUEST, description = INVALID_PRODUCT_REQUEST_DATA1, content = @Content),
+            @ApiResponse(responseCode = RESPONSE_CODE_INTERNAL_SERVER, description = INTERNAL_SERVER_ERROR_WHILE_RESTORING_STOCK, content = @Content)
+    })
+    @PutMapping("/restore-stock-fallback")
+    public ResponseEntity<Response> restoreStockToPreviousStateFallback(@RequestBody List<ProductRequest> productRequestList) {
+        productHandler.restoreStockToPreviousState(productRequestList);
+        return ResponseEntity.ok(new Response(STOCK_RESTORATION_COMPLETED));
+    }
+
+    @Operation(summary = VALIDATE_IF_THE_PRODUCT_NAME_IS_AVAILABLE)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = RESPONSE_CODE_SUCCESS, description = PRODUCT_NAME_IS_AVAILABLE,
+                    content = @Content(schema = @Schema(implementation = Boolean.class))),
+            @ApiResponse(responseCode = RESPONSE_CODE_BAD_REQUEST, description = INVALID_PRODUCT_NAME_FORMAT, content = @Content),
+            @ApiResponse(responseCode = RESPONSE_CODE_INTERNAL_SERVER, description = INTERNAL_SERVER_ERROR2, content = @Content)
+    })
+    @PostMapping("/validate-name")
+    ResponseEntity<Boolean> isProductNameAvailable(@RequestBody String productName) {
+        return ResponseEntity.ok( productHandler.isProductNameAvailable(productName));
+    }
 }

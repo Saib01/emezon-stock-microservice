@@ -9,4 +9,6 @@ public interface IBrandServicePort {
     PageStock<Brand> getBrandsByName(int page, int size, String sortDirection);
 
     Brand getBrand(Long id);
+
+    Boolean isBrandNameAvailable(String brandName);
 }

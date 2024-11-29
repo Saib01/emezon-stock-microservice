@@ -39,7 +39,7 @@ public class ProductJpaAdapter implements IProductPersistencePort {
         Pageable pageable =
                 sortBy.get(ZERO).equalsIgnoreCase(ORDER_BY_CATEGORY) ?
                         PageRequest.of(page, size)
-                        : PageRequest.of(page, size,Sort.by(Sort.Direction.fromString(sortDirection), sortBy.get(ZERO),sortBy.get(ONE.intValue())));
+                        : PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDirection), sortBy.get(ZERO), sortBy.get(ONE.intValue())));
 
         Page<ProductEntity> productEntities =
                 sortBy.get(ZERO).equalsIgnoreCase(ORDER_BY_CATEGORY) ?
@@ -82,17 +82,35 @@ public class ProductJpaAdapter implements IProductPersistencePort {
                         .toList())
                 .toList();
     }
+
     @Override
     public PageStock<Product> getPaginatedProductsInShoppingCart(List<Long> listIdsProducts, List<String> filter, int page, int size, String sortDirection) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDirection), PROPERTY_NAME.toLowerCase()));
-
-        Page<ProductEntity> productEntities=filter.stream().allMatch(Objects::nonNull)?
-                this.productRepository.findByIdInAndCategoryEntityList_NameAndBrandEntity_Name(
-                        listIdsProducts,filter.get(ZERO),filter.get(ONE.intValue()),pageable
-                )
-                : getProductEntitiesByCategoryNameOrBrandName(listIdsProducts, filter.get(ZERO),filter.get(ONE.intValue()), pageable);
+        Page<ProductEntity> productEntities;
+        if (filter.stream().allMatch(Objects::nonNull)) {
+            productEntities = this.productRepository.findByIdInAndCategoryEntityList_NameAndBrandEntity_Name(listIdsProducts, filter.get(ZERO), filter.get(ONE.intValue()), pageable);
+        } else {
+            productEntities = filter.stream().allMatch(Objects::isNull) ?
+                    this.productRepository.findByIdIn(listIdsProducts, pageable)
+                    : getProductEntitiesByCategoryNameOrBrandName(listIdsProducts, filter.get(ZERO), filter.get(ONE.intValue()), pageable);
+        }
         return productEntityMapper.toProductPageStock(
-                    productEntities
+                productEntities
+        );
+    }
+
+    @Override
+    public List<Product> getProductsByProductIds(List<Long> listIdsProducts) {
+        return productRepository.findByIdIn(listIdsProducts)
+                .stream()
+                .map(productEntityMapper::toProduct)
+                .toList();
+    }
+
+    @Override
+    public void saveAllProduct(List<Product> products) {
+        this.productRepository.saveAll(
+                products.stream().map(this.productEntityMapper::toProductEntity).toList()
         );
     }
 
@@ -101,4 +119,5 @@ public class ProductJpaAdapter implements IProductPersistencePort {
                 this.productRepository.findByIdInAndCategoryEntityList_Name(listIdsProducts, categoryName, pageable)
                 : this.productRepository.findByIdInAndBrandEntity_Name(listIdsProducts, brandName, pageable);
     }
+
 }
